@@ -11,6 +11,7 @@ import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
 import rip.helium.event.minecraft.PlayerMoveEvent;
+import rip.helium.event.minecraft.PlayerUpdateEvent;
 import rip.helium.event.minecraft.ProcessPacketEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
 import rip.helium.utils.MathUtils;
@@ -86,10 +87,13 @@ public class Speed extends Cheat {
         setMode(prop_mode.getSelectedStrings().get(0));
         switch (prop_mode.getSelectedStrings().get(0)) {
             case "Vanilla":
-                if (!mc.thePlayer.isMoving() && TargetStrafe.doStrafeAtSpeed(event, speed.getValue())) {
-                    mc.thePlayer.setSpeed(this.speed.getValue());
+                if (mc.thePlayer.isMoving()) {
+                    MovementUtils.setSpeed(event, speed.getValue());
+                    if (!TargetStrafe.doStrafeAtSpeed(event, speed.getValue())) {
+                        MovementUtils.setSpeed(event, speed.getValue());
+                    }
                 }
-            break;
+                break;
             case "Hypixel":
                 if (MathUtils.round(mc.thePlayer.motionY, 3) == MathUtils.round(-.245D, 3)) {
                     event.setY(mc.thePlayer.motionY -= 0.125F);
@@ -116,7 +120,15 @@ public class Speed extends Cheat {
                         MovementUtils.setSpeed(event, Math.max(moveSpeed, baseSpeed));
                     }
                 }
-                break;
+        }
+    }
+
+    @Collect
+    public void onUpdatePacket(PlayerUpdateEvent event) {
+        switch (prop_mode.getSelectedStrings().get(0)) {
+            case "Vanilla": {
+                event.setOnGround(true);
+            }
         }
     }
 
