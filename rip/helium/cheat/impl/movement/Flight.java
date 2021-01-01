@@ -46,7 +46,7 @@ public class Flight extends Cheat {
 
     public Flight() {
         super("Flight", "Fuck that little faggot!", CheatCategory.MOVEMENT);
-        this.prop_mode = new StringsProperty("Flight", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "LongjumpFly"}, new Boolean[]{true, false});
+        this.prop_mode = new StringsProperty("Flight", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "LongjumpFly", "Watchdog"}, new Boolean[]{true, false, false});
         this.prop_bobbing = new BooleanProperty("View Bobbing", "bippity boppity", null, false);
         this.prop_memebobbing = new BooleanProperty("MEME BOBBING", "FUCKING BOBBING XDDDDD", null, false);
         this.antikick = new BooleanProperty("AntiKick", "no vanilla kicke", null, true);

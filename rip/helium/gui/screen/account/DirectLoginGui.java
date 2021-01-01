@@ -8,6 +8,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import org.apache.commons.io.FileUtils;
 import rip.helium.Helium;
@@ -16,6 +17,7 @@ import rip.helium.gui.components.Dropbox;
 import rip.helium.gui.components.FieldType;
 import rip.helium.gui.components.TextButton;
 import rip.helium.gui.components.TextField;
+import rip.helium.utils.Draw;
 import rip.helium.utils.font.Fonts;
 
 import java.awt.*;
@@ -183,10 +185,10 @@ public class DirectLoginGui extends GuiScreen {
 
     @Override
     public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
-        Gui.drawRect(0, 0, width, height, new Color(0, 0, 0).getRGB());
+      //  Gui.drawRect(0, 0, width, height, new Color(0, 0, 0).getRGB());
         drawGradientRect(0, 0, width, height, new Color(0, 0, 0, 0).getRGB(), new Color(0, 0, 0).getRGB());
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        //Draw.drawImg(new ResourceLocation("client/Background.jpg"), 1.0, 1.0, this.width, this.height);
+        Draw.drawImg(new ResourceLocation("client/Background1.jpg"), 0.0, 0.0, width, height);
         this.usernameField.drawTextField();
         this.passwordField.drawTextField();
         this.tokenField.drawTextField();
