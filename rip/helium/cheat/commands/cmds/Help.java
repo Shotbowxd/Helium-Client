@@ -14,13 +14,16 @@ public class Help extends Command {
     public void run(String[] args) {
         ChatUtil.chat("§7§m----------------------------------------");
         ChatUtil.chat("§c§lHelium §7- §f" + Helium.client_build);
-        ChatUtil.chat("§7§oDeveloped by Kansio & Pulse!");
+        ChatUtil.chat("§7§oDeveloped by Shotbowxd & Jinthium!");
         ChatUtil.chat(" ");
         ChatUtil.chat("§c§lCommands:");
-        ChatUtil.chat("-friend");
-        ChatUtil.chat("-vclip");
-        ChatUtil.chat("-tp");
-        ChatUtil.chat("-bind\n-toggle\n-focus");
+        ChatUtil.chat("§c-friend §7- Friends a player so killaura doesnt attack them");
+        ChatUtil.chat("§c-vclip §7- Clips you down or up");
+        ChatUtil.chat("§c-tp §7- Teleports you to a certain place");
+        ChatUtil.chat("§c-bind §7- Binds a module");
+        ChatUtil.chat("§c-clientname §7- Changes the client name");
+        ChatUtil.chat("§c-toggle or -t §7- Toggles a module");
+        ChatUtil.chat("§c-focus §7- Focuses a player more than others");
         ChatUtil.chat("§7§m----------------------------------------");
     }
 }

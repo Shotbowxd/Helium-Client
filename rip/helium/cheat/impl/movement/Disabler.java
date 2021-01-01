@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+//Anyone that wants to fucking clean up this code and or fix these or fix else if else if else if else if else if else if (thanks kansio) feel free to do so - shotbowxd <3
+
 public class Disabler extends Cheat {
     private static final int VERUS_DISABLE_AUTOBAN_CHANNEL = 65536;
     private static final short VERUS_DISABLE_AUTOBAN_UID = 32767;
@@ -40,7 +42,7 @@ public class Disabler extends Cheat {
     int i = 0;
     private final Stopwatch timer = new Stopwatch();
     private int iNigga;
-    private final StringsProperty mode = new StringsProperty("Mode", "How the priority target will be selected.", null, false, true, new String[]{"Viper", "Muncher", "Kohi", "RinaOrc", "Mineplex", "Faithful", "Verus", "PingSpoof", "OmegaCraft", "Ghostly", "Watchdog", "Poopful"}, new Boolean[]{true, false, false, false, false, false, false, false, false, false, false, false});
+    private final StringsProperty mode = new StringsProperty("Mode", "How the priority target will be selected.", null, false, true, new String[]{"Viper", "Ghostly"/*"Muncher", "Kohi", "RinaOrc", "Mineplex", "Faithful", "Verus", "PingSpoof", "OmegaCraft", "Watchdog", "Poopful"*/}, new Boolean[]{true, false, /*false, false, false, false, false, false, false, false, false, false*/});
 
     public Disabler() {
         super("Disabler", "Fuck that little faggot!", CheatCategory.MOVEMENT);
@@ -198,6 +200,7 @@ public class Disabler extends Cheat {
                     packet.jumping = (mc.thePlayer.ticksExisted % 2 == 0);
                     packet.sneaking = (mc.thePlayer.ticksExisted % 2 != 0);
                 }
+                //Needs to be updated (its the old C13 one XDDD)
             } else if (mode.getValue().get("Watchdog")) {
                 if (mc.getCurrentServerData() != null && mc.getCurrentServerData().serverIP.contains("hypixel.net")) {
                     if (mc.thePlayer.ticksExisted % 29 == 0) {

@@ -123,14 +123,14 @@ public class Speed extends Cheat {
         }
     }
 
-    @Collect
+   @Collect
     public void onUpdatePacket(PlayerUpdateEvent event) {
-        switch (prop_mode.getSelectedStrings().get(0)) {
-            case "Vanilla": {
-                event.setOnGround(true);
-            }
-        }
-    }
+       switch (prop_mode.getSelectedStrings().get(0)) {
+           case "Vanilla": {
+               event.setOnGround(true);
+           }
+       }
+   }
 
     @Collect
     public void onPacketProcess(ProcessPacketEvent event) {

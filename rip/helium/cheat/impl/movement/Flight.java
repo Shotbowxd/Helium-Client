@@ -78,6 +78,9 @@ public class Flight extends Cheat {
         if (this.prop_bobbing.getValue()) {
             mc.thePlayer.cameraYaw = 0.11f;
         }
+        if (this.prop_memebobbing.getValue()) {
+            mc.thePlayer.cameraYaw = 0.41f;
+        }
         mineplexSpeed = 0;
         speed = 0;
         timer.reset();
@@ -103,6 +106,9 @@ public class Flight extends Cheat {
         }
         if (this.prop_bobbing.getValue()) {
             mc.thePlayer.cameraYaw = 0.11f;
+        }
+        if (this.prop_memebobbing.getValue()) {
+            mc.thePlayer.cameraYaw = 0.31f;
         }
         switch (prop_mode.getSelectedStrings().get(0)) {
             case "LongjumpFly": {
