@@ -16,7 +16,7 @@ public class Hud extends Cheat {
     public static BooleanProperty scoreboard_enabled = new BooleanProperty("Scoreboard", "Scoreboard Status.", null, true);
     public static BooleanProperty shadowfont_enabled = new BooleanProperty("Shadow", "Shadow Font", null, false);
     public static StringsProperty prop_theme = new StringsProperty("Mode", "dank", null,
-            false, true, new String[]{"Helium", "Virtue", "Memestick", "Exhi", "Helium2"}, new Boolean[]{true, false, false, false, false});
+            false, true, new String[]{"Helium", "Virtue", "Memestick", "Exhi", "Helium2", "NSFWImage", "NSFWImage2"}, new Boolean[]{true, false, false, false, false, false, false});
     public static TextProperty clientName = new TextProperty("Client Name", "Changes the client name", null, "§4§lH§felium");
     public static BooleanProperty hud_tnt = new BooleanProperty("Tnt Alert", "Alerts you if tnt is close to you", null, true);
     public static BooleanProperty tabui = new BooleanProperty("Tab GUI", "Renders the tab gui ", null, false);

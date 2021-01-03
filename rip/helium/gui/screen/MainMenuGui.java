@@ -103,7 +103,12 @@ public class MainMenuGui extends GuiScreen implements GuiYesNoCallback {
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
         final ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
         Fonts.verdana3.drawStringWithShadow("User Status: ", (float) (ScaledResolution.getScaledWidth() - Fonts.verdana3.getStringWidth("User Status: Beta") - 4), (float) (ScaledResolution.getScaledHeight() - 9), new Color(180, 180, 180).getRGB());
+
+        //Use this for regular version
         Draw.drawImg(new ResourceLocation("client/Background1.jpg"), 0.0, 0.0, width, height);
+
+        //Use this for 18+ version
+       // Draw.drawImg(new ResourceLocation("client/nsfwbackground.jpg"), 0.0, 0.0, width, height);
         GlStateManager.popMatrix();
         final int logoPositionY = this.topButtonHeight - 30;
         Draw.drawImg(new ResourceLocation("client/gui/logo/64x64.png"), width / 2 - 32, logoPositionY - 64, 64.0, 64.0);
@@ -113,7 +118,12 @@ public class MainMenuGui extends GuiScreen implements GuiYesNoCallback {
         GL11.glPushMatrix();
         GL11.glScaled(5, 5, 5);
         color = ColorCreator.createRainbowFromOffset2(-6000, y * 35);
+
+        //Use this for regular version
         Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow("Helium", width / 10 - (mc.fontRendererObj.getStringWidth("Helium")) / 2, height / 22, color);
+
+        //Use this for 18+ Edition
+       // Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow("Hentai", width / 10 - (mc.fontRendererObj.getStringWidth("Helium")) / 2.0f, height / 22, color);
 
         GL11.glPopMatrix();
     }

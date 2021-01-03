@@ -6,6 +6,8 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
@@ -16,6 +18,7 @@ import rip.helium.ui.main.tab.TabGui;
 import rip.helium.utils.ColorCreator;
 import rip.helium.utils.Draw;
 import rip.helium.utils.RenderUtil;
+import rip.helium.utils.RenderUtility;
 import rip.helium.utils.property.impl.ColorProperty;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -37,7 +40,7 @@ public class ToggledList extends Element {
     private final DoubleProperty propertyHeight = new DoubleProperty("Entry Height", "The height of each cheat name", null,
             10, 8, 15, 1, "px");
     private final StringsProperty propertyColorMode = new StringsProperty("Color Type", "The way that each cheat name will be colored", null,
-            false, true, new String[]{"Solid", "Pulsing", "Rainbow"}, new Boolean[]{true, false, false});
+            false, true, new String[]{"Solid", "Pulsing", "Rainbow", "Kingmount"}, new Boolean[]{true, false, false, false});
     private final ColorProperty propertyNameColor = new ColorProperty("Name Color", "The color of each cheat name", () -> !propertyColorMode.getValue().get("Rainbow"),
             0, 0, 100, 255);
     private final ColorProperty propertyBackgroundColor = new ColorProperty("Background Color", "The color of the background", null,
@@ -192,15 +195,27 @@ public class ToggledList extends Element {
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 1;
                         break;
                     }
-                    case "Memestick": {
-                        double length = mc.fontRendererObj.getStringWidth(name);
-
+                    case "NSFWImage": {
+                        GL11.glPushMatrix();
+                        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                        Draw.drawImg(new ResourceLocation("client/watermark.jpg"), 2.0, 2.0, 150, 250);
+                        GL11.glPopMatrix();
                         if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        Draw.drawBorderedRectangle((int) (ScaledResolution.getScaledWidth() - this.positionX - 3.0D - length + m.getAnimation()), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.0D), (y + 12), 1.0D, (new Color(30, 30, 30)).getRGB(), color, true);
-                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation()), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.0D), y + 9, (new Color(30, 30, 30)).getRGB());
-                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), color);
-                        mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name, 5, 5, new Color(255, 0, 0, 255).getRGB());
-                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
+                        double length = mc.fontRendererObj.getStringWidth(name);
+                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
+                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
+                        //GL11.glPushMatrix();
+                        //GL11.glScaled(1.1, 1.1, 1.1);
+                        //GL11.glPopMatrix();
+                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
+                        break;
+                    }
+                    case "NSFWImage2": {
+                        GL11.glPushMatrix();
+                        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                        Draw.drawImg(new ResourceLocation("client/watermark2.png"), 2.0, 2.0, 150, 250);
+                        GL11.glPopMatrix();
                         break;
                     }
                     case "Exhi": {

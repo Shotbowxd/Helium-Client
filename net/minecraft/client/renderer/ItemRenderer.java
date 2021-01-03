@@ -384,6 +384,14 @@ public class ItemRenderer
                         case "Remix": {
                             this.transformFirstPersonItem(f, f2 / 40.0f);
                             this.func_178103_d();
+                            GlStateManager.translate(-0.1f, 0.0f, 0.0f);
+                            break;
+                        }
+
+                        case "Shotbowxd": {
+                            this.transformFirstPersonItem(f, f2 / 40.0f);
+                            this.func_178103_d();
+                            GlStateManager.translate(-0.5f, 0.0f, 0.0f);
                             break;
                         }
 
