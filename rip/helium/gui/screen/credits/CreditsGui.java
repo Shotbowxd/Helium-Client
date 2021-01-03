@@ -2,69 +2,63 @@ package rip.helium.gui.screen.credits;
 
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNoCallback;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import rip.helium.buttons.UIButton;
 import rip.helium.gui.screen.MainMenuGui;
 import rip.helium.utils.Draw;
+import rip.helium.utils.font.Fonts;
 
 import java.awt.*;
 import java.io.IOException;
 
-public class CreditsGui extends GuiScreen {
-    private final GuiScreen parentScreen;
+public class CreditsGui extends GuiScreen implements GuiYesNoCallback
+{
+    private GuiScreen parentScreen;
 
-    public CreditsGui(GuiScreen parentScreen) {
-        this.parentScreen = parentScreen;
+    public CreditsGui(final GuiScreen parent) {
+        this.parentScreen = parent;
     }
 
-    public void updateScreen() {
-        parentScreen.updateScreen();
-    }
-
+    @Override
     public void initGui() {
-
-        this.buttonList.add(new UIButton(1, width / 2 - 40, height - 24, 80, 20, "Back"));
-
         super.initGui();
     }
 
-    protected void actionPerformed(GuiButton button) throws IOException {
-        switch (button.id) {
-            case 1:
-                Minecraft.getMinecraft().displayGuiScreen(parentScreen);
-                break;
-        }
+    @Override
+    protected void actionPerformed(final GuiButton button) throws IOException {
     }
 
-
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        MainMenuGui.drawBackground();
-
-        drawGradientRect(0, 0, width, height, -1, new Color(80, 80, 80, 120).getRGB());
-
-        Draw.drawRectangle(0, 0, width, 30, new Color(0, 0, 0, 190).getRGB());
-        //Fonts.verdanaCredits.drawCenteredStringWithShadow("Credits", width / 2, 9, -1);
-
+    @Override
+    public void drawScreen(final int mouseX, final int mouseY, final float partialTicks) {
+        GlStateManager.pushMatrix();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableAlpha();
+        Gui.drawRect(0, 0, this.width, this.height, new Color(0, 0, 0, 150).getRGB());
+        this.drawGradientRect(0, 0, this.width, this.height, new Color(0, 0, 0).getRGB(), new Color(0, 0, 0, 120).getRGB());
+        this.drawGradientRect(0, 0, this.width, this.height, new Color(0, 0, 0, 0).getRGB(), new Color(0, 0, 0, 120).getRGB());
+        GlStateManager.popMatrix();
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+        Draw.drawImg(new ResourceLocation("client/Background.jpg"), 1.0, 1.0, this.width, this.height);
+        final int logoPositionY = this.height / 2 - 130;
+        Fonts.bf28.drawStringWithShadow("Credits: ", 15.0f, 10.0f, new Color(255, 64, 37).getRGB());
+        Fonts.bf20.drawStringWithShadow("Client Base:", 15.0f, 30.0f, new Color(255, 64, 37).getRGB());
+        Fonts.bf20.drawStringWithShadow("Vaziak, Spec, AnthonyJ", 15.0f, 40.0f, new Color(255, 64, 37).getRGB());
+        Fonts.bf20.drawStringWithShadow("Viper and Ghostly Disabler:", 15.0f, 70.0f, new Color(255, 64, 37).getRGB());
+        Fonts.bf20.drawStringWithShadow("Dort", 15.0f, 80.0f, new Color(255, 64, 37).getRGB());
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == Keyboard.KEY_RETURN) {
-            Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+    @Override
+    protected void keyTyped(final char typedChar, final int keyCode) throws IOException {
+        if (keyCode == 1) {
+            Minecraft.getMinecraft().displayGuiScreen(this.parentScreen);
         }
-
-
-        if (keyCode == Keyboard.KEY_ESCAPE) {
-            return;
-        }
-
         super.keyTyped(typedChar, keyCode);
     }
-
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
 }
