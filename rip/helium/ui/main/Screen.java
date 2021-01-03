@@ -27,12 +27,6 @@ public class Screen extends GuiScreen {
 
     @Override
     public void initGui() {
-        if (OpenGlHelper.shadersSupported && mc.getRenderViewEntity() instanceof EntityPlayer) {
-            if (mc.entityRenderer.theShaderGroup != null) {
-                mc.entityRenderer.theShaderGroup.deleteShaderGroup();
-            }
-            mc.entityRenderer.loadShader(new ResourceLocation("shaders/post/blur.json"));
-        }
         this.firstKeyPressed = false;
         this.theInterface.initializeInterface();
         super.initGui();

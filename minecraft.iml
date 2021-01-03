@@ -24,20 +24,20 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../hh" />
+          <root url="jar://$MODULE_DIR$/../HeartBroken/jars/versions/1.8.8/1.8.8.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../hh" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/../Helium SRC/jars/versions/1.8.8/1.8.8.jar!/" />
+          <root url="file://$MODULE_DIR$/../desktop2/hh" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/../desktop2/hh" recursive="false" />
       </library>
     </orderEntry>
   </component>
