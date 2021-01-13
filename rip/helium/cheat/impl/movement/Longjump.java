@@ -14,6 +14,7 @@ import rip.helium.cheat.CheatCategory;
 import rip.helium.event.minecraft.PlayerMoveEvent;
 import rip.helium.event.minecraft.PlayerUpdateEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
+import rip.helium.utils.MovementUtils;
 import rip.helium.utils.SpeedUtils;
 import rip.helium.utils.Vec3d;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -28,7 +29,7 @@ public class Longjump extends Cheat {
 
     public Longjump() {
         super("LongJump", "Longjump class retard", CheatCategory.MOVEMENT);
-        this.mode = new StringsProperty("Mode", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "Mineplex", "Fierce", "Faithful"}, new Boolean[]{true, false, false, false});
+        this.mode = new StringsProperty("Mode", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "Mineplex", "Fierce", "SunPvP"}, new Boolean[]{true, false, false, false});
         this.registerProperties(mode);
     }
 
@@ -124,6 +125,19 @@ public class Longjump extends Cheat {
                 }
                 break;
             }
+            case "SunPvP":
+                double sunspeed = MovementUtils.getBaseMoveSpeed();
+                if (mc.thePlayer.isMoving()) {
+                    MovementUtils.setSpeed(event, 9.3);
+                    if (!TargetStrafe.doStrafeAtSpeed(event, 9.3)) {
+                        MovementUtils.setSpeed(event, 9.3);
+                        if (mc.thePlayer.onGround) {
+                            event.setY(mc.thePlayer.motionY = 0.42); // 3999998
+                            //  moveSpeed = sunspeed * 2.15 - 1.0E-4;
+                        }
+                    }
+                    break;
+                }
         }
     }
 

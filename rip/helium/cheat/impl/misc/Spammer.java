@@ -24,7 +24,7 @@ public class Spammer extends Cheat {
     public Spammer() {
         super("Spammer", "Spams chat", CheatCategory.MISC);
         this.time = new Timer();
-        this.phraseList = new String[]{"Helium Client", "Helium good, sigma bad!", "sigma gey, get Helium", "Rage at me on discord for killin u on mincecraft Kansio#6759", "Rage at me on discord for killin u on mincecraft Pulse#3637", "yes i have cool gamin chair helium!111", "whatz the difference between a j3w and a pizza? the pizza wont scream in the oven"};
+        this.phraseList = new String[]{"Helium Client", "Helium good, sigma bad!", "sigma gey, get Helium", "yes i have cool gamin chair helium!111", "whatz the difference between a j3w and a pizza? the pizza wont scream in the oven"};
         this.nphraseList = new String[]{""};
     }
 

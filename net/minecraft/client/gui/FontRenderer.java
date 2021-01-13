@@ -384,6 +384,17 @@ public class FontRenderer implements IResourceManagerReloadListener
                 text = text.replaceAll("hypixel", "Helium");
                 text = text.replaceAll("WaterMC", "Helium");
                 text = text.replaceAll("watermc", "Helium");
+                text = text.replaceAll("VeltPvP", "Helium");
+                text = text.replaceAll("Velt", "Helium");
+                text = text.replaceAll("veltpvp", "Helium");
+                text = text.replaceAll("DynamicPvP", "Helium");
+                text = text.replaceAll("Dynamic", "Helium");
+                text = text.replaceAll("dynamic", "Helium");
+                text = text.replaceAll("dynamicpvp", "Helium");
+                text = text.replaceAll("SunPvP", "Helium");
+                text = text.replaceAll("sunpvp", "Helium");
+                text = text.replaceAll("Sun", "Helium");
+                text = text.replaceAll("sun", "Helium");
             }
         } catch (Exception e) {
 

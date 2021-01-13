@@ -240,18 +240,19 @@ public class Gui
     /**
      * Draws a scaled, textured, tiled modal rect at z = 0. This method isn't used anywhere in vanilla code.
      */
-    public static void drawScaledCustomSizeModalRect(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
-    {
-        float f = 1.0F / tileWidth;
-        float f1 = 1.0F / tileHeight;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        worldrenderer.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * f), (double)((v + (float)vHeight) * f1)).endVertex();
-        worldrenderer.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * f), (double)((v + (float)vHeight) * f1)).endVertex();
-        worldrenderer.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * f), (double)(v * f1)).endVertex();
-        worldrenderer.pos((double)x, (double)y, 0.0D).tex((double)(u * f), (double)(v * f1)).endVertex();
-        tessellator.draw();
+    public static void drawScaledCustomSizeModalRect(final double x, final double y, final float u, final float v, final double uWidth, final double vHeight, final double width, final double height, final float tileWidth, final float tileHeight) {
+        final float var10 = 1.0f / tileWidth;
+        final float var11 = 1.0f / tileHeight;
+        final Tessellator var12 = Tessellator.getInstance();
+        final WorldRenderer var13 = var12.getWorldRenderer();
+
+        var13.begin(7, DefaultVertexFormats.POSITION_TEX);
+        var13.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * var10), (double)((v + (float)vHeight) * var11)).endVertex();
+        var13.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * var10), (double)((v + (float)vHeight) * var11)).endVertex();
+        var13.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * var10), (double)(v * var11)).endVertex();
+        var13.pos((double)x, (double)y, 0.0D).tex((double)(u * var10), (double)(v * var11)).endVertex();
+
+        var12.draw();
     }
 
 	  public static void drawRect(final double d, final double e, final double f2, final double f3, final int paramColor) {

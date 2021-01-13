@@ -372,7 +372,7 @@ public class ESP extends Cheat {
             if (prop_elements.getValue().get("Name")) {
                 //ChatUtil.chat("Please enable NameTags for this feature");
                 if (stopwatch.hasPassed(2000)) {
-                    ChatUtil.chat("§cThis option is not in use anymore. Please use nametags instead.");
+                    ChatUtil.chat("§cThis option is not in use anymore. Please use nametags or MemeESP instead.");
                     stopwatch.reset();
                 }
             }

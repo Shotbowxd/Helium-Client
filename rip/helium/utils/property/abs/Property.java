@@ -5,17 +5,19 @@ package rip.helium.utils.property.abs;
  */
 public abstract class Property<T> {
 
+    private String id;
+    private String description;
     public T value;
     public T defaultValue;
-    private final String id;
-    private final String description;
-    private final rip.helium.utils.Dependency dependency;
+    private rip.helium.utils.Dependency dependency;
 
     protected Property(String id, String description, rip.helium.utils.Dependency dependency) {
         this.id = id;
         this.description = description;
         this.dependency = dependency;
     }
+
+    public abstract void setValue(String input);
 
     public void setDefault() {
         value = defaultValue;
@@ -25,22 +27,18 @@ public abstract class Property<T> {
         return id;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
+    public String getDescription() { return this.description; }
 
     public T getValue() {
         return value;
     }
 
-    public abstract void setValue(String input);
+    public String getValueAsString() {
+        return String.valueOf(value);
+    }
 
     public void setValue(T input) {
         value = input;
-    }
-
-    public String getValueAsString() {
-        return String.valueOf(value);
     }
 
     public boolean checkDependency() {

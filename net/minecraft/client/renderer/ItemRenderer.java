@@ -339,15 +339,17 @@ public class ItemRenderer
                             GlStateManager.rotate(var16 * 33.0f, 85.0f, -0.4f, -5.0f);
                             break;
                         }
-                        case "Kansio": {
-                        	 this.transformFirstPersonItem(f * 0.5f, 0.0f);
+                        case "Dortware": {
+                            final float var17 = MathHelper.sin((float) (f2 * f2 * Math.PI - 3));
+                            this.transformFirstPersonItem(f, 1.0f);
                             // this.func_178103_d();
-                             GlStateManager.rotate(-var15 * 10, 0.0f, 15.0f, 300.0f);
+                             GlStateManager.rotate(-var15 * 10, 0.0f, 15.0f, 200.0f);
                              GlStateManager.rotate(-var15 * 10f, 300.0f, var15 / 2.0f, 1.0f);
                             this.func_178103_d();
-                             GL11.glTranslated(1.2, 0.2, 0.1);
+                             GL11.glTranslated(2.4, 0.3, 0.5);
                             //this.func_178103_d();
                              GL11.glTranslatef(-2.10f, -0.2f, 0.1f);
+                            GlStateManager.rotate(var17 * 13.0f, -10.0f, -1.4f, -10.0f);
                              break;
                         }
                         case "Swang": {
@@ -380,6 +382,22 @@ public class ItemRenderer
 //                            GlStateManager.rotate(-var15 * 25.0F, 0.5F, 0F, 1F);
 //                            break;
                         }
+                        case "Astro": {
+                            final float var = MathHelper.sin((float) (MathHelper.sqrt_float(f2) * Math.PI));
+                            this.transformFirstPersonItem (f / 2, f2);
+                            GL11.glRotatef(var * 50.0F / 9.0F, -var, -0.0F, 90.0F);
+                            GL11.glRotatef(var * 50.0F, 200.0F, -var / 2.0F, -0.0F);
+                            mc.getItemRenderer().func_178103_d();
+                            break;
+                        }
+
+                        case "In": {
+                            this.transformFirstPersonItem (f, f2);
+                            GlStateManager.translate(0.05F, 0.2F, 0.05F);
+                            GlStateManager.rotate(-90.0F, 0.0F, 1.0F, 0.0F);
+                            GlStateManager.rotate(50.0F, 1.0F, 0.0F, 0.0F);
+                            break;
+                        }
 
                         case "Remix": {
                             this.transformFirstPersonItem(f, f2 / 40.0f);
@@ -400,10 +418,8 @@ public class ItemRenderer
                     }
                 }
                 else {
-                    this.transformFirstPersonItem(f, f2);
+                    this.transformFirstPersonItem(f, 0);
                     this.func_178103_d();
-                    GlStateManager.translate(0.0f, 0.0f, 0.0f);
-                    GlStateManager.rotate(5.0f, 50.0f, 100.0f, 50.0f);
                 }
             }
             else if (abstractclientplayer.getItemInUseCount() > 0) {

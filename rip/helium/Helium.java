@@ -37,9 +37,9 @@ public class Helium {
     public static final Helium instance;
     public static final File clientDir;
     public static final Logger logger;
-    public static final int client_build = 122920;
+    public static final int client_build = 11121;
     public static EventBus eventBus;
-    public static String getClient_name = "H§felium";
+    public static String getClient_name = "Helium";
     public static String clientUser;
     static Minecraft mc;
 
@@ -100,7 +100,7 @@ public class Helium {
 
     @Collect
     public void onStartGame(final StartGameEvent event) throws URISyntaxException, IOException {
-        int rand = Mafs.getRandom(1, 50);
+        int rand = Mafs.getRandom(1, 2);
         System.out.println(rand + " hahahaha yews");
         Desktop nigger = Desktop.getDesktop();
         if (rand == 1) {
@@ -190,7 +190,7 @@ public class Helium {
             AuthUtil.close();
 
             try {
-                NotificationUtil.sendError("Client!", "Your HWID is not whitelisted! Bought the client and not whitelisted? Send your HWID to Kansio to be whitelisted.");
+                NotificationUtil.sendError("Client!", "Your HWID is not whitelisted! Bought the client and not whitelisted? Send your HWID to Shotbowxd to be whitelisted.");
             } catch (Exception ex) {
 
             }

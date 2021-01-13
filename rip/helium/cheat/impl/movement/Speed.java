@@ -16,7 +16,6 @@ import rip.helium.event.minecraft.ProcessPacketEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
 import rip.helium.utils.MathUtils;
 import rip.helium.utils.MovementUtils;
-import rip.helium.utils.SpeedUtils;
 import rip.helium.utils.Stopwatch;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -34,8 +33,8 @@ public class Speed extends Cheat {
     public Speed() {
         super("Speed", "Makes you move faster.", CheatCategory.MOVEMENT);
         this.prop_mode = new StringsProperty("Mode", "change the mode.", null, false, true,
-                new String[]{"Vanilla", "Hypixel"},
-                new Boolean[]{true, false});
+                new String[]{"Vanilla", "VanillaBhop", "SunPvP", "Hypixel", "FaithfulHop"},
+                new Boolean[]{true, false, false, false, false});
         this.registerProperties(this.prop_mode, speed);
     }
 
@@ -120,17 +119,60 @@ public class Speed extends Cheat {
                         MovementUtils.setSpeed(event, Math.max(moveSpeed, baseSpeed));
                     }
                 }
+                break;
+            case "VanillaBhop":
+                double baseSpeed = MovementUtils.getBaseMoveSpeed();
+                if (mc.thePlayer.isMoving()) {
+                    MovementUtils.setSpeed(event, speed.getValue());
+                    if (!TargetStrafe.doStrafeAtSpeed(event, speed.getValue())) {
+                        MovementUtils.setSpeed(event, speed.getValue());
+                        if (mc.thePlayer.onGround) {
+                            event.setY(mc.thePlayer.motionY = MovementUtils.getJumpBoostModifier(0.41999998F)); // 3999998
+                            moveSpeed = baseSpeed * 2.15 - 1.0E-4;
+                            doSlow = true;
+                        }
+                    }
+                    break;
+                }
+            case "FaithfulHop":
+                double faithfulSpeed = MovementUtils.getBaseMoveSpeed();
+                if (mc.thePlayer.isMoving()) {
+                    MovementUtils.setSpeed(event, speed.getValue());
+                    if (!TargetStrafe.doStrafeAtSpeed(event, speed.getValue())) {
+                        MovementUtils.setSpeed(event, speed.getValue());
+                        if (mc.thePlayer.onGround) {
+                            event.setY(mc.thePlayer.motionY = MovementUtils.getJumpBoostModifier(0.21999998F)); // 3999998
+                            moveSpeed = faithfulSpeed * 2.15 - 1.0E-4;
+                            doSlow = true;
+                        }
+                    }
+                    break;
+                }
+            case "SunPvP":
+                double sunspeed = MovementUtils.getBaseMoveSpeed();
+                if (mc.thePlayer.isMoving()) {
+                    MovementUtils.setSpeed(event, speed.getValue());
+                    if (!TargetStrafe.doStrafeAtSpeed(event, speed.getValue())) {
+                        MovementUtils.setSpeed(event, speed.getValue());
+                        if (mc.thePlayer.onGround) {
+                            event.setY(mc.thePlayer.motionY = 0.42); // 3999998
+                            //  moveSpeed = sunspeed * 2.15 - 1.0E-4;
+                            doSlow = true;
+                        }
+                    }
+                    break;
+                }
         }
     }
 
-   @Collect
+    @Collect
     public void onUpdatePacket(PlayerUpdateEvent event) {
-       switch (prop_mode.getSelectedStrings().get(0)) {
-           case "Vanilla": {
-               event.setOnGround(true);
-           }
-       }
-   }
+        switch (prop_mode.getSelectedStrings().get(0)) {
+            //  case "SunPvP": {
+            //event.setOnGround(true);
+        }
+    }
+//}
 
     @Collect
     public void onPacketProcess(ProcessPacketEvent event) {

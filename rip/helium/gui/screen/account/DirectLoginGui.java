@@ -188,7 +188,7 @@ public class DirectLoginGui extends GuiScreen {
       //  Gui.drawRect(0, 0, width, height, new Color(0, 0, 0).getRGB());
         drawGradientRect(0, 0, width, height, new Color(0, 0, 0, 0).getRGB(), new Color(0, 0, 0).getRGB());
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        Draw.drawImg(new ResourceLocation("client/Background1.jpg"), 0.0, 0.0, width, height);
+        Draw.drawImg(new ResourceLocation("client/Background.jpg"), 0.0, 0.0, width, height);
         this.usernameField.drawTextField();
         this.passwordField.drawTextField();
         this.tokenField.drawTextField();

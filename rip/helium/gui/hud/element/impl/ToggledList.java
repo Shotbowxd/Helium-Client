@@ -216,6 +216,15 @@ public class ToggledList extends Element {
                         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
                         Draw.drawImg(new ResourceLocation("client/watermark2.png"), 2.0, 2.0, 150, 250);
                         GL11.glPopMatrix();
+                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                        double length = mc.fontRendererObj.getStringWidth(name);
+                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
+                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
+                        //GL11.glPushMatrix();
+                        //GL11.glScaled(1.1, 1.1, 1.1);
+                        //GL11.glPopMatrix();
+                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
                         break;
                     }
                     case "Exhi": {
@@ -232,16 +241,14 @@ public class ToggledList extends Element {
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 1;
                         break;
                     }
-                    case "Memeware": {
+                    case "Memestick": {
                         double length = mc.fontRendererObj.getStringWidth(name);
+
                         if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - positionX - 4 - length - 2 + 1), y, (int) (ScaledResolution.getScaledWidth() - positionX + 3), y + 9 + 2, new Color(0, 0, 0, 180).getRGB());
-                        Gui.drawRect(ScaledResolution.getScaledWidth() - this.positionX - 5 - length + m.getAnimation(), y, ScaledResolution.getScaledWidth() - this.positionX - mc.fontRendererObj.getStringWidth(name) - 3.5, (y + 11), color);
-
-                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), color);
-                        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(Helium.getClient_name + " v69", 5, 5, Color.YELLOW.getRGB());
-
-
+                        Draw.drawBorderedRectangle((int) (sr.getScaledWidth() - this.positionX - 3.0D - length + m.getAnimation()), y, (int) (sr.getScaledWidth() - this.positionX + 3.0D), (y + 12), 1.0D, (new Color(30, 30, 30)).getRGB(), color, true);
+                        Gui.drawRect((int) (sr.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation()), y, (int) (sr.getScaledWidth() - this.positionX + 3.0D), y + 9, (new Color(30, 30, 30)).getRGB());
+                        mc.fontRendererObj.drawStringWithShadow(name, (float) (sr.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), color);
+                        mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name, 5, 5, new Color(255, 0, 0, 255).getRGB());
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
                         break;
                     }
@@ -250,6 +257,19 @@ public class ToggledList extends Element {
                         double length = mc.fontRendererObj.getStringWidth(name);
                         if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
                         mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), m.getColor());
+                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
+                        break;
+                    }
+                    case "Memeware": {
+                        double length = mc.fontRendererObj.getStringWidth(name);
+                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                        Gui.drawRect((int) (sr.getScaledWidth() - positionX - 4 - length - 2 + 1), y, (int) (sr.getScaledWidth() - positionX + 3), y + 9 + 2, new Color(0, 0, 0, 180).getRGB());
+                        Gui.drawRect(sr.getScaledWidth() - this.positionX - 5 - length + m.getAnimation(), y, sr.getScaledWidth() - this.positionX - mc.fontRendererObj.getStringWidth(name) - 3.5, (y + 11), color);
+
+                        mc.fontRendererObj.drawStringWithShadow(name, (float) (sr.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), color);
+                        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow( Helium.getClient_name + " v69", 5, 5, Color.YELLOW.getRGB());
+
+
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;
                         break;
                     }

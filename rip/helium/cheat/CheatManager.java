@@ -90,6 +90,7 @@ public class CheatManager {
         registerCheat(new TabGui());
         registerCheat(new Freecam());
         registerCheat(new Teleport());
+        registerCheat(new MemeESP());
 
     }
 

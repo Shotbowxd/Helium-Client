@@ -191,7 +191,7 @@ public class GuiScreenBook extends GuiScreen
                 }
                 this.bookObj.setItem(Items.written_book);
             }
-            this.bookObj.setStackDisplayName("§4§k§lasdfsadfasdf §4§lNIGGER KILLER v6969");
+            this.bookObj.setStackDisplayName("§5§lAstolfo.lgbt §dbest client go buy if you dont ur gay and u are haram");
             Enchantment[] enchantmentsList;
             int value = BookExploit.level.getValue().intValue();
             this.bookObj.setRepairCost(0);

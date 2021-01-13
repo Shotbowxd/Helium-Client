@@ -13,6 +13,7 @@ import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.Timer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import rip.helium.ChatUtil;
@@ -29,12 +30,12 @@ public class Teleport extends Command {
     Credit to oHare for making this.
      */
 
-    private final Minecraft mc = Minecraft.getMinecraft();
     private int x, y, z;
     private boolean gotonigga, niggay;
+    private final Minecraft mc = Minecraft.getMinecraft();
     private boolean packet = true;
     private int moveUnder;
-    private final Stopwatch timerUtility = new Stopwatch();
+    private Stopwatch timerUtility = new Stopwatch();
 
 
     public Teleport() {
@@ -155,7 +156,7 @@ public class Teleport extends Command {
                         packet.setX(x);
                         packet.setZ(z);
                         mc.thePlayer.sendQueue.getNetworkManager().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(x, y, z, true));
-                        mc.thePlayer.setPosition(x, y, z);
+                        mc.thePlayer.setPosition(x,y,z);
                         niggay = true;
                         moveUnder = 2;
                     }
