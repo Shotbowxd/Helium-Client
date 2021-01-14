@@ -15,28 +15,19 @@ public class Sneak extends Cheat {
 
     @Collect
     public void motionEvent(PlayerUpdateEvent e) {
-        final boolean sneaking = mc.thePlayer.isSneaking();
-        boolean moving = MovementInput.moveForward != 0.0f;
-        final boolean strafing = MovementInput.moveStrafe != 0.0f;
-        moving = (moving || strafing);
-        if (!moving || sneaking) {
-            if (e.isPre()) {
-                sneaker();
-            }
+        if (mc.thePlayer.isSneaking) {
+            unsneak();
         } else {
-            this.sneaker();
-            if (e.isPre()) {
-                this.unsneaker();
-            }
+            sneak();
         }
     }
 
 
-    public void sneaker() {
+    public void sneak() {
         mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
     }
 
-    public void unsneaker() {
+    public void unsneak() {
         mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C0BPacketEntityAction(mc.thePlayer, C0BPacketEntityAction.Action.STOP_SNEAKING));
     }
 

@@ -1,12 +1,14 @@
 package rip.helium.cheat.impl.movement;
 
 import me.hippo.systems.lwjeb.annotation.Collect;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Timer;
+import rip.helium.ChatUtil;
 import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
@@ -19,6 +21,8 @@ import rip.helium.utils.Vec3d;
 import rip.helium.utils.property.impl.BooleanProperty;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
+
+import java.util.ArrayList;
 
 public class Flight extends Cheat {
     public static long disabled;
@@ -42,6 +46,8 @@ public class Flight extends Cheat {
     private final BooleanProperty prop_bobbing;
     private final BooleanProperty prop_memebobbing;
     private final Stopwatch timer = new Stopwatch();
+
+    ArrayList<Packet> blinkNigger = new ArrayList<>();
 
 
     public Flight() {
@@ -94,6 +100,11 @@ public class Flight extends Cheat {
         mineplexSpeed = 0;
         back = false;
         down = false;
+        if (prop_mode.getValue().get("Watchdog")) {
+            for (Packet georgefloyd : blinkNigger) {
+                mc.getNetHandler().addToSendQueueNoEvent(georgefloyd);
+            }
+        }
     }
 
     @Collect
@@ -138,6 +149,17 @@ public class Flight extends Cheat {
                 }
                 break;
             }
+            case "Watchdog": {
+                if (mc.thePlayer.onGround) {
+                    if (mc.thePlayer.isMoving()) {
+                        SpeedUtils.setPlayerSpeed(1.5);
+                        mc.thePlayer.motionY = 0;
+                    }
+                } else {
+                    ChatUtil.chat("bro it void fly jump in void idiot");
+                }
+                break;
+            }
         }
     }
 
@@ -171,6 +193,11 @@ public class Flight extends Cheat {
                     i++;
                     break;
                 }
+            }
+            case "Watchdog": {
+                event.setCancelled(true);
+                blinkNigger.add(event.getPacket());
+                break;
             }
         }
     }
