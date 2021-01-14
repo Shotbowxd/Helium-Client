@@ -456,6 +456,9 @@ public class Aura extends Cheat {
         if (abmode.getValue().get("Real")) {
             mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
         }
+        if (abmode.getValue().get("Ghostly")) {
+            mc.gameSettings.keyBindUseItem.pressed = true;
+        }
         apsStopwatch.reset();
     }
 

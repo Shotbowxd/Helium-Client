@@ -1,5 +1,6 @@
 package rip.helium.ui.main.components.tab.cheat;
 
+import rip.helium.cheat.impl.visual.Hud;
 import rip.helium.ui.main.Interface;
 import rip.helium.utils.Draw;
 import rip.helium.utils.font.Fonts;
@@ -51,7 +52,7 @@ public class PropertyComboBox extends PropertyComponent {
                 double optionHeight = 10;
 
                 if (stringsProperty.isSelected(option))
-                    Draw.drawRectangle(optionPosX, optionPosY, optionPosX + optionWidth, optionPosY + optionHeight, new Color(147, 2, 0, 175).getRGB());
+                    Draw.drawRectangle(optionPosX, optionPosY, optionPosX + optionWidth, optionPosY + optionHeight, Hud.prop_color.getValue().getRGB());
 
                 Fonts.f12.drawCenteredString(option, optionPosX + optionWidth / 2, optionPosY + optionHeight / 2 - 1, new Color(230, 230, 230, 230).getRGB());
             }

@@ -1,5 +1,6 @@
 package rip.helium.ui.main.components.tab.cheat;
 
+import rip.helium.cheat.impl.visual.Hud;
 import rip.helium.ui.main.Interface;
 import rip.helium.utils.Draw;
 import rip.helium.utils.Mafs;
@@ -38,9 +39,9 @@ public class PropertySlider extends PropertyComponent {
         Fonts.f14.drawString(this.getProperty().getId(), x + 6.0, y + this.maxHeight / 2.0 - 5.5, this.theInterface.getColor(255, 255, 255));
         Draw.drawRectangle(x + 80.0, y + this.maxHeight / 2.0 - 6.0, x + this.maxWidth - 10.0, y + this.maxHeight / 2.0 - 4.0, new Color(54, 56, 56).getRGB());
         Draw.drawRectangle(x + 80.0, y + this.maxHeight / 2.0 - 4.5, x + 80.0 + this.currentPosition + 1.5, y + this.maxHeight / 2.0 - 4.5,
-                new Color(147, 2, 0).getRGB());
+                Hud.prop_color.getValue().getRGB());
         Draw.drawRectangle(x + 80.0, y + this.maxHeight / 2.0 - 6.0, x + 80.0 + this.currentPosition, y + this.maxHeight / 2.0 - 4.0,
-                new Color(147, 2, 0).getRGB());
+                Hud.prop_color.getValue().getRGB());
         if (this.typing) {
             Fonts.f12.drawCenteredString(this.typedChars + "_" + this.property.getNumType(), (float) (x + 80.0 + this.widthOfSlider / 2.0), (float) (y + this.maxHeight / 2.0 - 2.0), this.typing ? this.theInterface.getColor(255, 255, 255) : this.theInterface.getColor(255, 255, 255));
         } else {

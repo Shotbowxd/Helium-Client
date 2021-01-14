@@ -3,6 +3,7 @@ package rip.helium.cheat.impl.movement;
 import me.hippo.systems.lwjeb.annotation.Collect;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
 import rip.helium.event.minecraft.PlayerUpdateEvent;
@@ -49,9 +50,11 @@ public class NoFall extends Cheat {
             }
         }
 
-        if (fastfall.getValue() && isBlockUnder()) {
-            if (mc.thePlayer.fallDistance >= 2.75) {
-                mc.thePlayer.motionY -= 0.5;
+        if (!Helium.instance.cheatManager.isCheatEnabled("Flight")) {
+            if (fastfall.getValue() && isBlockUnder()) {
+                if (mc.thePlayer.fallDistance >= 2.75) {
+                    mc.thePlayer.motionY -= 0.5;
+                }
             }
         }
     }

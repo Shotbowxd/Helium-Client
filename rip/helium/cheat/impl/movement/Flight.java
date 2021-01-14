@@ -151,7 +151,7 @@ public class Flight extends Cheat {
                 break;
             }
             case "Watchdog": {
-                if (mc.thePlayer.onGround) {
+                if (!mc.thePlayer.onGround) {
                     if (mc.thePlayer.isMoving()) {
                         SpeedUtils.setPlayerSpeed(1.5);
                     }
