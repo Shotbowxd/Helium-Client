@@ -140,7 +140,12 @@ public class ToggledList extends Element {
         for (Cheat m : getToggledModulesSortedLTS()) {
             CheatCategory mCat = m.getCategory();
             int catColor = mCat.equals(CheatCategory.COMBAT) ? new Color(140, 78, 83).getRGB() : mCat.equals(CheatCategory.MOVEMENT) ? new Color(103, 144, 177).getRGB() : mCat.equals(CheatCategory.VISUAL) ? new Color(176, 149, 147).getRGB() : mCat.equals(CheatCategory.MISC) ? new Color(193, 207, 226).getRGB() : mCat.equals(CheatCategory.PLAYER) ? new Color(140, 78, 83).getRGB() : 0xFFFFFF;
-            String name = m.getId() + (m.getMode() != null ? " " + EnumChatFormatting.GRAY + m.getMode() : "");
+            String name;
+            if (Hud.lowercase.value) {
+                name = (m.getId() + (m.getMode() != null ? " " + EnumChatFormatting.GRAY + m.getMode() : "")).toLowerCase();
+            } else {
+                name = m.getId() + (m.getMode() != null ? " " + EnumChatFormatting.GRAY + m.getMode() : "");
+            }
 
             switch (Hud.prop_colormode.getSelectedStrings().get(0)) {
                 case "Rainbow": {
