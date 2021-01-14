@@ -50,6 +50,8 @@ public class Helium {
         logger = LogManager.getLogger();
     }
 
+    public boolean is18Mode = false;
+
     public boolean developement = false;
     public CommandManager cmds;
     public CheatManager cheatManager;
@@ -126,6 +128,15 @@ public class Helium {
             readName();
         } catch (Exception e) {
 
+        }
+
+        int dialogButton = JOptionPane.YES_NO_OPTION;
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Do you want to see 18+ modules?",null, dialogButton);
+
+        if(dialogResult == JOptionPane.YES_OPTION){
+            is18Mode = true;
+        } else {
+            is18Mode = false;
         }
         //readName();
 

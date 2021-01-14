@@ -90,7 +90,7 @@ public class CheatManager {
         registerCheat(new TabGui());
         registerCheat(new Freecam());
         registerCheat(new Teleport());
-        registerCheat(new MemeESP());
+        if (Helium.instance.is18Mode) registerCheat(new MemeESP());
 
     }
 

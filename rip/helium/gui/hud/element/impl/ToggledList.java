@@ -201,35 +201,39 @@ public class ToggledList extends Element {
                         break;
                     }
                     case "NSFWImage": {
-                        GL11.glPushMatrix();
-                        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                        Draw.drawImg(new ResourceLocation("client/watermark.jpg"), 2.0, 2.0, 150, 250);
-                        GL11.glPopMatrix();
-                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        double length = mc.fontRendererObj.getStringWidth(name);
-                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
-                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
-                        //GL11.glPushMatrix();
-                        //GL11.glScaled(1.1, 1.1, 1.1);
-                        //GL11.glPopMatrix();
-                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
+                        if (Helium.instance.is18Mode) {
+                            GL11.glPushMatrix();
+                            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                            Draw.drawImg(new ResourceLocation("client/watermark.jpg"), 2.0, 2.0, 150, 250);
+                            GL11.glPopMatrix();
+                            if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                            double length = mc.fontRendererObj.getStringWidth(name);
+                            if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                            Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
+                            mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
+                            //GL11.glPushMatrix();
+                            //GL11.glScaled(1.1, 1.1, 1.1);
+                            //GL11.glPopMatrix();
+                            y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
+                        }
                         break;
                     }
                     case "NSFWImage2": {
-                        GL11.glPushMatrix();
-                        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                        Draw.drawImg(new ResourceLocation("client/watermark2.png"), 2.0, 2.0, 150, 250);
-                        GL11.glPopMatrix();
-                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        double length = mc.fontRendererObj.getStringWidth(name);
-                        if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
-                        Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
-                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
-                        //GL11.glPushMatrix();
-                        //GL11.glScaled(1.1, 1.1, 1.1);
-                        //GL11.glPopMatrix();
-                        y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
+                        if (Helium.instance.is18Mode) {
+                            GL11.glPushMatrix();
+                            GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                            Draw.drawImg(new ResourceLocation("client/watermark2.png"), 2.0, 2.0, 150, 250);
+                            GL11.glPopMatrix();
+                            if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                            double length = mc.fontRendererObj.getStringWidth(name);
+                            if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
+                            Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
+                            mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
+                            //GL11.glPushMatrix();
+                            //GL11.glScaled(1.1, 1.1, 1.1);
+                            //GL11.glPopMatrix();
+                            y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
+                        }
                         break;
                     }
                     case "Exhi": {
