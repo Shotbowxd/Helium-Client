@@ -76,6 +76,12 @@ public class Flight extends Cheat {
         getPlayer().stepHeight = 0.6f;
         getPlayer().setSpeed(0.0);
         Flight.disabled = System.currentTimeMillis();
+        if (prop_mode.getValue().get("Watchdog")) {
+            for (Packet georgefloyd : blinkNigger) {
+                mc.getNetHandler().addToSendQueueNoEvent(georgefloyd);
+            }
+            ChatUtil.chat("just hacked watchdog gg");
+        }
     }
 
     @Override
@@ -100,11 +106,6 @@ public class Flight extends Cheat {
         mineplexSpeed = 0;
         back = false;
         down = false;
-        if (prop_mode.getValue().get("Watchdog")) {
-            for (Packet georgefloyd : blinkNigger) {
-                mc.getNetHandler().addToSendQueueNoEvent(georgefloyd);
-            }
-        }
     }
 
     @Collect
@@ -153,8 +154,8 @@ public class Flight extends Cheat {
                 if (mc.thePlayer.onGround) {
                     if (mc.thePlayer.isMoving()) {
                         SpeedUtils.setPlayerSpeed(1.5);
-                        mc.thePlayer.motionY = 0;
                     }
+                    mc.thePlayer.motionY = 0;
                 } else {
                     ChatUtil.chat("bro it void fly jump in void idiot");
                 }

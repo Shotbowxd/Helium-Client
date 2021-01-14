@@ -15,7 +15,7 @@ public class Sneak extends Cheat {
 
     @Collect
     public void motionEvent(PlayerUpdateEvent e) {
-        if (mc.thePlayer.isSneaking) {
+        if (mc.thePlayer.isSneaking()) {
             unsneak();
         } else {
             sneak();
