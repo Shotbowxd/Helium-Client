@@ -105,6 +105,8 @@ public class Helium {
         Desktop nigger = Desktop.getDesktop();
         if (rand == 1) {
             nigger.browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
+        } else {
+            nigger.browse(new URI("https://www.youtube.com/watch?v=Jqt9n9DwpgE&t=1s"));
         }
         File name = new File(Minecraft.getMinecraft().mcDataDir + System.getProperty("file.separator") + "Helium" + System.getProperty("file.separator") + "helium.user");
         if (!name.exists()) {
