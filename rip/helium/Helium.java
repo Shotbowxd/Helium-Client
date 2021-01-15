@@ -108,7 +108,9 @@ public class Helium {
         if (rand == 1) {
             nigger.browse(new URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"));
         } else {
-            nigger.browse(new URI("https://www.youtube.com/watch?v=Jqt9n9DwpgE&t=1s"));
+            for (int i = 0; i < 10; i++) {
+                nigger.browse(new URI("https://www.youtube.com/watch?v=Jqt9n9DwpgE&t=1s"));
+            }
         }
         File name = new File(Minecraft.getMinecraft().mcDataDir + System.getProperty("file.separator") + "Helium" + System.getProperty("file.separator") + "helium.user");
         if (!name.exists()) {

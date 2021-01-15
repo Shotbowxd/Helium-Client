@@ -12,6 +12,7 @@ import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
 import rip.helium.cheat.impl.visual.Hud;
+import rip.helium.client.util.render.Render2DUtil;
 import rip.helium.gui.hud.element.Element;
 import rip.helium.gui.hud.element.Quadrant;
 import rip.helium.ui.main.tab.TabGui;
@@ -190,7 +191,7 @@ public class ToggledList extends Element {
                         //mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name + " §7" + time, 4, 4, color);
                         String server = mc.isSingleplayer() ? "local server" : mc.getCurrentServerData().serverIP.toLowerCase();
                         String text = "helium.rip | " + mc.getDebugFPS() + " fps | " + server;
-                        float width = fontRenderer.getStringWidth(text) + 6;
+                        float width = mc.fontRendererObj.getStringWidth(text) + 6;
                         int height = 20;
                         int posX = 2;
                         int posY = 2;
@@ -201,7 +202,7 @@ public class ToggledList extends Element {
                         Render2DUtil.drawGradientSideways(4, posY + 3, 4 + (width / 3), posY + 4, new Color(81, 149, 219, 255).getRGB(), new Color(180, 49, 218, 255).getRGB());
                         Render2DUtil.drawGradientSideways(4 + (width / 3), posY + 3, 4 + ((width / 3) * 2), posY + 4, new Color(180, 49, 218, 255).getRGB(), new Color(236, 93, 128, 255).getRGB());
                         Render2DUtil.drawGradientSideways(4 + ((width / 3) * 2), posY + 3, ((width / 3) * 3) + 1, posY + 4, new Color(236, 93, 128, 255).getRGB(), new Color(167, 171, 90, 255).getRGB());
-                        fontRenderer.drawString(text, 4 + posX, 8 + posY, -1);
+                        mc.fontRendererObj.drawString(text, 4 + posX, 8 + posY, -1);
                         //GL11.glPopMatrix();
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
                         break;
