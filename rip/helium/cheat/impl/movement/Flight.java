@@ -12,6 +12,7 @@ import rip.helium.ChatUtil;
 import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
+import rip.helium.event.minecraft.BoundingBoxEvent;
 import rip.helium.event.minecraft.PlayerMoveEvent;
 import rip.helium.event.minecraft.PlayerUpdateEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
@@ -31,17 +32,9 @@ public class Flight extends Cheat {
     public double movementSpeed;
     int stage;
     double speed;
-    double mot;
     boolean allowmcc;
     DoubleProperty sped = new DoubleProperty("Speed", "epic", null, 1.1, 0.1, 10.0, 0.1, null);
     int i = 0;
-    private boolean back;
-    private int counter;
-    private double moveSpeed, lastDist;
-    private int ticks;
-    private double yNigga;
-    private boolean down;
-    private double mineplexSpeed;
     private final BooleanProperty antikick;
     private final BooleanProperty prop_bobbing;
     private final BooleanProperty prop_memebobbing;
@@ -52,9 +45,9 @@ public class Flight extends Cheat {
 
     public Flight() {
         super("Flight", "Fuck that little faggot!", CheatCategory.MOVEMENT);
-        this.prop_mode = new StringsProperty("Flight", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "LongjumpFly", "Watchdog"}, new Boolean[]{true, false, false});
+        this.prop_mode = new StringsProperty("Flight", "How this cheat will function.", null, false, false, new String[]{"Vanilla", "LongjumpFly", "Watchdog", "Collide"}, new Boolean[]{true, false, false, false});
         this.prop_bobbing = new BooleanProperty("View Bobbing", "bippity boppity", null, false);
-        this.prop_memebobbing = new BooleanProperty("MEME BOBBING", "FUCKING BOBBING XDDDDD", null, false);
+        this.prop_memebobbing = new BooleanProperty("Meme Bobbing", "FUCKING BOBBING XDDDDD", null, false);
         this.antikick = new BooleanProperty("AntiKick", "no vanilla kicke", null, true);
         this.registerProperties(this.prop_mode, this.prop_bobbing, this.prop_memebobbing, antikick, sped);
     }
@@ -93,19 +86,9 @@ public class Flight extends Cheat {
         if (this.prop_memebobbing.getValue()) {
             mc.thePlayer.cameraYaw = 0.41f;
         }
-        mineplexSpeed = 0;
         speed = 0;
         timer.reset();
-        this.yNigga = 0.0D;
-        ticks = 0;
-        back = false;
-        down = false;
-        counter = 0;
         stage = 0;
-        this.mineplexSpeed = SpeedUtils.getBaseMoveSpeed() + 0.115D;
-        mineplexSpeed = 0;
-        back = false;
-        down = false;
     }
 
     @Collect
@@ -200,6 +183,13 @@ public class Flight extends Cheat {
                 blinkNigger.add(event.getPacket());
                 break;
             }
+        }
+    }
+
+    @Collect
+    public void onCollide(BoundingBoxEvent event) {
+        if (prop_mode.getValue().get("Collide")) {
+            event.setBoundingBox(new AxisAlignedBB(-2, -1, -2, 2, 1, 2).offset(event.getBlockPos().getX(), event.getBlockPos().getY(), event.getBlockPos().getZ()));
         }
     }
 

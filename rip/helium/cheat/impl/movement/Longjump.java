@@ -98,7 +98,7 @@ public class Longjump extends Cheat {
                 if (mc.thePlayer.onGround) {
                     event.setY(mc.thePlayer.motionY = 0.4);
                 }
-                SpeedUtils.setPlayerSpeed(event, 1.2);
+                SpeedUtils.setPlayerSpeed(event, 9.2);
                 break;
             }
             case "Fierce": {

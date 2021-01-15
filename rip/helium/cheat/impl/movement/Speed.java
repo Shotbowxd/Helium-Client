@@ -16,6 +16,7 @@ import rip.helium.event.minecraft.ProcessPacketEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
 import rip.helium.utils.MathUtils;
 import rip.helium.utils.MovementUtils;
+import rip.helium.utils.SpeedUtils;
 import rip.helium.utils.Stopwatch;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -33,8 +34,8 @@ public class Speed extends Cheat {
     public Speed() {
         super("Speed", "Makes you move faster.", CheatCategory.MOVEMENT);
         this.prop_mode = new StringsProperty("Mode", "change the mode.", null, false, true,
-                new String[]{"Vanilla", "VanillaBhop", "SunPvP", "Hypixel", "FaithfulHop"},
-                new Boolean[]{true, false, false, false, false});
+                new String[]{"Vanilla", "VanillaBhop", "SunPvP", "Hypixel", "FaithfulHop", "YPort"},
+                new Boolean[]{true, false, false, false, false, false});
         this.registerProperties(this.prop_mode, speed);
     }
 
@@ -170,6 +171,20 @@ public class Speed extends Cheat {
         switch (prop_mode.getSelectedStrings().get(0)) {
             //  case "SunPvP": {
             //event.setOnGround(true);
+            case "YPort": {
+                if (mc.thePlayer.isMoving()) {
+                    if (mc.thePlayer.fallDistance < 0.2) {
+                        mc.thePlayer.motionY = -5f;
+                    }
+                    if (mc.thePlayer.onGround) {
+                        mc.thePlayer.jump();
+                    }
+                    if (!TargetStrafe.doStrafeAtUpdate(event, speed.getValue())) {
+                        SpeedUtils.setPlayerSpeed(speed.getValue());
+                    }
+                }
+                break;
+            }
         }
     }
 //}

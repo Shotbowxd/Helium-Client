@@ -66,7 +66,7 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 
 public class Aura extends Cheat {
 
-    private StringsProperty abmode = new StringsProperty("Autoblock Mode", "Changes the AB mode", null, false, true, new String[]{"Hypixel", "Real", "Fake"}, new Boolean[]{true, false, false});
+    private StringsProperty abmode = new StringsProperty("Autoblock Mode", "Changes the AB mode", null, false, true, new String[]{"Hypixel", "Real", "Fake", "Ghostly"}, new Boolean[]{true, false, false, false});
     private static StringsProperty mode = new StringsProperty("Mode", "Changes the mode", null, false, true, new String[]{"Priority", "Multi"}, new Boolean[]{true, false});
     private StringsProperty targetPriority = new StringsProperty("Priority", "How the priority target will be selected.", null, false, true, new String[]{"Lowest Health", "Least Armor", "Closest"}, new Boolean[]{true, false, false});
     private StringsProperty targetEntities = new StringsProperty("Targets", "The entites that will be targetted.", null, true, false, new String[]{"Players", "Monsters", "Animals", "Villagers", "Golems"}, new Boolean[]{true, true, false, false, false});
@@ -225,6 +225,12 @@ public class Aura extends Cheat {
     @Collect
     public void onPlayerUpdate(PlayerUpdateEvent event) {
         this.setMode(this.mode.getSelectedStrings().get(0));
+
+        if (getCurrentTarget() != null) {
+            if (abmode.getValue().get("Ghostly")) {
+                mc.gameSettings.keyBindUseItem.pressed = false;
+            }
+        }
 
         if (mode.getValue().get("Priority")) {
             if (mc.currentScreen != null)
@@ -452,12 +458,13 @@ public class Aura extends Cheat {
         if (targetIndex > targetList.size() - 1)
             return;
 
+        if (abmode.getValue().get("Ghostly")) {
+            mc.gameSettings.keyBindUseItem.pressed = true;
+        }
+
         attack(event);
         if (abmode.getValue().get("Real")) {
             mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
-        }
-        if (abmode.getValue().get("Ghostly")) {
-            mc.gameSettings.keyBindUseItem.pressed = true;
         }
         apsStopwatch.reset();
     }
@@ -480,16 +487,6 @@ public class Aura extends Cheat {
         }
         return target;
     }
-
-    private void inTab(EntityLivingBase player) {
-        String status = "§cFalse";
-        if (isInTablist(player)) {
-            status = "§aTrue";
-        } else {
-            status = "§cFalse";
-        }
-    }
-
 
     private boolean isInTablist(EntityLivingBase player) {
         if (mc.isSingleplayer()) {
@@ -554,7 +551,7 @@ public class Aura extends Cheat {
         if (getPlayer().getDistanceToEntity(targetList.get(targetIndex)) <= (hvh.getValue() ? 4.5 : prop_maxDistance.getValue())) {
             getPlayer().swingItem();
 
-            rand = Mafs.getRandomInRange(1, 40);
+            rand = Mafs.getRandomInRange(1, 20);
             //ChatUtil.chat(rand + " is random; " + "has to be 1 to miss!");
             if (!miss.getValue()) {
                 //UPlayer.sendPackets(new C02PacketUseEntity(target, C02PacketUseEntity.Action.ATTACK));

@@ -63,7 +63,7 @@ public class AntiKnockback extends Cheat {
                     mc.thePlayer.removePotionEffectClient(Potion.blindness.id);
                     mc.thePlayer.removePotionEffect(Potion.moveSlowdown.id);
                     mc.thePlayer.removePotionEffect(Potion.blindness.id);
-                    mc.thePlayer.addChatComponentMessage(new ChatComponentText("Bypassing this shit freeze plugin lul - take that L ghostly"));
+                    mc.thePlayer.addChatComponentMessage(new ChatComponentText("§c§lRemoved shitty effects :)."));
 
                 }
             }

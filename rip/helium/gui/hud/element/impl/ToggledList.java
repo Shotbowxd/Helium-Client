@@ -187,7 +187,21 @@ public class ToggledList extends Element {
                         mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
                         //GL11.glPushMatrix();
                         //GL11.glScaled(1.1, 1.1, 1.1);
-                        mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name + " §7" + time, 4, 4, color);
+                        //mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name + " §7" + time, 4, 4, color);
+                        String server = mc.isSingleplayer() ? "local server" : mc.getCurrentServerData().serverIP.toLowerCase();
+                        String text = "helium.rip | " + mc.getDebugFPS() + " fps | " + server;
+                        float width = fontRenderer.getStringWidth(text) + 6;
+                        int height = 20;
+                        int posX = 2;
+                        int posY = 2;
+                        Render2DUtil.drawRect(posX, posY, posX + width + 2, posY + height, new Color(5, 5, 5, 255).getRGB());
+                        Render2DUtil.drawBorderedRect(posX + .5, posY + .5, posX + width + 1.5, posY + height - .5, 0.5, new Color(40, 40, 40, 255).getRGB(), new Color(60, 60, 60, 255).getRGB(), true);
+                        Render2DUtil.drawBorderedRect(posX + 2, posY + 2, posX + width, posY + height - 2, 0.5, new Color(22, 22, 22, 255).getRGB(), new Color(60, 60, 60, 255).getRGB(), true);
+                        Render2DUtil.drawRect(posX + 2.5, posY + 2.5, posX + width - .5, posY + 4.5, new Color(9, 9, 9, 255).getRGB());
+                        Render2DUtil.drawGradientSideways(4, posY + 3, 4 + (width / 3), posY + 4, new Color(81, 149, 219, 255).getRGB(), new Color(180, 49, 218, 255).getRGB());
+                        Render2DUtil.drawGradientSideways(4 + (width / 3), posY + 3, 4 + ((width / 3) * 2), posY + 4, new Color(180, 49, 218, 255).getRGB(), new Color(236, 93, 128, 255).getRGB());
+                        Render2DUtil.drawGradientSideways(4 + ((width / 3) * 2), posY + 3, ((width / 3) * 3) + 1, posY + 4, new Color(236, 93, 128, 255).getRGB(), new Color(167, 171, 90, 255).getRGB());
+                        fontRenderer.drawString(text, 4 + posX, 8 + posY, -1);
                         //GL11.glPopMatrix();
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
                         break;
@@ -276,7 +290,7 @@ public class ToggledList extends Element {
                         Gui.drawRect(sr.getScaledWidth() - this.positionX - 5 - length + m.getAnimation(), y, sr.getScaledWidth() - this.positionX - mc.fontRendererObj.getStringWidth(name) - 3.5, (y + 11), color);
 
                         mc.fontRendererObj.drawStringWithShadow(name, (float) (sr.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 1), color);
-                        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow( Helium.getClient_name + " v69", 5, 5, Color.YELLOW.getRGB());
+                        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow( Helium.getClient_name + " v69", 5, 5, color);
 
 
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 2;

@@ -44,6 +44,9 @@ public class GuiScreenBook extends GuiScreen
     /** Whether the book is signed or can still be edited */
     private final boolean bookIsUnsigned;
 
+    String getExploitBookname = "§a§lBuy Helium Client :)";
+
+
     /**
      * Whether the book's title or contents has been modified since being opened
      */
@@ -181,7 +184,7 @@ public class GuiScreenBook extends GuiScreen
             String var2 = "MC|BEdit";
             if (p_146462_1_) {
                 var2 = "MC|BSign";
-                this.bookObj.setTagInfo("author", new NBTTagString("§4§lhttps://discord.gg/R4ShSTK"));
+                this.bookObj.setTagInfo("author", new NBTTagString("Helium Client"));
                 this.bookObj.setTagInfo("title", new NBTTagString(this.bookTitle.trim()));
                 for (int var4 = 0; var4 < this.bookPages.tagCount(); ++var4) {
                     String var5 = this.bookPages.getStringTagAt(var4);
@@ -191,14 +194,14 @@ public class GuiScreenBook extends GuiScreen
                 }
                 this.bookObj.setItem(Items.written_book);
             }
-            this.bookObj.setStackDisplayName("§5§lAstolfo.lgbt §dbest client go buy if you dont ur gay and u are haram");
+            this.bookObj.setStackDisplayName(getExploitBookname);
             Enchantment[] enchantmentsList;
             int value = BookExploit.level.getValue().intValue();
             this.bookObj.setRepairCost(0);
             this.bookObj.setItemDamage(1337);
             
             if (BookExploit.fire.getValue()) {
-            	ChatUtil.chat("Â§fAdding Fire Aspect, Level:" + value);
+            	ChatUtil.chat("§fAdding Fire Aspect, Level:" + value);
             	this.bookObj.addEnchantment(Enchantment.fireAspect, value);
             }
             if (BookExploit.thorns.getValue()) {

@@ -17,7 +17,7 @@ public class NoFall extends Cheat {
 
     public NoFall() {
         super("NoFall", "Negates fall damage on hypickle.", CheatCategory.MOVEMENT);
-        this.mode = new StringsProperty("Mode", "change the mode.", null, false, true, new String[]{"Spoof", "Hypixel"}, new Boolean[]{true, false});
+        this.mode = new StringsProperty("Mode", "change the mode.", null, false, true, new String[]{"Spoof", "Ghostly"}, new Boolean[]{true, false});
         fastfall = new BooleanProperty("Fast Fall", "Falls faster.", null, false);
         this.registerProperties(mode, fastfall);
     }
@@ -41,7 +41,7 @@ public class NoFall extends Cheat {
             if (mc.thePlayer.fallDistance >= 2.75) {
                 playerUpdateEvent.setOnGround(true);
             }
-        } else if (mode.getValue().get("Hypixel")) {
+        } else if (mode.getValue().get("Ghostly")) {
             if (mc.thePlayer.fallDistance >= 2F && isBlockUnder()) {
                 mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C03PacketPlayer(true));
                 if (!fastfall.getValue()) {
