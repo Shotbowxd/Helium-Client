@@ -5,7 +5,6 @@ import net.minecraft.util.ChatComponentText;
 
 public class ChatUtil {
 
-
     public static void chat(String msg) {
         Minecraft.getMinecraft().thePlayer
                 .addChatMessage(new ChatComponentText("§7> §f" + msg));

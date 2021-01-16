@@ -43,7 +43,7 @@ public class SchoolShooter extends Cheat {
         super("FastBow", "Makes your bow fast (FastBow)", CheatCategory.COMBAT);
         this.range = 50.0;
         this.random = new Random();
-        this.mode = new StringsProperty("Mode", "", null, false, true, new String[]{"Multi", "Viper"}, new Boolean[]{true, false});
+        this.mode = new StringsProperty("Mode", "", null, false, true, new String[]{"Multi", "Viper", "Ghostly"}, new Boolean[]{true, false, false});
         registerProperties(mode);
     }
 
@@ -105,7 +105,7 @@ public class SchoolShooter extends Cheat {
         } else if (mode.getValue().get("Viper")) {
             if (mc.thePlayer.onGround && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBow && mc.gameSettings.keyBindUseItem.pressed) {
                 //mc.timer.timerSpeed = 1.2f;
-                if (timer.hasPassed(180)) {
+                if (timer.hasPassed(195)) {
                     //mc.timer.timerSpeed = 1.5f;
                     mc.playerController.sendUseItem(mc.thePlayer, Minecraft.getMinecraft().theWorld, mc.thePlayer.inventory.getCurrentItem());
                     mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem());
@@ -115,7 +115,7 @@ public class SchoolShooter extends Cheat {
                     //final float[] rotations = RotUtils.getBowAngles(targ);
                     //event.setYaw(rotations[0]);
                     //event.setPitch(rotations[1]);
-                    for (int i = 0; i < 15; i++) {
+                    for (int i = 0; i < 20; i++) {
                         mc.getNetHandler().addToSendQueue(new C03PacketPlayer(false));
                     }
                     Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, new BlockPos(0, 0, 0), EnumFacing.DOWN));
@@ -124,6 +124,21 @@ public class SchoolShooter extends Cheat {
                 }
             } else {
                 Timer.timerSpeed = 1f;
+            }
+        } else if (mode.getValue().get("Ghostly")) {
+            if (mc.thePlayer.onGround && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemBow && mc.gameSettings.keyBindUseItem.pressed) {
+                if (mc.thePlayer.ticksExisted % 4 == 0) {
+                    double d = mc.thePlayer.posX;
+                    double d2 = mc.thePlayer.posY + 1.0E-9;
+                    double d3 = mc.thePlayer.posZ;
+                    mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.inventory.getCurrentItem());
+
+                    for (int i = 0; i < 20; i++) {
+                        mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(d, d2, d3, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                    }
+                    Minecraft.getMinecraft().getNetHandler().addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, new BlockPos(0, 0, 0), EnumFacing.DOWN));
+                    mc.thePlayer.inventory.getCurrentItem().getItem().onPlayerStoppedUsing(mc.thePlayer.inventory.getCurrentItem(), Minecraft.getMinecraft().theWorld, mc.thePlayer, 10);
+                }
             }
         }
     }

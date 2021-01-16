@@ -59,16 +59,12 @@ public class Teleport extends Cheat {
                 if (Mouse.isButtonDown(1) && !mc.thePlayer.isSneaking() && mc.inGameHasFocus) {
                     this.timer.reset();
                     this.target = new Vec3(x, y, z);
-                    killPlayer();
                     this.stage = 1;
                 }
                 break;
             case 1:
                 if (this.timer.hasPassed(6000L)) {
                     mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C0CPacketInput(0.0F, 0.0F, true, true));
-//	          for (Vec3 vec3 : PathfindingUtils.computePath(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ), this.target))
-//	            mc.thePlayer.sendQueue.addToSendQueueNoEvent((Packet)new C03PacketPlayer.C04PacketPlayerPosition(vec3.getX(), vec3.getY(), vec3.getZ(), true)); 
-                    ChatUtil.chat("Teleported");
                     mc.thePlayer.setPosition(this.target.getX(), this.target.getY()
                             , this.target.getZ());
                     this.stage = 0;
@@ -83,17 +79,5 @@ public class Teleport extends Cheat {
     public void onMove(PlayerMoveEvent event) {
         if ((((this.stage == 1) ? 1 : 0) & (!this.timer.hasPassed(6000L) ? 1 : 0)) != 0)
             MovementUtils.setSpeed(event, 0.0D);
-    }
-
-    private void killPlayer() {
-        NetHandlerPlayClient netHandler = mc.getNetHandler();
-        for (int i = 0; i < 20; i++) {
-            double offset = 0.060100000351667404D;
-            for (int j = 0; j < PlayerUtils.getMaxFallDist() / 0.060100000351667404D + 1.0D; j++) {
-                mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 0.060100000351667404D, mc.thePlayer.posZ, false));
-                mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 5.000000237487257E-4D, mc.thePlayer.posZ, false));
-            }
-        }
-        mc.thePlayer.sendQueue.addToSendQueueNoEvent(new C03PacketPlayer(true));
     }
 }

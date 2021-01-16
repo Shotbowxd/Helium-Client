@@ -19,7 +19,7 @@ public class Flag extends Cheat {
         if (e.getPacket() instanceof S08PacketPlayerPosLook) {
             final S08PacketPlayerPosLook packet = (S08PacketPlayerPosLook) e.getPacket();
             if (Helium.instance.cheatManager.isCheatEnabled("Speed") || Helium.instance.cheatManager.isCheatEnabled("Flight")) {
-                NotificationManager.postWarning("Flag Detected!", "Disabled some modules.");
+                NotificationManager.postWarning("Flag Detected!", "Flag/Teleport detected, disabling some mods...");
                 Helium.instance.cheatManager.getCheatRegistry().get("Speed").setState(false, false);
                 Helium.instance.cheatManager.getCheatRegistry().get("Flight").setState(false, false);
             }

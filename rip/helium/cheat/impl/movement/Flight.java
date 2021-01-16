@@ -73,13 +73,6 @@ public class Flight extends Cheat {
     @Override
     public void onDisable() {
         super.onDisable();
-        if (prop_mode.getValue().get("Watchdog") || prop_mode.getValue().get("WatchdogVoid")) {
-            for (Packet georgefloyd : blinkNigger) {
-                mc.getNetHandler().addToSendQueue(georgefloyd);
-                ChatUtil.chat("sent " + georgefloyd.toString());
-            }
-        }
-        blinkNigger.clear();
         mc.gameSettings.keyBindJump.pressed = false;
         Timer.timerSpeed = 1.0f;
         allowmcc = false;
@@ -97,42 +90,7 @@ public class Flight extends Cheat {
         if (this.prop_memebobbing.getValue()) {
             mc.thePlayer.cameraYaw = 0.41f;
         }
-        speed = 0;
         timer.reset();
-        stage = 0;
-        if (prop_mode.getValue().get("Watchdog")) {
-            oldY = getPlayer().posY;
-            canPacketBoost = false;
-            getPlayer().stepHeight = 0;
-            if (mc.thePlayer.fallDistance > 3 || System.currentTimeMillis() - lastboost >= 500 && prop_mode.getValue().get("Watchdog") && getPlayer().onGround && getPlayer().isMoving()) {
-                double fallDistance = 3.0125;
-                while (fallDistance > 0) {
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY +  0.0624986421, mc.thePlayer.posZ, false));
-                    mc.getNetHandler().addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY +  0.0000013579, mc.thePlayer.posZ, false));
-                    fallDistance -= 0.0624986421;
-                }
-                mc.getNetHandler().addToSendQueue(new C03PacketPlayer(true));
-                mc.thePlayer.setMotion(0);
-                mc.thePlayer.sendQueue.getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
-                getPlayer().motionY = 0.416868886655f;
-                theogdamageboost = true;
-                secondaryboost = false;
-                initialboost = false;
-                lastboost = System.currentTimeMillis();
-            } else {
-                mc.thePlayer.setSpeed(0);
-                theogdamageboost = false;
-                secondaryboost = false;
-                initialboost = false;
-            }
-            level = 1;
-
-            mc.thePlayer.packets = 0;
-            mc.thePlayer.packets2 = 0;
-
-            mc.thePlayer.hurtTime = 0;
-
-        }
     }
 
 
@@ -180,54 +138,9 @@ public class Flight extends Cheat {
                 break;
             }
             case "WatchdogVoid": {
-                if (!mc.thePlayer.onGround) {
-                    if (mc.thePlayer.isMoving()) {
-                        SpeedUtils.setPlayerSpeed(1.5);
-                    }
-                    mc.thePlayer.motionY = 0;
-                } else {
-                    ChatUtil.chat("bro it void fly jump in void idiot");
-                }
                 break;
             }
             case "Watchdog": {
-                if (event.isPre()) {
-                    if (getPlayer().movementInput.jump) {
-                        getPlayer().motionY += 0.26622;
-                    } else if (getPlayer().movementInput.sneak) {
-                        getPlayer().motionY -= 0.26622;
-                    } else {
-                        lastreporteddistance = Math.hypot(getPlayer().posX - getPlayer().prevPosX, getPlayer().posZ - getPlayer().prevPosZ) * .99;
-                        if (initialboost || secondaryboost) {
-                            delay -= 1;
-                            setMode("HypixelFast " + delay);
-                            if (delay <= 0) {
-
-                                initialboost = false;
-                                secondaryboost = true;
-
-                            }
-                            if (delay <= -10) {
-                                mc.timer.timerSpeed = 1.0F;
-                                secondaryboost = false;
-                            }
-                        } else {
-                            setMode("HypixelFast");
-                        }
-                        getPlayer().motionY = 0;
-                        getPlayer().onGround = true;
-                        counter++;
-                        if (prop_bobbing.getValue())
-                            getPlayer().cameraYaw = .105f;
-
-                        if (counter == 1) {
-                            getPlayer().setPosition(getPlayer().posX, getPlayer().posY + 1.0E-13D, getPlayer().posZ);
-                        } else if (counter == 2) {
-                            getPlayer().setPosition(getPlayer().posX, getPlayer().posY + 1.0E-123D, getPlayer().posZ);
-                            counter = 0;
-                        }
-                    }
-                }
                 break;
             }
         }
@@ -241,59 +154,6 @@ public class Flight extends Cheat {
                 break;
             }
             case "Watchdog": {
-                if (!canPacketBoost) {
-                    if (prop_mode.getValue().get("Watchdog")) {
-                        List collidingList = mc.theWorld.getCollidingBoundingBoxes(getPlayer(), getPlayer().getEntityBoundingBox().offset(0, 0, 0));
-                        if (theogdamageboost) {
-                            if (level != 1 || !getPlayer().isMoving()) {
-                                if (level == 2) {
-                                    level = 3;
-                                    movementSpeed *= mc.thePlayer.isPotionActive(Potion.moveSpeed) ? 2.14 : 2.22;
-                                } else if (level == 3) {
-                                    level = 4;
-                                    double difference = (mc.thePlayer.isPotionActive(Potion.moveSpeed) ? .0079 : .0002) * (lastreporteddistance - mc.thePlayer.getBaseMoveSpeed());
-                                    movementSpeed = lastreporteddistance - difference;
-                                } else {
-                                    if (collidingList.size() > 0 || getPlayer().isCollidedVertically) {
-                                        level = 1;
-                                    }
-                                    movementSpeed = lastreporteddistance - (lastreporteddistance / 95000);
-                                }
-                            } else {
-                                level = 2;
-                                double boost = getPlayer().isPotionActive(Potion.moveSpeed) ? 1.89 : 2.24;
-                                movementSpeed = boost * mc.thePlayer.getBaseMoveSpeed();
-
-                            }
-                            mc.thePlayer.setMoveSpeedAris(event, movementSpeed = Math.max(mc.thePlayer.getBaseMoveSpeed(), movementSpeed));
-                        } else if (initialboost) {
-                            if (level != 1 || !getPlayer().isMoving()) {
-                                mc.timer.timerSpeed = 1.0F;
-                                if (level == 2) {
-                                    level = 3;
-                                    movementSpeed *= getPlayer().isPotionActive(Potion.moveSpeed) ? 2.14 : 2.2;
-                                } else if (level == 3) {
-                                    level = 4;
-                                    double difference = (getPlayer().isPotionActive(Potion.moveSpeed) ? .7 : .6) * (lastreporteddistance - mc.thePlayer.getBaseMoveSpeed());
-                                    movementSpeed = lastreporteddistance - difference;
-                                } else {
-                                    if (collidingList.size() > 0 || getPlayer().isCollidedVertically) {
-                                        level = 1;
-                                    }
-                                    movementSpeed = lastreporteddistance - lastreporteddistance / (120 + delay);
-                                }
-                            } else {
-                                level = 2;
-                                mc.timer.timerSpeed = 0.42F;
-                                double boost = getPlayer().isPotionActive(Potion.moveSpeed) ? 1.85 : 2.13;
-                                movementSpeed = boost * mc.thePlayer.getBaseMoveSpeed();
-                            }
-                            mc.thePlayer.setMoveSpeedAris(event, movementSpeed = Math.max(mc.thePlayer.getBaseMoveSpeed(), movementSpeed));
-                        }
-                    }
-                } else {
-                    mc.thePlayer.setMoveSpeedAris(event,  4.4);
-                }
                 break;
             }
         }
@@ -321,17 +181,9 @@ public class Flight extends Cheat {
                 }
             }
             case "Watchdog": {
-                if (event.getPacket() instanceof C03PacketPlayer) {
-                    blinkNigger.add(event.getPacket());
-                    event.setCancelled(true);
-                }
                 break;
             }
             case "WatchdogVoid": {
-                if (event.getPacket() instanceof C03PacketPlayer) {
-                    event.setCancelled(true);
-                    blinkNigger.add(event.getPacket());
-                }
                 break;
             }
         }

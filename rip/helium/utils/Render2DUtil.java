@@ -1,4 +1,4 @@
-package rip.helium.client.util.render;
+package rip.helium.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
