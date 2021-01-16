@@ -19,7 +19,7 @@ class Console : Cheat("Console", "A cool console to send chat commands", Keyboar
 
     @Collect
     fun onRenderOverlay(event: RenderOverlayEvent) {
-            
+
     }
 
 }

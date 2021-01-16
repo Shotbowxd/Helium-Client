@@ -19,6 +19,7 @@ import rip.helium.ui.main.tab.TabGui;
 import rip.helium.utils.ColorCreator;
 import rip.helium.utils.Draw;
 import rip.helium.utils.RenderUtil;
+import rip.helium.utils.font.Fonts;
 import rip.helium.utils.property.impl.ColorProperty;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -184,13 +185,13 @@ public class ToggledList extends Element {
                         double length = mc.fontRendererObj.getStringWidth(name);
                         if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
                         Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
-                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
+                        Fonts.verdana3.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - Fonts.verdana3.getStringWidth(name)), (y + 2), color);
                         //GL11.glPushMatrix();
                         //GL11.glScaled(1.1, 1.1, 1.1);
                         //mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name + " §7" + time, 4, 4, color);
                         String server = mc.isSingleplayer() ? "local server" : mc.getCurrentServerData().serverIP.toLowerCase();
                         String text = "helium.rip | " + mc.getDebugFPS() + " fps | " + server;
-                        float width = mc.fontRendererObj.getStringWidth(text) + 6;
+                        float width = Fonts.verdana3.getStringWidth(text) + 9;
                         int height = 20;
                         int posX = 2;
                         int posY = 2;
@@ -201,7 +202,7 @@ public class ToggledList extends Element {
                         Render2DUtil.drawGradientSideways(4, posY + 3, 4 + (width / 3), posY + 4, new Color(81, 149, 219, 255).getRGB(), new Color(180, 49, 218, 255).getRGB());
                         Render2DUtil.drawGradientSideways(4 + (width / 3), posY + 3, 4 + ((width / 3) * 2), posY + 4, new Color(180, 49, 218, 255).getRGB(), new Color(236, 93, 128, 255).getRGB());
                         Render2DUtil.drawGradientSideways(4 + ((width / 3) * 2), posY + 3, ((width / 3) * 3) + 1, posY + 4, new Color(236, 93, 128, 255).getRGB(), new Color(167, 171, 90, 255).getRGB());
-                        mc.fontRendererObj.drawString(text, 4 + posX, 8 + posY, -1);
+                        Fonts.verdana3.drawString(text, 5 + posX, 8 + posY, -1);
                         //GL11.glPopMatrix();
                         y += Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT + 3;
                         break;
@@ -326,7 +327,11 @@ public class ToggledList extends Element {
 
     public java.util.ArrayList<Cheat> getToggledModulesSortedLTS() {
         java.util.ArrayList<Cheat> toggledCheats = getToggledCheats();
-        toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
+        if (Hud.prop_theme.getValue().get("Helium")) {
+            toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
+        } else {
+            toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
+        }
         return toggledCheats;
     }
 
