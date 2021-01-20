@@ -32,6 +32,8 @@ public class ItemRenderer
     private final RenderManager renderManager;
     private final RenderItem itemRenderer;
     private int equippedItemSlot;
+
+    private float rotate;
     
     static {
         RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
@@ -382,6 +384,25 @@ public class ItemRenderer
 //                            GlStateManager.rotate(-var15 * 25.0F, 0.5F, 0F, 1F);
 //                            break;
                         }
+                        case "Exhibition": {
+                            this.transformFirstPersonItem(f * 0.5f, -2.0f);
+                            GlStateManager.rotate(-f6 * 55.0f / 2.0f, -8.0f, -0.0f, 9.0f);
+                            GlStateManager.rotate(-f6 * 45.0f, 1.0f, f6 / 2.0f, -0.0f);
+                            this.func_178103_d();
+                            GL11.glTranslated(1.2, 0.3, 0.5);
+                            GL11.glTranslatef(-1.0f, -0.1f, 0.2f);
+                            GlStateManager.scale(1.5, 1.5, 1.5);
+                            break;
+                        }
+                        case "Spin": {
+                            this.transformFirstPersonItem(f, 0.0f);
+                            this.func_178103_d();
+                            GL11.glRotatef(rotate, rotate, 0, rotate);
+                            GL11.glScalef(0.5f, 0.5f, 0.5F);
+                            //GL11.glTranslatef(0, 5, 0);
+                            rotate++;
+                            break;
+                        }
                         case "Astro": {
                             final float var = MathHelper.sin((float) (MathHelper.sqrt_float(f2) * Math.PI));
                             this.transformFirstPersonItem (f / 2, f2);
@@ -400,10 +421,11 @@ public class ItemRenderer
                         }
 
                         case "Remix": {
-                            this.transformFirstPersonItem(f, f2 / 40.0f);
+                            GL11.glTranslated(0.0, 0.0, 0.0);
+                            this.transformFirstPersonItem(-0.1f, 1.0f);
+                            GlStateManager.rotate(-f6 * 50.0f / 2.0f, f6 / 2.0f, -0.0f, 4.0f);
+                            GlStateManager.rotate(-f6 * 30.0f, 1.0f, f6 / 2.0f, -0.0f);
                             this.func_178103_d();
-                            GlStateManager.translate(-0.1f, 0.0f, 0.0f);
-                            break;
                         }
 
                         case "Shotbowxd": {

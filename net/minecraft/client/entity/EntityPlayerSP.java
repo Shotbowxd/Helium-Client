@@ -174,7 +174,7 @@ public class EntityPlayerSP extends AbstractClientPlayer {
     }
     
     public void sendChatMessage(final String m) {
-        if (m.startsWith("-")) {
+        if (m.startsWith(".")) {
             for (final Command comm : Helium.instance.cmds.cmds) {
                 final String[] args = m.replaceFirst("-", "").split(" ");
                 if (m.startsWith("-" + comm.name)) {
@@ -189,6 +189,14 @@ public class EntityPlayerSP extends AbstractClientPlayer {
             }
             return;
         }
+
+        //todo: remove -
+
+        if (m.startsWith("-")) {
+            ChatUtil.chat("§cPrevented you from being an idiot. This is no longer used, Use .<command> or the console instead!");
+            return;
+        }
+
         if (Helium.instance.cheatManager.isCheatEnabled("ChatMods")) {
             if (KillSults.filter_bypass.getValue()) {
                 String t1 = m;

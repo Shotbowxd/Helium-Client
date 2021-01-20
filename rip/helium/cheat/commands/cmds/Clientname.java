@@ -3,6 +3,7 @@ package rip.helium.cheat.commands.cmds;
 import rip.helium.ChatUtil;
 import rip.helium.Helium;
 import rip.helium.cheat.commands.Command;
+import rip.helium.cheat.impl.visual.Console;
 
 import java.util.StringJoiner;
 
@@ -25,6 +26,5 @@ public class Clientname extends Command {
         fixedName = fixedName.replaceAll("%clientuser%", Helium.clientUser);
         Helium.getClient_name = fixedName;
         ChatUtil.chat("§aSuccessfully set the client name to '" + Helium.getClient_name + ".");
-        ChatUtil.chat("§aPlace Holders: %name% - gets ur ign. %clientuser% - gets ur client username");
     }
 }

@@ -135,13 +135,13 @@ class Helium {
 
 
         //opens fade or never gonna give you up...
-        if (rand == 1) {
+        /*if (rand == 1) {
             nigger.browse(URI("https://www.youtube.com/watch?v=dQw4w9WgXcQ"))
         } else {
             repeat(10) { //same as a for loop [for (int i = 0; i < 10; i++)]
                 nigger.browse(URI("https://www.youtube.com/watch?v=Jqt9n9DwpgE&t=1s"))
             }
-        }
+        }*/
 
         /*/
         Creates the file for names if it doesn't exist.

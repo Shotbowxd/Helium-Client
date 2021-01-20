@@ -33,7 +33,6 @@ public class PropertyTextbox extends PropertyComponent {
     public void drawComponent(final double x, final double y) {
         this.positionX = x - this.theInterface.getPositionX();
         this.positionY = y - this.theInterface.getPositionY();
-        System.out.println("i am being rendered");
         Fonts.f14.drawString(this.getProperty().getId(), x + 6.0, y + this.maxHeight / 2.0 - 5.5, this.theInterface.getColor(255, 255, 255));
         Draw.drawRectangle(x + 80.0, y + this.maxHeight / 2.0 - 6.0, x + this.maxWidth - 10.0, y + this.maxHeight / 2.0 - 4.0, new Color(54, 56, 56).getRGB());
         Draw.drawRectangle(x + 80.0, y + this.maxHeight / 2.0 - 6.0, x + 80.0 + this.currentPosition, y + this.maxHeight / 2.0 - 4.0,

@@ -51,7 +51,12 @@ public class ContainerCheats extends BaseContainer {
 
             //Draw.drawRectangle(x + maxWidth - 1.5, theInterface.getPositionY() + barPosition + 1, x + maxWidth, theInterface.getPositionY() + barPosition + barHeight - 1, theInterface.getColor(110, 110, 110, 255));
         }
-        String cat = cheatCategory.name().replaceAll("MOVEMENT", "Movement").replaceAll("VISUAL", "Render").replaceAll("COMBAT", "Combat").replaceAll("PLAYER", "Player").replaceAll("MISC", "Misc");
+        String cat = cheatCategory.name()
+                .replaceAll("MOVEMENT", "Movement")
+                .replaceAll("VISUAL", "Render")
+                .replaceAll("COMBAT", "Combat")
+                .replaceAll("PLAYER", "Player")
+                .replaceAll("MISC", "Misc");
         Draw.drawRectangle(theInterface.getPositionX() + 25, theInterface.getPositionY() - 1, theInterface.getPositionX() + 173, theInterface.getPositionY() + 251, new Color(32, 31, 32).getRGB());
         Draw.drawCircle(Fonts.verdanaGui.getStringWidth(cat) + 50 + theInterface.getPositionX(), theInterface.getPositionY() + 26, 13, Interface.categoryColor(cheatCategory).getRGB());
         Fonts.verdanaGui.drawStringWithShadow(cat, theInterface.getPositionX() + 35, theInterface.getPositionY() + 20, new Color(255, 255, 255).getRGB());

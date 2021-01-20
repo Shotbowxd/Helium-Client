@@ -42,7 +42,7 @@ public class Hud extends Cheat {
 
     public Hud() {
         super("Hud", "", CheatCategory.VISUAL);
-        registerProperties(targethud, lowercase, tabui, prop_theme, clientName, hud_tnt, backgroundcolor, scoreboard_background, down, shadowfont_enabled, prop_arraylist, prop_colormode/*/, prop_customfont/*/, prop_color);
+        registerProperties(targethud, radar, lowercase, tabui, prop_theme, clientName, hud_tnt, backgroundcolor, scoreboard_background, down, shadowfont_enabled, prop_arraylist, prop_colormode/*/, prop_customfont/*/, prop_color);
     }
 
     @Collect

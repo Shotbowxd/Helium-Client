@@ -132,7 +132,7 @@ public class ToggledList extends Element {
         if (Hud.radar.getValue()) {
             for (Entity ent : mc.theWorld.loadedEntityList) {
                 if (ent instanceof EntityPlayer && !(ent == mc.thePlayer)) {
-                    mc.fontRendererObj.drawStringWithShadow(ent.getName() + " §7[§f" + Math.round(((EntityPlayer) ent).getHealth()) + "§4 \u2764§7] §f- §7[" + Math.round(mc.thePlayer.getDistanceToEntity(ent)) + "m]", 1, 25 + y3, -1);
+                    Fonts.verdana3.drawStringWithShadow(ent.getName() + " §7[§f" + Math.round(((EntityPlayer) ent).getHealth()) + "§4 \u2764§7] §f- §7[" + Math.round(mc.thePlayer.getDistanceToEntity(ent)) + "m]", 1, 25 + y3, -1);
                     y3 += mc.fontRendererObj.FONT_HEIGHT + 1;
                 }
             }
@@ -185,10 +185,7 @@ public class ToggledList extends Element {
                         double length = mc.fontRendererObj.getStringWidth(name);
                         if (m.getAnimation() > 0) m.setAnimation(m.getAnimation() - 1);
                         Gui.drawRect((int) (ScaledResolution.getScaledWidth() - this.positionX - 2.0D - length + m.getAnimation() - 1.5), y, (int) (ScaledResolution.getScaledWidth() - this.positionX + 3.5D), y + 12, (new Color(0, 0, 0, 163)).getRGB());
-                        Fonts.verdana3.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - Fonts.verdana3.getStringWidth(name)), (y + 2), color);
-                        //GL11.glPushMatrix();
-                        //GL11.glScaled(1.1, 1.1, 1.1);
-                        //mc.fontRendererObj.drawStringWithShadow(Helium.getClient_name + " §7" + time, 4, 4, color);
+                        mc.fontRendererObj.drawStringWithShadow(name, (float) (ScaledResolution.getScaledWidth() - this.positionX + m.getAnimation() - mc.fontRendererObj.getStringWidth(name)), (y + 2), color);
                         String server = mc.isSingleplayer() ? "local server" : mc.getCurrentServerData().serverIP.toLowerCase();
                         String text = "helium.rip | " + mc.getDebugFPS() + " fps | " + server;
                         float width = Fonts.verdana3.getStringWidth(text) + 9;
@@ -327,18 +324,23 @@ public class ToggledList extends Element {
 
     public java.util.ArrayList<Cheat> getToggledModulesSortedLTS() {
         java.util.ArrayList<Cheat> toggledCheats = getToggledCheats();
-        if (Hud.prop_theme.getValue().get("Helium")) {
-            toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
-        } else {
+        //if (Hud.prop_theme.getValue().get("Helium")) {
+        //    toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : Fonts.verdana3.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
+        //} else {
             toggledCheats.sort((cheat1, cheat2) -> (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat2.getId() + (cheat2.getMode() != null ? " " + cheat2.getMode() : ""))) - (hud.prop_customfont.getValue() ? mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : "")) : mc.fontRendererObj.getStringWidth(cheat1.getId() + (cheat1.getMode() != null ? " " + cheat1.getMode() : ""))));
-        }
+        //}
         return toggledCheats;
     }
 
     public double getLongestToggledLabelLength() {
         double longestLabelLength = 0;
         for (Cheat cheat : getToggledCheats()) {
-            final double labelLength = mc.fontRendererObj.getStringWidth(cheat.getId());
+            final double labelLength;
+            //if (Hud.prop_theme.getValue().get("Helium")) {
+           //     labelLength = Fonts.verdana3.getStringWidth(cheat.getId());
+            //} else {
+                labelLength = mc.fontRendererObj.getStringWidth(cheat.getId());
+            //}
             if (labelLength > longestLabelLength) {
                 longestLabelLength = labelLength;
             }

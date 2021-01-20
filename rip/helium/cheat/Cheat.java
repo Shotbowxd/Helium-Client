@@ -78,8 +78,6 @@ public abstract class Cheat {
         this.category = category;
         this.propertyRegistry = new LinkedHashMap<>();
         this.state = false;
-        // nice base bro! virtue better tbh
-        // no
     }
 
     protected static EntityPlayerSP getPlayer() {

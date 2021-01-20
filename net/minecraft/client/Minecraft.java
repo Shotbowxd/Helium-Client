@@ -1502,7 +1502,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (this.currentScreen == null)
         {
-            this.displayGuiScreen(new GuiIngameMenu());
+            if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
+                this.displayGuiScreen(new GuiIngameMenu());
+            }
 
             if (this.isSingleplayer() && !this.theIntegratedServer.getPublic())
             {
@@ -1574,7 +1576,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     /**
      * Called when user clicked he's mouse right button (place)
-     */ public void rightClickMouse()
+     */
+    public void rightClickMouse()
     {
         if (!this.playerController.func_181040_m())
         {
@@ -1954,8 +1957,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
+                        try {
+                            Helium.eventBus.publish(new KeyPressEvent(k));
+                        } catch (Exception e) {
 
-                        Helium.eventBus.publish(new KeyPressEvent(k));
+                        }
 
                         if (k == 1)
                         {
@@ -2110,10 +2116,14 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     this.thePlayer.sendHorseInventory();
                 }
                 else
-                {
-                    this.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
-                    this.displayGuiScreen(new GuiInventory(this.thePlayer));
+                { //helium starts
+                    if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
+                        this.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+                        this.displayGuiScreen(new GuiInventory(this.thePlayer));
+                    }
                 }
+
+                //ends
             }
 
             while (this.gameSettings.keyBindDrop.isPressed())
@@ -2126,12 +2136,16 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
             while (this.gameSettings.keyBindChat.isPressed() && flag)
             {
-                this.displayGuiScreen(new GuiChat());
+                if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
+                    this.displayGuiScreen(new GuiChat());
+                }
             }
 
             if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && flag)
             {
-                this.displayGuiScreen(new GuiChat("/"));
+                if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
+                    this.displayGuiScreen(new GuiChat("/"));
+                }
             }
 
             if (this.thePlayer.isUsingItem())
