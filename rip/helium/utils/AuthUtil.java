@@ -13,10 +13,10 @@ public class AuthUtil {
     public static boolean check() {
         int lines = 0;
         try {
-            URL url = new URL("https://heliumclient.000webhostapp.com/hwids/" + HWID.getHWID());
+            URL url = new URL("http://wedobegamingdoe.000webhostapp.com/hwids/" + HWID.getHWID());
             URLConnection urlConnection = url.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
-            if (!url.toString().contains("https://heliumclient.000webhostapp.com/hwids/")) return false;
+            if (!url.toString().contains("http://wedobegamingdoe.000webhostapp.com/hwids/")) return false;
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line = null;
             while ((line = bufferedReader.readLine()) != null) {

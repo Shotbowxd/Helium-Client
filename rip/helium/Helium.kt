@@ -119,11 +119,15 @@ class Helium {
      */
     @Throws(IOException::class)
     fun readName() {
-        val file = File(Minecraft.getMinecraft().mcDataDir.toString() + System.getProperty("file.separator") + "Helium" + System.getProperty("file.separator") + "helium.user")
-        val br = BufferedReader(FileReader(file))
-        var st: String?
-        while (br.readLine().also { st = it } != null) {
-            clientUser = st
+        try {
+            val file = File(Minecraft.getMinecraft().mcDataDir.toString() + System.getProperty("file.separator") + "Helium" + System.getProperty("file.separator") + "helium.user")
+            val br = BufferedReader(FileReader(file))
+            var st: String?
+            while (br.readLine().also { st = it } != null) {
+                clientUser = st
+            }
+        } catch (fuck: Exception) {
+
         }
     }
 

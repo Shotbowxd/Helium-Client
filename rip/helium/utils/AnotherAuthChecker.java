@@ -13,7 +13,7 @@ public class AnotherAuthChecker {
     public static boolean check() {
         int lines = 0;
         try {
-            URL url = new URL("http://cheesemanprot.000webhostapp.com/uiashduf8u9yhsbd98fhas98dfyu89asdhjf89uashdfuiasd/" + HWID.getHWID());
+            URL url = new URL("http://wedobegamingdoe.000webhostapp.com/hwids/" + HWID.getHWID());
             URLConnection urlConnection = url.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));

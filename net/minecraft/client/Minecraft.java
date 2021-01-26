@@ -409,10 +409,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         try
         {
             this.startGame();
-// undo when protecting            AuthUtil.check();
-//    undo when protecting         if (!AuthUtil.check()) {
-//   undo when protecting              Minecraft.getMinecraft().shutdown();
-//    undo when protecting         }
+            AuthUtil.check();
+       if (!AuthUtil.check()) {
+             Minecraft.getMinecraft().shutdown();
+       }
             
         }
         catch (Throwable throwable)
