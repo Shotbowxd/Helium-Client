@@ -38,8 +38,12 @@ public class NoFall extends Cheat {
     @Collect
     public void onPlayerUpdate(final PlayerUpdateEvent playerUpdateEvent) {
         if (mode.getValue().get("Spoof")) {
-            if (mc.thePlayer.fallDistance >= 2.75) {
+            if (mc.thePlayer.fallDistance >= 3F) {
                 playerUpdateEvent.setOnGround(true);
+                if(isBlockUnder())
+                    mc.thePlayer.fallDistance = 0;
+            }else{
+                playerUpdateEvent.setOnGround(mc.thePlayer.ticksExisted % 2 == 0);
             }
         } else if (mode.getValue().get("Ghostly")) {
             if (mc.thePlayer.fallDistance >= 2F && isBlockUnder()) {
@@ -50,12 +54,12 @@ public class NoFall extends Cheat {
             }
         }
 
-        if (!Helium.instance.cheatManager.isCheatEnabled("Flight")) {
-            if (fastfall.getValue() && isBlockUnder()) {
-                if (mc.thePlayer.fallDistance >= 2.75) {
-                    mc.thePlayer.motionY -= 0.5;
-                }
-            }
-        }
+//        if (!Helium.instance.cheatManager.isCheatEnabled("Flight")) {
+//            if (fastfall.getValue() && isBlockUnder()) {
+//                if (mc.thePlayer.fallDistance >= 2.75) {
+//                    mc.thePlayer.motionY -= 0.5;
+//                }
+//            }
+//        }
     }
 }

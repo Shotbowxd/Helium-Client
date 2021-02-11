@@ -37,18 +37,7 @@ public class AntiKnockback extends Cheat {
     @Collect
     public void onProcessPacket(ProcessPacketEvent processPacketEvent) {
         if (modeProperty.getSelectedStrings().get(0).equalsIgnoreCase("packet")) {
-            if ((processPacketEvent.getPacket() instanceof S12PacketEntityVelocity) && (((S12PacketEntityVelocity) processPacketEvent.getPacket()).getEntityID() == getPlayer().getEntityId())) {
-                S12PacketEntityVelocity packet = (S12PacketEntityVelocity) processPacketEvent.getPacket();
-                packet.motionX = 0;
-                packet.motionY = 0;
-                packet.motionZ = 0;
-                processPacketEvent.setCancelled(true);
-            }
-            if (processPacketEvent.getPacket() instanceof S27PacketExplosion) {
-                S27PacketExplosion packetExplosion = (S27PacketExplosion) processPacketEvent.getPacket();
-                packetExplosion.field_149152_f = 0;
-                packetExplosion.field_149153_g = 0;
-                packetExplosion.field_149159_h = 0;
+            if(processPacketEvent.getPacket() instanceof S12PacketEntityVelocity || processPacketEvent.getPacket() instanceof S27PacketExplosion){
                 processPacketEvent.setCancelled(true);
             }
         }

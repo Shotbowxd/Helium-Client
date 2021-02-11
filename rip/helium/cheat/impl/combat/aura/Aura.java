@@ -692,7 +692,7 @@ public class Aura extends Cheat {
         if (fakeab.getValue()) {
             if (!targetList.isEmpty() && targetIndex <= targetList.size() - 1 && UPlayer.getDistanceToEntity(targetList.get(targetIndex)) <= prop_maxDistance.getValue() + (hvh.getValue() ? 2 : 0) && holdingSword() && !isBlocking) {
                 if (abmode.getValue().get("Hypixel")) {
-                    getPlayer().sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(-.8, -.8, -.8), -1, getPlayer().getHeldItem(), 0, 0, 0));
+                    getPlayer().sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(new BlockPos(-.8, -.8, -.8), 255, getPlayer().getHeldItem(), 0, 0, 0));
                 } else if (abmode.getValue().get("Fake")) {
 
                 }

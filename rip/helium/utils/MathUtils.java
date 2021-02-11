@@ -17,6 +17,10 @@ public class MathUtils {
         MathUtils.rng = new Random();
     }
 
+    public static double randomNumber(double max, double min) {
+        return (Math.random() * (max - min)) + min;
+    }
+
     public static double round(final double value, final int places) {
         if (places < 0) {
             throw new IllegalArgumentException();

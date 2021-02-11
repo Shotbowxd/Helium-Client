@@ -1,10 +1,13 @@
 package rip.helium.cheat.impl.movement;
 
+import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
+import de.gerrygames.viarewind.utils.PacketUtil;
 import me.hippo.systems.lwjeb.annotation.Collect;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C00PacketKeepAlive;
 import net.minecraft.network.play.client.C03PacketPlayer;
+import net.minecraft.network.play.client.C0EPacketClickWindow;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -18,9 +21,7 @@ import rip.helium.event.minecraft.BoundingBoxEvent;
 import rip.helium.event.minecraft.PlayerMoveEvent;
 import rip.helium.event.minecraft.PlayerUpdateEvent;
 import rip.helium.event.minecraft.SendPacketEvent;
-import rip.helium.utils.SpeedUtils;
-import rip.helium.utils.Stopwatch;
-import rip.helium.utils.Vec3d;
+import rip.helium.utils.*;
 import rip.helium.utils.property.impl.BooleanProperty;
 import rip.helium.utils.property.impl.DoubleProperty;
 import rip.helium.utils.property.impl.StringsProperty;
@@ -32,7 +33,7 @@ public class Flight extends Cheat {
     public static long disabled;
     private final StringsProperty prop_mode;
     public double lastreporteddistance;
-    public double movementSpeed;
+    public double movementSpeed, lastDist, y;
     int stage;
     double speed;
     boolean allowmcc;
@@ -73,23 +74,23 @@ public class Flight extends Cheat {
     @Override
     public void onDisable() {
         super.onDisable();
-        mc.gameSettings.keyBindJump.pressed = false;
+//        for(Packet packet : blinkNigger){
+//            mc.getNetHandler().addToSendQueueNoEvent(packet);
+//        }\
         Timer.timerSpeed = 1.0f;
+        blinkNigger.clear();
         allowmcc = false;
-        getPlayer().stepHeight = 0.6f;
-        getPlayer().setSpeed(0.0);
-        Flight.disabled = System.currentTimeMillis();
     }
 
     @Override
     public void onEnable() {
         super.onEnable();
-        if (this.prop_bobbing.getValue()) {
-            mc.thePlayer.cameraYaw = 0.11f;
-        }
-        if (this.prop_memebobbing.getValue()) {
-            mc.thePlayer.cameraYaw = 0.41f;
-        }
+        blinkNigger.clear();
+        y = 0;
+        i = 0;
+        lastDist = 0;
+        speed = 0;
+        stage = 0;
         timer.reset();
     }
 
@@ -97,18 +98,17 @@ public class Flight extends Cheat {
 
     @Collect
     public void onPlayerUpdate(PlayerUpdateEvent event) {
-        setMode(prop_mode.getSelectedStrings().get(0));
-        if (this.antikick.getValue() && this.timer.hasPassed(700.0f)) {
-            this.fall();
-            this.ascend();
-            this.timer.reset();
-        }
-        if (this.prop_bobbing.getValue()) {
-            mc.thePlayer.cameraYaw = 0.11f;
-        }
-        if (this.prop_memebobbing.getValue()) {
-            mc.thePlayer.cameraYaw = 0.31f;
-        }
+//        if (this.antikick.getValue() && this.timer.hasPassed(700.0f)) {
+//            this.fall();
+//            this.ascend();
+//            this.timer.reset();
+//        }
+//        if (this.prop_bobbing.getValue()) {
+//            mc.thePlayer.cameraYaw = 0.11f;
+//        }
+//        if (this.prop_memebobbing.getValue()) {
+//            mc.thePlayer.cameraYaw = 0.31f;
+//        }
         switch (prop_mode.getSelectedStrings().get(0)) {
             case "LongjumpFly": {
                 if (mc.gameSettings.keyBindJump.pressed) {
@@ -144,6 +144,11 @@ public class Flight extends Cheat {
                 break;
             }
         }
+        if (event.isPre()) {
+            double xDif = mc.thePlayer.posX - mc.thePlayer.prevPosX;
+            double zDif = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
+            lastDist = Math.sqrt(xDif * xDif + zDif * zDif);
+        }
     }
 
     @Collect
@@ -154,6 +159,37 @@ public class Flight extends Cheat {
                 break;
             }
             case "Watchdog": {
+                    switch (stage) {
+                        case 0:
+                            if (mc.thePlayer.onGround && mc.thePlayer.isCollidedVertically) {
+                                PlayerUtils.damageHypixel();
+                                event.setY(mc.thePlayer.motionY = MovementUtils.getJumpBoostModifier( 0.42F));
+                            }
+                            speed = MovementUtils.getBaseMoveSpeed() * 2.149D;
+                            break;
+                        case 1:
+                            Timer.timerSpeed = 1.565f;
+                            speed = 1.55;
+                            break;
+                        default:
+                            event.setY(mc.thePlayer.motionY = mc.thePlayer.ticksExisted % 4 == 0 ? -0.001875 : 0.001875);
+                            speed -= speed / 159;
+                            break;
+                    }
+                    speed = Math.max(speed, MovementUtils.getBaseMoveSpeed());
+                    stage++;
+                MovementUtils.setSpeed(event, speed);
+                if (!TargetStrafe.doStrafeAtSpeed(event, speed)) {
+                    MovementUtils.setSpeed(event, speed);
+                }
+                break;
+            }
+            case "WatchdogVoid": {
+                mc.timer.timerSpeed = 0.2488F;
+                SpeedUtils.setPlayerSpeed(event, sped.getValue());
+                event.setY(mc.thePlayer.motionY = mc.thePlayer.movementInput.jump ? sped.getValue() : mc.thePlayer.movementInput.sneak ? -sped.getValue() : 0.0D);
+                mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + event.getX(), mc.thePlayer.posY + event.getY(), mc.thePlayer.posZ + event.getZ(), true));
+                mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX + 20.0D, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, true));
                 break;
             }
         }
@@ -181,9 +217,23 @@ public class Flight extends Cheat {
                 }
             }
             case "Watchdog": {
+//                if(event.getPacket() instanceof C03PacketPlayer && mc.thePlayer.ticksExisted % 2 == 0){
+//                    C03PacketPlayer packetPlayer = (C03PacketPlayer) event.getPacket();
+//                    event.setCancelled(true);
+//                    if(packetPlayer.isMoving()) {
+//                        i++;
+//                        if(i == 18){
+//                            mc.getNetHandler().addToSendQueueNoEvent(packetPlayer);
+//                            i = 0;
+//                        }
+//
+//                    }
+//
+//                }
                 break;
             }
             case "WatchdogVoid": {
+                if(event.getPacket() instanceof C03PacketPlayer) event.setCancelled(true);
                 break;
             }
         }

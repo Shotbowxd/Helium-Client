@@ -409,11 +409,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         try
         {
             this.startGame();
-            AuthUtil.check();
-       if (!AuthUtil.check()) {
-             Minecraft.getMinecraft().shutdown();
-       }
-            
         }
         catch (Throwable throwable)
         {

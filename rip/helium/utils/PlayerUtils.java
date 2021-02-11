@@ -44,18 +44,23 @@ public class PlayerUtils {
 
     public static void damageHypixel() {
         if (mc.thePlayer.onGround) {
-            final double offset = 0.4122222218322211111111F;
-            final NetHandlerPlayClient netHandler = mc.getNetHandler();
-            final EntityPlayerSP player = mc.thePlayer;
-            final double x = player.posX;
-            final double y = player.posY;
-            final double z = player.posZ;
-            for (int i = 0; i < 9; i++) {
-                netHandler.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + offset, z, false));
-                netHandler.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(x, y + 0.000002737272, z, false));
-                netHandler.addToSendQueue(new C03PacketPlayer(false));
+            double x = mc.thePlayer.posX;
+            double y = mc.thePlayer.posY;
+            double z = mc.thePlayer.posZ;
+
+            float yaw = mc.thePlayer.rotationYaw;
+            float pitch = mc.thePlayer.rotationPitch;
+            double fallDistanceReq = 3;
+            if (mc.thePlayer.isPotionActive(Potion.jump)) {
+                int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
+                fallDistanceReq += (float) (amplifier + 1) * 0.7;
             }
-            netHandler.addToSendQueue(new C03PacketPlayer(true));
+            int packetCount = (int) Math.ceil(fallDistanceReq / 0.06249);
+            for (int i = 0; i < packetCount; i++) {
+                mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(x, y + 0.06249, z, yaw, pitch, false));
+                mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(x, y, z, yaw, pitch, false));
+            }
+            mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(x, y, z, yaw, pitch, true));
         }
     }
 

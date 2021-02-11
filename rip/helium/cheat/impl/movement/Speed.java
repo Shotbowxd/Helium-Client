@@ -96,7 +96,7 @@ public class Speed extends Cheat {
                 break;
             case "Hypixel":
                 if (MathUtils.round(mc.thePlayer.motionY, 3) == MathUtils.round(-.245D, 3)) {
-                    event.setY(mc.thePlayer.motionY -= 0.125F);
+                    event.setY(mc.thePlayer.motionY -= 0.138F);
                 }
 
                 if (mc.thePlayer.isMoving() && !mc.thePlayer.isInWater()) {

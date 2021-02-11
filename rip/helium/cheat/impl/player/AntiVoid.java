@@ -3,6 +3,7 @@ package rip.helium.cheat.impl.player;
 import me.hippo.systems.lwjeb.annotation.Collect;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import org.apache.commons.lang3.RandomUtils;
 import rip.helium.Helium;
 import rip.helium.cheat.Cheat;
 import rip.helium.cheat.CheatCategory;
@@ -21,32 +22,17 @@ public class AntiVoid extends Cheat {
 
     @Collect
     public void onMove(PlayerMoveEvent e) {
-        if ((shouldSave && timer.hasPassed(150)) || mc.thePlayer.isCollidedVertically) {
-            shouldSave = false;
-            timer.reset();
-        }
-        if (Helium.instance.cheatManager.isCheatEnabled("Flight"))
-            return;
-        if (mc.thePlayer.fallDistance > 5) {
-            if (!isBlockUnder()) {
-                if (!shouldSave) {
-                    shouldSave = true;
-                    timer.reset();
-                }
-                mc.thePlayer.fallDistance = 0;
-                mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY + 12, mc.thePlayer.posZ, false));
-            }
+        if (!isBlockUnder() && mc.thePlayer.fallDistance > 3) {
+            mc.getNetHandler().addToSendQueueNoEvent(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY + RandomUtils.nextFloat(11F, 12F), mc.thePlayer.posZ,
+                    mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, false));
         }
     }
 
     private boolean isBlockUnder() {
-        if (mc.thePlayer.posY < 0)
-            return false;
-        for (int off = 0; off < (int) mc.thePlayer.posY + 2; off += 2) {
-            AxisAlignedBB bb = mc.thePlayer.getEntityBoundingBox().offset(0, -off, 0);
-            if (!mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, bb).isEmpty()) {
+        for (int offset = 0; offset < mc.thePlayer.posY + mc.thePlayer.getEyeHeight(); offset += 2) {
+            AxisAlignedBB boundingBox = mc.thePlayer.getEntityBoundingBox().offset(0, -offset, 0);
+            if (!mc.theWorld.getCollidingBoundingBoxes(mc.thePlayer, boundingBox).isEmpty())
                 return true;
-            }
         }
         return false;
     }

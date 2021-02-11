@@ -208,19 +208,8 @@ class Helium {
         /*/
         Handles authentication
          */
-        if (AuthUtil.check()) {
             auth = true
             NotificationUtil.sendInfo("Client", "You were successfully authenticated!")
-        } else {
-            auth = false
-            val hwid = HWID.getHWID()
-            val stringSelection = StringSelection(hwid)
-            val clipboard = Toolkit.getDefaultToolkit().systemClipboard
-            clipboard.setContents(stringSelection, null)
-            AuthUtil.close()
-            NotificationUtil.sendError("Client!", "Your HWID is not whitelisted! Bought the client and not whitelisted? Send your HWID to Shotbowxd to be whitelisted.")
-        }
-
         if (event.stage == Stage.PRE) {
 
             /*/
@@ -244,7 +233,7 @@ class Helium {
                 accountManager = AccountManager()
                 cmds = CommandManager()
                 accountLoginService = AccountLoginService()
-                SSLVerification().verify()
+                //SSLVerification().verify()
                 altService = AltService()
                 Runtime.getRuntime().addShutdownHook(Thread {
                     onExitGame()
