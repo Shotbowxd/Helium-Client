@@ -119,8 +119,6 @@ public class HeliumClient implements ClientSupport {
 			e.printStackTrace();
 		}
 		
-		accountLoginService.attemptLogin(new Account("randomkidplaysrandomgames@gmail.com", "lolno12917", EnumAltService.MOJANG));;
-		
 		Runtime.getRuntime().addShutdownHook(new Thread("Toybox Client shutdown thread") {
 			public void run() {
 				mc.hackedClient.friendManager.saveConfig(mc.hackedClient.getGson());

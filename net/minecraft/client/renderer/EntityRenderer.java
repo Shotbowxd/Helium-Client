@@ -2755,7 +2755,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 {
                     String s = GLU.gluErrorString(j);
                     ChatComponentText chatcomponenttext = new ChatComponentText(I18n.format("of.message.openglError", new Object[] {Integer.valueOf(j), s}));
-                    this.mc.ingameGUI.getChatGUI().printChatMessage(chatcomponenttext);
+                    //this.mc.ingameGUI.getChatGUI().printChatMessage(chatcomponenttext);
                 }
             }
         }

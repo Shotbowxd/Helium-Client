@@ -301,7 +301,14 @@ public class ItemRenderer
         	 case "1.7": {
                  this.transformFirstPersonItem(f, f2);
                  this.func_178103_d();
-                 GlStateManager.translate(0.0f, 0.0f, 0.0f);
+                 GlStateManager.translate(-0.0f, -0.0f, 0.0f);
+                 GlStateManager.rotate(5.0f, 50.0f, 100.0f, 50.0f);
+                 break;
+             }
+        	 case "97k": {
+                 this.transformFirstPersonItem(f, f2);
+                 this.func_178103_d();
+                 GlStateManager.translate(-0.3f, -0.0f, 0.0f);
                  GlStateManager.rotate(5.0f, 50.0f, 100.0f, 50.0f);
                  break;
              }
@@ -362,12 +369,29 @@ public class ItemRenderer
                  GlStateManager.rotate(var17 * 13.0f, -10.0f, -1.4f, -10.0f);
                   break;
              }
+             case "Sensation": {
+                 GlStateManager.translate(0.56f, -0.52f, -0.71999997f);
+                 GlStateManager.translate(0.0f, -0.0f, 0.0f);
+                 GlStateManager.rotate(45.0f, 0.0f, 1.0f, 0.0f);
+                 final float var16 = MathHelper.sin(0.0f);
+                 final float var17 = MathHelper.sin(MathHelper.sqrt_float(0.0f) * 3.1415927f);
+                 GlStateManager.rotate(var16 * -34.0f, 0.0f, 1.0f, 0.2f);
+                 GlStateManager.rotate(var17 * -20.7f, 0.2f, 0.1f, 1.0f);
+                 GlStateManager.rotate(var17 * -68.6f, 1.3f, 0.1f, 0.2f);
+                 GlStateManager.scale(0.4f, 0.4f, 0.4f);
+                 this.func_178103_d();
+                 final float var18 = MathHelper.sin(MathHelper.sqrt_float(f2) * 3.1415927f);
+                 GlStateManager.translate(-0.5f, 0.4f, 0.0f);
+                 GlStateManager.rotate(-var18 * 50.0f, -8.0f, -0.0f, 9.0f);
+                 GlStateManager.rotate(-var18 * 70.0f, 1.0f, -0.4f, -0.0f);
+                 break;
+             }
              case "Swang": {
                  this.transformFirstPersonItem(f, f2);
                  this.func_178103_d();
-                 final float var18 = MathHelper.sin(f2 * f2 * 5.1415925f);
+                 final float var18 = MathHelper.sin(f2 * f2 * 8.1415925f);
                  GL11.glTranslatef(0.1f, -0.1f, 0.3f);
-                 GlStateManager.translate(0.1f, -0.1f, 0.4f);
+                 GlStateManager.translate(0.1f, -0.5f, 0.2f);
                  //GlStateManager.rotate(var18 * 223.0f, 115.0f, 1.4f, 325.0f);
                  break;
              }
@@ -471,7 +495,8 @@ public class ItemRenderer
                 this.transformFirstPersonItem(f, f2);
             }
             this.renderItem(abstractclientplayer, this.itemToRender, ItemCameraTransforms.TransformType.FIRST_PERSON);
-        }
+         }
+      
         else if (!abstractclientplayer.isInvisible()) {
             this.func_178095_a(abstractclientplayer, f, f2);
         }

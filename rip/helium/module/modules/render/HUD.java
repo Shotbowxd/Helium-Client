@@ -21,10 +21,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import rip.helium.event.EventTarget;
 import rip.helium.event.events.impl.render.RenderHUDEvent;
-import rip.helium.friend.FriendManager;
 import rip.helium.module.Module;
 import rip.helium.setting.Setting;
-import rip.helium.utils.client.ClientUtils;
 import rip.helium.utils.render.ColorUtils;
 import rip.helium.utils.render.Render2DUtils;
 
@@ -81,7 +79,7 @@ public class HUD extends Module {
 		int bottomLeftY = event.getHeight() - 10;
 		int bottomRightY = event.getHeight() - 10;
 		if(this.watermark.getValBoolean()) {
-			mc.fontRendererObj.drawStringWithShadow(mc.hackedClient.getName() + " v" + mc.hackedClient.getVersion() + " \2477(rel-1.8.8, p: " + ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion) + ")", 2, topLeftY, 0xffffffff);
+			mc.fontRendererObj.drawStringWithShadow(mc.hackedClient.getName() + " v" + mc.hackedClient.getVersion() + " \2477(rel-1.8.8, p: " + ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion) + ")", 2, topLeftY, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudB.getValDouble()).getRGB());
 			topLeftY += 10;
 		}
 		if(this.coords.getValBoolean()) {

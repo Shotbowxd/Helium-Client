@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gui.Gui;
-import rip.helium.gui.click.ClickGUIScreen;
 import rip.helium.gui.click.component.Component;
 import rip.helium.gui.click.component.Frame;
 import rip.helium.gui.click.component.components.sub.Checkbox;
@@ -14,6 +12,7 @@ import rip.helium.gui.click.component.components.sub.ModeButton;
 import rip.helium.gui.click.component.components.sub.Slider;
 import rip.helium.gui.click.component.components.sub.VisibleButton;
 import rip.helium.module.Module;
+import rip.helium.module.modules.render.ClickGUI;
 import rip.helium.setting.Setting;
 import rip.helium.utils.render.Render2DUtils;
 
@@ -67,7 +66,13 @@ public class Button extends Component {
 	
 	@Override
 	public void renderComponent() {
-		Render2DUtils.drawBorderedRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, 1, 0x88333333, this.isHovered ? 0x88222222 : 0x88111111);
+		switch(((ClickGUI)mc.hackedClient.getModuleManager().getModule("ClickGUI")).mode.getValString()) {
+		case "Michael":
+			Render2DUtils.drawBorderedRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, 1, 0x88333333, this.isHovered ? 0x88222222 : 0x88111111);
+			break;
+		case "Slick":
+			Render2DUtils.drawRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, this.isHovered ? 0x88222222 : 0x88111111);
+		}
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);
 		clientFont.drawStringWithShadow(this.mod.getDisplayName(), (parent.getX() + 2), (parent.getY() + offset + 3), this.mod.getState() ? -1 : 0x999999);

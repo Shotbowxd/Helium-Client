@@ -1,5 +1,6 @@
 package rip.helium.gui.click.component;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,7 @@ import rip.helium.ClientSupport;
 import rip.helium.gui.click.component.components.Button;
 import rip.helium.module.Module;
 import rip.helium.module.Module.Category;
+import rip.helium.module.modules.render.Colors;
 import rip.helium.utils.render.Render2DUtils;
 import rip.helium.utils.render.font.MinecraftFontRenderer;
 
@@ -55,7 +57,7 @@ public class Frame implements ClientSupport {
 		ArrayList<Module> list = new ArrayList<Module>();
 		
 		for(Module mod : mc.hackedClient.getModuleManager().getModules()) {
-			if(!mod.getName().equalsIgnoreCase("ClickGUI") && !mod.getName().equalsIgnoreCase("Targeting") && !mod.getName().equalsIgnoreCase("ClickGUI")) {
+			if(!mod.getName().equalsIgnoreCase("ClickGUI") && !mod.getName().equalsIgnoreCase("Targeting") && !mod.getName().equalsIgnoreCase("Colors")) {
 				list.add(mod);
 			}
 			
@@ -132,7 +134,7 @@ public class Frame implements ClientSupport {
 	public void renderFrame(MinecraftFontRenderer fontRenderer) {
 		int tx = this.x;
 		int ty = this.y;
-		Render2DUtils.drawBorderedRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, 1, 0x99e53935, 0x55e53935);
+		Render2DUtils.drawBorderedRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, 1, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 215).getRGB(), new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 170).getRGB());
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);
 		fontRenderer.drawStringWithShadow(this.name, (this.x + 2), (this.y + 2.5f), 0xFFFFFFFF);

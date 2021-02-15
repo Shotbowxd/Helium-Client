@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import rip.helium.gui.click.component.Component;
 import rip.helium.gui.click.component.components.Button;
 import rip.helium.module.Module;
+import rip.helium.module.modules.render.ClickGUI;
 import rip.helium.setting.Setting;
 import rip.helium.utils.render.Render2DUtils;
 
@@ -37,7 +38,14 @@ public class ModeButton extends Component {
 	
 	@Override
 	public void renderComponent() {
-		Render2DUtils.drawBorderedRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, 1, 0x88333333, this.hovered ? 0x88222222 : 0x88111111);
+		switch(((ClickGUI)mc.hackedClient.getModuleManager().getModule("ClickGUI")).mode.getValString()) {
+		case "Michael":
+			Render2DUtils.drawBorderedRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, 1, 0x88333333, this.hovered ? 0x88222222 : 0x88111111);
+			break;
+		case "Slick":
+			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, this.hovered ? 0x88222222 : 0x88111111);
+			break;
+		}
 		//Gui.drawRect(parent.parent.getX(), parent.parent.getY() + offset, parent.parent.getX() + 2, parent.parent.getY() + offset + 12, 0xFF111111);
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);

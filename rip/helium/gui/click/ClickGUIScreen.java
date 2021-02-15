@@ -5,15 +5,15 @@ import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.util.ResourceLocation;
 import rip.helium.ClientSupport;
 import rip.helium.gui.click.component.Component;
 import rip.helium.gui.click.component.Frame;
 import rip.helium.gui.click.component.components.sub.Console;
 import rip.helium.gui.click.component.components.sub.FrameParentCheckbox;
+import rip.helium.gui.click.component.components.sub.FrameParentSlider;
 import rip.helium.module.Module.Category;
 import rip.helium.module.modules.combat.Targeting;
+import rip.helium.module.modules.render.Colors;
 
 public class ClickGUIScreen extends GuiScreen implements ClientSupport {
 
@@ -51,6 +51,17 @@ public class ClickGUIScreen extends GuiScreen implements ClientSupport {
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).animals, targetingFrame, targetingFrame.getBarHeight() + 25));
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).villagers, targetingFrame, targetingFrame.getBarHeight() + 37));
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).golems, targetingFrame, targetingFrame.getBarHeight() + 49));
+		
+		Frame uiFrame = new Frame("UI");
+		uiFrame.setX(136);
+		uiFrame.setY(36);
+		frames.add(uiFrame);
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudR, uiFrame, targetingFrame.getBarHeight() + 1));
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudG, uiFrame, targetingFrame.getBarHeight() + 13));
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudB, uiFrame, targetingFrame.getBarHeight() + 25));
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR, uiFrame, targetingFrame.getBarHeight() + 37));
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG, uiFrame, targetingFrame.getBarHeight() + 49));
+		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB, uiFrame, targetingFrame.getBarHeight() + 61));
 	}
 	
 	@Override

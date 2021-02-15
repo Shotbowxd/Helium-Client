@@ -18,6 +18,8 @@ public class Animations extends Module {
 		
 		ArrayList<String> modes = new ArrayList<String>();
 		modes.add("1.7");
+		modes.add("97k");
+		modes.add("Sensation");
 		modes.add("Matt");
 		modes.add("Slide");
 		modes.add("Sigma");

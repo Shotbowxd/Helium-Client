@@ -15,7 +15,7 @@ public class ToggleCommand extends Command {
 	    if (args.length > 1)
 	    	modName = args[1]; 
 	    Module module = mc.hackedClient.getModuleManager().getModule(modName);
-	    if (module.getName().equalsIgnoreCase("null") || module.getName().equalsIgnoreCase("Targeting") || module.getName().equalsIgnoreCase("ClickGUI")) {
+	    if (module.getName().equalsIgnoreCase("null") || module.getName().equalsIgnoreCase("Targeting") || module.getName().equalsIgnoreCase("ClickGUI") || module.getName().equalsIgnoreCase("Colors")) {
 	    	ClientUtils.addConsoleMessage("Invalid Module.");
 	    	return;
 	    } 

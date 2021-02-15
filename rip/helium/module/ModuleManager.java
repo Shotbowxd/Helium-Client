@@ -62,6 +62,7 @@ import rip.helium.module.modules.render.Brightness;
 import rip.helium.module.modules.render.Capes;
 import rip.helium.module.modules.render.Chams;
 import rip.helium.module.modules.render.ClickGUI;
+import rip.helium.module.modules.render.Colors;
 import rip.helium.module.modules.render.CustomChat;
 import rip.helium.module.modules.render.HUD;
 import rip.helium.module.modules.render.LivingESP;
@@ -169,6 +170,7 @@ public class ModuleManager implements ClientSupport {
 		addModule(new Capes(0, "Capes", Category.Render));
 		addModule(new Animations(0, "Animations", Category.Render));
 		addModule(new Chams(0, "Chams", Category.Render));
+		addModule(new Colors(0, "Colors", Category.Render));
 		addModule(new CustomChat(0, "CustomChat", "Custom Chat", Category.Render));
 		addModule(new XRay(Keyboard.KEY_X, "XRay", "X Ray", Category.Render));
 		addModule(new Night(0, "Night", Category.Render));
