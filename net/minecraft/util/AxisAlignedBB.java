@@ -2,6 +2,7 @@ package net.minecraft.util;
 
 public class AxisAlignedBB
 {
+	//TODO: Client
     public double minX;
     public double minY;
     public double minZ;
@@ -409,8 +410,9 @@ public class AxisAlignedBB
     {
         return Double.isNaN(this.minX) || Double.isNaN(this.minY) || Double.isNaN(this.minZ) || Double.isNaN(this.maxX) || Double.isNaN(this.maxY) || Double.isNaN(this.maxZ);
     }
-
-    public AxisAlignedBB offsetAndUpdate(final double par1, final double par3, final double par5) {
+    
+    //TODO: Client
+    public AxisAlignedBB offsetAndUpdate(double par1, double par3, double par5) {
         this.minX += par1;
         this.minY += par3;
         this.minZ += par5;
@@ -420,4 +422,3 @@ public class AxisAlignedBB
         return this;
     }
 }
-

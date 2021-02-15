@@ -5,25 +5,16 @@ public class MovementInput
     /**
      * The speed at which the player is strafing. Postive numbers to the left and negative to the right.
      */
-    public static float moveStrafe;
+    public float moveStrafe;
 
     /**
      * The speed at which the player is moving forward. Negative numbers will move backwards.
      */
-    public static float moveForward;
+    public float moveForward;
     public boolean jump;
     public boolean sneak;
 
     public void updatePlayerMoveState()
     {
     }
-
-    public float getStrafe() {
-        return moveStrafe;
-    }
-    
-    public float getForward() {
-        return moveForward;
-    }
-
 }

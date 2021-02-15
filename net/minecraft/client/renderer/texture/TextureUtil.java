@@ -11,8 +11,9 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-import optfine.Config;
-import optfine.Mipmaps;
+import optifine.Config;
+import optifine.Mipmaps;
+import optifine.Reflector;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -155,8 +156,18 @@ public class TextureUtil
 
     public static void allocateTextureImpl(int p_180600_0_, int p_180600_1_, int p_180600_2_, int p_180600_3_)
     {
-        deleteTexture(p_180600_0_);
-        bindTexture(p_180600_0_);
+        Object object = TextureUtil.class;
+
+        if (Reflector.SplashScreen.exists())
+        {
+            object = Reflector.SplashScreen.getTargetClass();
+        }
+
+        synchronized (object)
+        {
+            deleteTexture(p_180600_0_);
+            bindTexture(p_180600_0_);
+        }
 
         if (p_180600_1_ >= 0)
         {
@@ -199,7 +210,7 @@ public class TextureUtil
         }
     }
 
-    private static void setTextureClamped(boolean p_110997_0_)
+    public static void setTextureClamped(boolean p_110997_0_)
     {
         if (p_110997_0_)
         {
@@ -218,7 +229,7 @@ public class TextureUtil
         setTextureBlurMipmap(p_147951_0_, false);
     }
 
-    private static void setTextureBlurMipmap(boolean p_147954_0_, boolean p_147954_1_)
+    public static void setTextureBlurMipmap(boolean p_147954_0_, boolean p_147954_1_)
     {
         if (p_147954_0_)
         {
@@ -260,27 +271,42 @@ public class TextureUtil
     public static int[] readImageData(IResourceManager resourceManager, ResourceLocation imageLocation) throws IOException
     {
         BufferedImage bufferedimage = readBufferedImage(resourceManager.getResource(imageLocation).getInputStream());
-        int i = bufferedimage.getWidth();
-        int j = bufferedimage.getHeight();
-        int[] aint = new int[i * j];
-        bufferedimage.getRGB(0, 0, i, j, aint, 0, i);
-        return aint;
+
+        if (bufferedimage == null)
+        {
+            return null;
+        }
+        else
+        {
+            int i = bufferedimage.getWidth();
+            int j = bufferedimage.getHeight();
+            int[] aint = new int[i * j];
+            bufferedimage.getRGB(0, 0, i, j, aint, 0, i);
+            return aint;
+        }
     }
 
     public static BufferedImage readBufferedImage(InputStream imageStream) throws IOException
     {
-        BufferedImage bufferedimage;
-
-        try
+        if (imageStream == null)
         {
-            bufferedimage = ImageIO.read(imageStream);
+            return null;
         }
-        finally
+        else
         {
-            IOUtils.closeQuietly(imageStream);
-        }
+            BufferedImage bufferedimage;
 
-        return bufferedimage;
+            try
+            {
+                bufferedimage = ImageIO.read(imageStream);
+            }
+            finally
+            {
+                IOUtils.closeQuietly(imageStream);
+            }
+
+            return bufferedimage;
+        }
     }
 
     public static int[] updateAnaglyph(int[] p_110985_0_)

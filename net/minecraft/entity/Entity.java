@@ -6,7 +6,6 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockFenceGate;
 import net.minecraft.block.BlockLiquid;
@@ -49,9 +48,8 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import rip.helium.Helium;
-import rip.helium.event.minecraft.BlockStepEvent;
-import rip.helium.utils.BlockUtils;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.player.BlockStepEvent;
 
 public abstract class Entity implements ICommandSender
 {
@@ -59,8 +57,10 @@ public abstract class Entity implements ICommandSender
     private static int nextEntityID;
     private int entityId;
     public double renderDistanceWeight;
+    
+    //TODO: Client
+    public int attacks;
 
-	public int attacks;
     /**
      * Blocks entities from spawning when they do their AABB check to make sure the spot is clear of entities that can
      * prevent spawning.
@@ -107,7 +107,10 @@ public abstract class Entity implements ICommandSender
     public float prevRotationPitch;
 
     /** Axis aligned bounding box. */
+    
+    //TODO: Client
     public AxisAlignedBB boundingBox;
+    
     public boolean onGround;
 
     /**
@@ -520,10 +523,6 @@ public abstract class Entity implements ICommandSender
 
         this.firstUpdate = false;
         this.worldObj.theProfiler.endSection();
-        //This and the player should never be fucking null but precautions are good
-        if (this == null || Minecraft.getMinecraft().thePlayer == null || attacks > 50) {
-        	attacks = 0;
-        }
     }
 
     /**
@@ -624,7 +623,7 @@ public abstract class Entity implements ICommandSender
             double d3 = x;
             double d4 = y;
             double d5 = z;
-            boolean flag = this.onGround && this.isSneaking() && this instanceof EntityPlayer || Helium.instance.cheatManager.isCheatEnabled("Scaffold") && BlockUtils.getBlockUnderPlayer(Minecraft.getMinecraft().thePlayer) instanceof BlockAir;
+            boolean flag = this.onGround && this.isSneaking() && this instanceof EntityPlayer;
 
             if (flag)
             {
@@ -719,106 +718,209 @@ public abstract class Entity implements ICommandSender
 
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0D, 0.0D, z));
 
-            BlockStepEvent blockStepEvent = new BlockStepEvent(stepHeight);
-            Helium.eventBus.publish(blockStepEvent);
-
-
-
-            if (this.stepHeight > 0.0F && flag1 && (d3 != x || d5 != z))
-            {
-                double d11 = x;
-                double d7 = y;
-                double d8 = z;
-                AxisAlignedBB axisalignedbb3 = this.getEntityBoundingBox();
-                this.setEntityBoundingBox(axisalignedbb);
-                y = (double) blockStepEvent.stepHeight;
-                List<AxisAlignedBB> list = this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().addCoord(d3, y, d5));
-                AxisAlignedBB axisalignedbb4 = this.getEntityBoundingBox();
-                AxisAlignedBB axisalignedbb5 = axisalignedbb4.addCoord(d3, 0.0D, d5);
-                double d9 = y;
-
-                for (AxisAlignedBB axisalignedbb6 : list)
+            if(this == Minecraft.getMinecraft().thePlayer) {
+            	//TODO: Client
+                BlockStepEvent event = new BlockStepEvent(this.stepHeight);
+                EventManager.call(event);
+                
+                if (event.getStepHeight() > 0.0F && flag1 && (d3 != x || d5 != z))
                 {
-                    d9 = axisalignedbb6.calculateYOffset(axisalignedbb5, d9);
+                    double d11 = x;
+                    double d7 = y;
+                    double d8 = z;
+                    AxisAlignedBB axisalignedbb3 = this.getEntityBoundingBox();
+                    this.setEntityBoundingBox(axisalignedbb);
+                    
+                    //TODO: Client
+                    y = (double)event.getStepHeight();
+                    
+                    List<AxisAlignedBB> list = this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().addCoord(d3, y, d5));
+                    AxisAlignedBB axisalignedbb4 = this.getEntityBoundingBox();
+                    AxisAlignedBB axisalignedbb5 = axisalignedbb4.addCoord(d3, 0.0D, d5);
+                    double d9 = y;
+
+                    for (AxisAlignedBB axisalignedbb6 : list)
+                    {
+                        d9 = axisalignedbb6.calculateYOffset(axisalignedbb5, d9);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(0.0D, d9, 0.0D);
+                    double d15 = d3;
+
+                    for (AxisAlignedBB axisalignedbb7 : list)
+                    {
+                        d15 = axisalignedbb7.calculateXOffset(axisalignedbb4, d15);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(d15, 0.0D, 0.0D);
+                    double d16 = d5;
+
+                    for (AxisAlignedBB axisalignedbb8 : list)
+                    {
+                        d16 = axisalignedbb8.calculateZOffset(axisalignedbb4, d16);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(0.0D, 0.0D, d16);
+                    AxisAlignedBB axisalignedbb14 = this.getEntityBoundingBox();
+                    double d17 = y;
+
+                    for (AxisAlignedBB axisalignedbb9 : list)
+                    {
+                        d17 = axisalignedbb9.calculateYOffset(axisalignedbb14, d17);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(0.0D, d17, 0.0D);
+                    double d18 = d3;
+
+                    for (AxisAlignedBB axisalignedbb10 : list)
+                    {
+                        d18 = axisalignedbb10.calculateXOffset(axisalignedbb14, d18);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(d18, 0.0D, 0.0D);
+                    double d19 = d5;
+
+                    for (AxisAlignedBB axisalignedbb11 : list)
+                    {
+                        d19 = axisalignedbb11.calculateZOffset(axisalignedbb14, d19);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(0.0D, 0.0D, d19);
+                    double d20 = d15 * d15 + d16 * d16;
+                    double d10 = d18 * d18 + d19 * d19;
+
+                    if (d20 > d10)
+                    {
+                        x = d15;
+                        z = d16;
+                        y = -d9;
+                        this.setEntityBoundingBox(axisalignedbb4);
+                    }
+                    else
+                    {
+                        x = d18;
+                        z = d19;
+                        y = -d17;
+                        this.setEntityBoundingBox(axisalignedbb14);
+                    }
+
+                    for (AxisAlignedBB axisalignedbb12 : list)
+                    {
+                        y = axisalignedbb12.calculateYOffset(this.getEntityBoundingBox(), y);
+                    }
+
+                    this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0D, y, 0.0D));
+
+                    if (d11 * d11 + d8 * d8 >= x * x + z * z)
+                    {
+                        x = d11;
+                        y = d7;
+                        z = d8;
+                        this.setEntityBoundingBox(axisalignedbb3);
+                    }
+                    
+                    BlockStepEvent eventPost = new BlockStepEvent();
+                    EventManager.call(eventPost);
                 }
-
-                axisalignedbb4 = axisalignedbb4.offset(0.0D, d9, 0.0D);
-                double d15 = d3;
-
-                for (AxisAlignedBB axisalignedbb7 : list)
+            } else {
+            	if (this.stepHeight > 0.0F && flag1 && (d3 != x || d5 != z))
                 {
-                    d15 = axisalignedbb7.calculateXOffset(axisalignedbb4, d15);
+                    double d11 = x;
+                    double d7 = y;
+                    double d8 = z;
+                    AxisAlignedBB axisalignedbb3 = this.getEntityBoundingBox();
+                    this.setEntityBoundingBox(axisalignedbb);
+                    
+                    //TODO: Client
+                    y = (double)this.stepHeight;
+                    
+                    List<AxisAlignedBB> list = this.worldObj.getCollidingBoundingBoxes(this, this.getEntityBoundingBox().addCoord(d3, y, d5));
+                    AxisAlignedBB axisalignedbb4 = this.getEntityBoundingBox();
+                    AxisAlignedBB axisalignedbb5 = axisalignedbb4.addCoord(d3, 0.0D, d5);
+                    double d9 = y;
+
+                    for (AxisAlignedBB axisalignedbb6 : list)
+                    {
+                        d9 = axisalignedbb6.calculateYOffset(axisalignedbb5, d9);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(0.0D, d9, 0.0D);
+                    double d15 = d3;
+
+                    for (AxisAlignedBB axisalignedbb7 : list)
+                    {
+                        d15 = axisalignedbb7.calculateXOffset(axisalignedbb4, d15);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(d15, 0.0D, 0.0D);
+                    double d16 = d5;
+
+                    for (AxisAlignedBB axisalignedbb8 : list)
+                    {
+                        d16 = axisalignedbb8.calculateZOffset(axisalignedbb4, d16);
+                    }
+
+                    axisalignedbb4 = axisalignedbb4.offset(0.0D, 0.0D, d16);
+                    AxisAlignedBB axisalignedbb14 = this.getEntityBoundingBox();
+                    double d17 = y;
+
+                    for (AxisAlignedBB axisalignedbb9 : list)
+                    {
+                        d17 = axisalignedbb9.calculateYOffset(axisalignedbb14, d17);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(0.0D, d17, 0.0D);
+                    double d18 = d3;
+
+                    for (AxisAlignedBB axisalignedbb10 : list)
+                    {
+                        d18 = axisalignedbb10.calculateXOffset(axisalignedbb14, d18);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(d18, 0.0D, 0.0D);
+                    double d19 = d5;
+
+                    for (AxisAlignedBB axisalignedbb11 : list)
+                    {
+                        d19 = axisalignedbb11.calculateZOffset(axisalignedbb14, d19);
+                    }
+
+                    axisalignedbb14 = axisalignedbb14.offset(0.0D, 0.0D, d19);
+                    double d20 = d15 * d15 + d16 * d16;
+                    double d10 = d18 * d18 + d19 * d19;
+
+                    if (d20 > d10)
+                    {
+                        x = d15;
+                        z = d16;
+                        y = -d9;
+                        this.setEntityBoundingBox(axisalignedbb4);
+                    }
+                    else
+                    {
+                        x = d18;
+                        z = d19;
+                        y = -d17;
+                        this.setEntityBoundingBox(axisalignedbb14);
+                    }
+
+                    for (AxisAlignedBB axisalignedbb12 : list)
+                    {
+                        y = axisalignedbb12.calculateYOffset(this.getEntityBoundingBox(), y);
+                    }
+
+                    this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0D, y, 0.0D));
+
+                    if (d11 * d11 + d8 * d8 >= x * x + z * z)
+                    {
+                        x = d11;
+                        y = d7;
+                        z = d8;
+                        this.setEntityBoundingBox(axisalignedbb3);
+                    }
                 }
-
-                axisalignedbb4 = axisalignedbb4.offset(d15, 0.0D, 0.0D);
-                double d16 = d5;
-
-                for (AxisAlignedBB axisalignedbb8 : list)
-                {
-                    d16 = axisalignedbb8.calculateZOffset(axisalignedbb4, d16);
-                }
-
-                axisalignedbb4 = axisalignedbb4.offset(0.0D, 0.0D, d16);
-                AxisAlignedBB axisalignedbb14 = this.getEntityBoundingBox();
-                double d17 = y;
-
-                for (AxisAlignedBB axisalignedbb9 : list)
-                {
-                    d17 = axisalignedbb9.calculateYOffset(axisalignedbb14, d17);
-                }
-
-                axisalignedbb14 = axisalignedbb14.offset(0.0D, d17, 0.0D);
-                double d18 = d3;
-
-                for (AxisAlignedBB axisalignedbb10 : list)
-                {
-                    d18 = axisalignedbb10.calculateXOffset(axisalignedbb14, d18);
-                }
-
-                axisalignedbb14 = axisalignedbb14.offset(d18, 0.0D, 0.0D);
-                double d19 = d5;
-
-                for (AxisAlignedBB axisalignedbb11 : list)
-                {
-                    d19 = axisalignedbb11.calculateZOffset(axisalignedbb14, d19);
-                }
-
-                axisalignedbb14 = axisalignedbb14.offset(0.0D, 0.0D, d19);
-                double d20 = d15 * d15 + d16 * d16;
-                double d10 = d18 * d18 + d19 * d19;
-
-                if (d20 > d10)
-                {
-                    x = d15;
-                    z = d16;
-                    y = -d9;
-                    this.setEntityBoundingBox(axisalignedbb4);
-                }
-                else
-                {
-                    x = d18;
-                    z = d19;
-                    y = -d17;
-                    this.setEntityBoundingBox(axisalignedbb14);
-                }
-
-                for (AxisAlignedBB axisalignedbb12 : list)
-                {
-                    y = axisalignedbb12.calculateYOffset(this.getEntityBoundingBox(), y);
-                }
-
-                this.setEntityBoundingBox(this.getEntityBoundingBox().offset(0.0D, y, 0.0D));
-
-                if (d11 * d11 + d8 * d8 >= x * x + z * z)
-                {
-                    x = d11;
-                    y = d7;
-                    z = d8;
-                    this.setEntityBoundingBox(axisalignedbb3);
-                }
-                BlockStepEvent blockStepEvent1 = new BlockStepEvent();
-                Helium.eventBus.publish(blockStepEvent1);
             }
+            
 
             this.worldObj.theProfiler.endSection();
             this.worldObj.theProfiler.startSection("rest");
@@ -861,7 +963,7 @@ public abstract class Entity implements ICommandSender
                 block1.onLanded(this.worldObj, this);
             }
 
-           if (this.canTriggerWalking() && !flag && this.ridingEntity == null)
+            if (this.canTriggerWalking() && !flag && this.ridingEntity == null)
             {
                 double d12 = this.posX - d0;
                 double d13 = this.posY - d1;

@@ -9,7 +9,8 @@ import net.minecraft.network.login.INetHandlerLoginServer;
 
 public class C00PacketLoginStart implements Packet<INetHandlerLoginServer>
 {
-    private GameProfile profile;
+	//TODO: Client
+    public GameProfile profile;
 
     public C00PacketLoginStart()
     {

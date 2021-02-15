@@ -212,14 +212,12 @@ public class WorldGenTrees extends WorldGenAbstractTree
                         {
                             for (int l3 = 0; l3 < 2; ++l3)
                             {
-                                for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                                for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                                 {
-                                    EnumFacing enumfacing = (EnumFacing) enumfacing0;
-
                                     if (rand.nextInt(4 - l3) == 0)
                                     {
-                                        EnumFacing enumfacing1 = enumfacing.getOpposite();
-                                        this.func_181652_a(worldIn, rand.nextInt(3), position.add(enumfacing1.getFrontOffsetX(), i - 5 + l3, enumfacing1.getFrontOffsetZ()), enumfacing);
+                                        EnumFacing enumfacing1 = ((EnumFacing) enumfacing).getOpposite();
+                                        this.func_181652_a(worldIn, rand.nextInt(3), position.add(enumfacing1.getFrontOffsetX(), i - 5 + l3, enumfacing1.getFrontOffsetZ()), (EnumFacing) enumfacing);
                                     }
                                 }
                             }

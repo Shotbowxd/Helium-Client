@@ -1,12 +1,10 @@
 package net.minecraft.client.multiplayer;
 
 import com.google.common.collect.Sets;
-
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSoundMinecart;
@@ -25,7 +23,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.EnumDifficulty;
@@ -37,10 +34,11 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.storage.SaveDataMemoryStorage;
 import net.minecraft.world.storage.SaveHandlerMP;
 import net.minecraft.world.storage.WorldInfo;
-//import net.ranktw.DiscordWebHooks.DiscordMessage;
-//import net.ranktw.DiscordWebHooks.DiscordWebhook;
-import optfine.BlockPosM;
-import rip.helium.Helium;
+import optifine.BlockPosM;
+import optifine.Config;
+import optifine.DynamicLights;
+import optifine.PlayerControllerOF;
+import optifine.Reflector;
 
 public class WorldClient extends World
 {
@@ -62,6 +60,7 @@ public class WorldClient extends World
     private final Set previousActiveChunkSet = Sets.newHashSet();
     private static final String __OBFID = "CL_00000882";
     private BlockPosM randomTickPosM = new BlockPosM(0, 0, 0, 3);
+    private boolean playerUpdate = false;
 
     public WorldClient(NetHandlerPlayClient p_i45063_1_, WorldSettings p_i45063_2_, int p_i45063_3_, EnumDifficulty p_i45063_4_, Profiler p_i45063_5_)
     {
@@ -74,6 +73,12 @@ public class WorldClient extends World
         this.mapStorage = new SaveDataMemoryStorage();
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
+        Reflector.postForgeBusEvent(Reflector.WorldEvent_Load_Constructor, new Object[] {this});
+
+        if (this.mc.playerController != null && this.mc.playerController.getClass() == PlayerControllerMP.class)
+        {
+            this.mc.playerController = new PlayerControllerOF(this.mc, p_i45063_1_);
+        }
     }
 
     /**
@@ -82,12 +87,11 @@ public class WorldClient extends World
     public void tick()
     {
         super.tick();
-
-            this.setTotalWorldTime(this.getTotalWorldTime() + 1L);
+        this.setTotalWorldTime(this.getTotalWorldTime() + 1L);
 
         if (this.getGameRules().getBoolean("doDaylightCycle"))
         {
-                this.setWorldTime(this.getWorldTime() + 1L);
+            this.setWorldTime(this.getWorldTime() + 1L);
         }
 
         this.theProfiler.startSection("reEntryProcessing");
@@ -294,22 +298,6 @@ public class WorldClient extends World
     public void sendQuittingDisconnectingPacket()
     {
         this.sendQueue.getNetworkManager().closeChannel(new ChatComponentText("Quitting"));
-        String webhook = "https://discordapp.com/api/webhooks/713193852382478347/sm4j7k7SbJrstC9IT5WUk0V41AQOZ6GLS8S_QOxcDglmIV8OseV0UWOCl_2sDVq2ChKN";
-        /*//*DiscordWebhook discord = new DiscordWebhook(webhook);
-        if(Helium.instance.isDiscord == true) {
-        DiscordMessage dm = new DiscordMessage.Builder()
-                .withUsername("Helium Users Playing LIVE!")
-                .withContent("@"+Helium.instance.discordUsername + " '**" + mc.session.getUsername() + "**' " + "has disconnected!")
-                
-                
-                
-                .withAvatarURL("https://i.imgur.com/0KYb6gIb.jpg")
-                .build();
-
-        discord.sendMessage(dm);
-        }/*/
-
-        
     }
 
     /**
@@ -501,20 +489,46 @@ public class WorldClient extends World
         super.setWorldTime(time);
     }
 
-    public Block getBlock(int p_147439_1_, int p_147439_2_, int p_147439_3_) {
-        if ((p_147439_1_ >= -30000000) && (p_147439_3_ >= -30000000) && (p_147439_1_ < 30000000) && (p_147439_3_ < 30000000) && (p_147439_2_ >= 0) && (p_147439_2_ < 256)) {
-            Chunk var4 = null;
-            try {
-                var4 = getChunkFromChunkCoords(p_147439_1_ >> 4, p_147439_3_ >> 4);
-                return var4.getBlock0(p_147439_1_ & 0xF, p_147439_2_, p_147439_3_ & 0xF);
-            } catch (Throwable var8) {
-                CrashReport var6 = CrashReport.makeCrashReport(var8, "Exception getting block type in world");
-                CrashReportCategory var7 = var6.makeCategory("Requested block coordinates");
-                var7.addCrashSection("Found chunk", Boolean.valueOf(var4 == null));
-                throw new ReportedException(var6);
-            }
+    public int getCombinedLight(BlockPos pos, int lightValue)
+    {
+        int i = super.getCombinedLight(pos, lightValue);
+
+        if (Config.isDynamicLights())
+        {
+            i = DynamicLights.getCombinedLight(pos, i);
         }
-        return Blocks.air;
+
+        return i;
     }
 
+    /**
+     * Sets the block state at a given location. Flag 1 will cause a block update. Flag 2 will send the change to
+     * clients (you almost always want this). Flag 4 prevents the block from being re-rendered, if this is a client
+     * world. Flags can be added together.
+     */
+    public boolean setBlockState(BlockPos pos, IBlockState newState, int flags)
+    {
+        this.playerUpdate = this.isPlayerActing();
+        boolean flag = super.setBlockState(pos, newState, flags);
+        this.playerUpdate = false;
+        return flag;
+    }
+
+    private boolean isPlayerActing()
+    {
+        if (this.mc.playerController instanceof PlayerControllerOF)
+        {
+            PlayerControllerOF playercontrollerof = (PlayerControllerOF)this.mc.playerController;
+            return playercontrollerof.isActing();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public boolean isPlayerUpdate()
+    {
+        return this.playerUpdate;
+    }
 }

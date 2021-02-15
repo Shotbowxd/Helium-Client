@@ -72,6 +72,7 @@ public class StringTranslate
     /**
      * Replaces all the current instance's translations with the ones that are passed in.
      */
+
     public static synchronized void replaceWith(Map<String, String> p_135063_0_)
     {
         instance.languageList.clear();
@@ -82,6 +83,7 @@ public class StringTranslate
     /**
      * Translate a key to current language.
      */
+
     public synchronized String translateKey(String key)
     {
         return this.tryTranslateKey(key);
@@ -90,6 +92,7 @@ public class StringTranslate
     /**
      * Translate a key to current language applying String.format()
      */
+
     public synchronized String translateKeyFormat(String key, Object... format)
     {
         String s = this.tryTranslateKey(key);
@@ -116,6 +119,7 @@ public class StringTranslate
     /**
      * Returns true if the passed key is in the translation table.
      */
+
     public synchronized boolean isKeyTranslated(String key)
     {
         return this.languageList.containsKey(key);

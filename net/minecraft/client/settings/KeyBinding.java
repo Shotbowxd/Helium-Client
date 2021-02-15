@@ -18,7 +18,9 @@ public class KeyBinding implements Comparable<KeyBinding>
     private int keyCode;
 
     /** Is the key held down? */
+    //TODO: Client
     public boolean pressed;
+    
     private int pressTime;
 
     public static void onTick(int keyCode)

@@ -70,7 +70,7 @@ public class EntitySquid extends EntityWaterMob
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return null;
     }

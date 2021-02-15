@@ -14,11 +14,12 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
-import optfine.Config;
-import optfine.RandomMobs;
+import optifine.Config;
+import optifine.RandomMobs;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shadersmod.client.ShadersTex;
 
 public class TextureManager implements ITickable, IResourceManagerReloadListener
 {
@@ -49,7 +50,14 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
             this.loadTexture(resource, (ITextureObject)object);
         }
 
-        TextureUtil.bindTexture(((ITextureObject)object).getGlTextureId());
+        if (Config.isShaders())
+        {
+            ShadersTex.bindTexture((ITextureObject)object);
+        }
+        else
+        {
+            TextureUtil.bindTexture(((ITextureObject)object).getGlTextureId());
+        }
     }
 
     public boolean loadTickableTexture(ResourceLocation textureLocation, ITickableTextureObject textureObj)
@@ -108,6 +116,11 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
 
     public ResourceLocation getDynamicTextureLocation(String name, DynamicTexture texture)
     {
+        if (name.equals("logo"))
+        {
+            texture = Config.getMojangLogoTexture(texture);
+        }
+
         Integer integer = (Integer)this.mapTextureCounters.get(name);
 
         if (integer == null)
@@ -139,6 +152,7 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
 
         if (itextureobject != null)
         {
+            this.mapTextureObjects.remove(textureLocation);
             TextureUtil.deleteTexture(itextureobject.getGlTextureId());
         }
     }
@@ -152,8 +166,9 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
         while (iterator.hasNext())
         {
             ResourceLocation resourcelocation = (ResourceLocation)iterator.next();
+            String s = resourcelocation.getResourcePath();
 
-            if (resourcelocation.getResourcePath().startsWith("mcpatcher/"))
+            if (s.startsWith("mcpatcher/") || s.startsWith("optifine/"))
             {
                 ITextureObject itextureobject = (ITextureObject)this.mapTextureObjects.get(resourcelocation);
 
@@ -170,6 +185,20 @@ public class TextureManager implements ITickable, IResourceManagerReloadListener
         for (Object entry : this.mapTextureObjects.entrySet())
         {
             this.loadTexture((ResourceLocation)((Entry) entry).getKey(), (ITextureObject)((Entry) entry).getValue());
+        }
+    }
+
+    public void reloadBannerTextures()
+    {
+        for (Object entry : this.mapTextureObjects.entrySet())
+        {
+            ResourceLocation resourcelocation = (ResourceLocation)((Entry) entry).getKey();
+            ITextureObject itextureobject = (ITextureObject)((Entry) entry).getValue();
+
+            if (itextureobject instanceof LayeredColorMaskTexture)
+            {
+                this.loadTexture(resourcelocation, itextureobject);
+            }
         }
     }
 }

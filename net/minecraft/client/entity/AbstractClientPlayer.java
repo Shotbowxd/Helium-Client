@@ -1,13 +1,9 @@
 package net.minecraft.client.entity;
 
 import com.mojang.authlib.GameProfile;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.renderer.IImageBuffer;
 import net.minecraft.client.renderer.ImageBufferDownload;
 import net.minecraft.client.renderer.ThreadDownloadImageData;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -21,23 +17,29 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import optfine.Config;
-import optfine.PlayerConfigurations;
-import optfine.Reflector;
-
-import org.apache.commons.io.FilenameUtils;
+import optifine.CapeUtils;
+import optifine.Config;
+import optifine.PlayerConfigurations;
+import optifine.Reflector;
 
 public abstract class AbstractClientPlayer extends EntityPlayer
 {
-    public NetworkPlayerInfo playerInfo;
-    private ResourceLocation ofLocationCape = null;
+    private NetworkPlayerInfo playerInfo;
+    private ResourceLocation locationOfCape = null;
+    private String nameClear = null;
     private static final String __OBFID = "CL_00000935";
 
     public AbstractClientPlayer(World worldIn, GameProfile playerProfile)
     {
         super(worldIn, playerProfile);
-        String s = playerProfile.getName();
-        this.downloadCape(s);
+        this.nameClear = playerProfile.getName();
+
+        if (this.nameClear != null && !this.nameClear.isEmpty())
+        {
+            this.nameClear = StringUtils.stripControlCodes(this.nameClear);
+        }
+
+        CapeUtils.downloadCape(this);
         PlayerConfigurations.getPlayerConfiguration(this);
     }
 
@@ -76,7 +78,7 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         NetworkPlayerInfo networkplayerinfo = this.getPlayerInfo();
         return networkplayerinfo != null && networkplayerinfo.hasLocationSkin();
     }
-
+    
     /**
      * Returns true if the player instance has an associated skin.
      */
@@ -92,9 +94,9 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         {
             return null;
         }
-        else if (this.ofLocationCape != null)
+        else if (this.locationOfCape != null)
         {
-            return this.ofLocationCape;
+            return this.locationOfCape;
         }
         else
         {
@@ -168,64 +170,18 @@ public abstract class AbstractClientPlayer extends EntityPlayer
         return Reflector.ForgeHooksClient_getOffsetFOV.exists() ? Reflector.callFloat(Reflector.ForgeHooksClient_getOffsetFOV, new Object[] {this, Float.valueOf(f)}): f;
     }
 
-    private void downloadCape(String p_downloadCape_1_)
+    public String getNameClear()
     {
-        if (p_downloadCape_1_ != null && !p_downloadCape_1_.isEmpty())
-        {
-            p_downloadCape_1_ = StringUtils.stripControlCodes(p_downloadCape_1_);
-            String s = "http://s.optifine.net/capes/" + p_downloadCape_1_ + ".png";
-            String s1 = FilenameUtils.getBaseName(s);
-            final ResourceLocation resourcelocation = new ResourceLocation("capeof/" + s1);
-            TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-            ITextureObject itextureobject = texturemanager.getTexture(resourcelocation);
-
-            if (itextureobject != null && itextureobject instanceof ThreadDownloadImageData)
-            {
-                ThreadDownloadImageData threaddownloadimagedata = (ThreadDownloadImageData)itextureobject;
-
-                if (threaddownloadimagedata.imageFound != null)
-                {
-                    if (threaddownloadimagedata.imageFound.booleanValue())
-                    {
-                        this.ofLocationCape = resourcelocation;
-                    }
-
-                    return;
-                }
-            }
-
-            IImageBuffer iimagebuffer = new IImageBuffer()
-            {
-                ImageBufferDownload ibd = new ImageBufferDownload();
-                public BufferedImage parseUserSkin(BufferedImage image)
-                {
-                    return AbstractClientPlayer.this.parseCape(image);
-                }
-                public void skinAvailable()
-                {
-                    AbstractClientPlayer.this.ofLocationCape = resourcelocation;
-                }
-            };
-            ThreadDownloadImageData threaddownloadimagedata1 = new ThreadDownloadImageData((File)null, s, (ResourceLocation)null, iimagebuffer);
-            texturemanager.loadTexture(resourcelocation, threaddownloadimagedata1);
-        }
+        return this.nameClear;
     }
 
-    private BufferedImage parseCape(BufferedImage p_parseCape_1_)
+    public ResourceLocation getLocationOfCape()
     {
-        int i = 64;
-        int j = 32;
-        int k = p_parseCape_1_.getWidth();
+        return this.locationOfCape;
+    }
 
-        for (int l = p_parseCape_1_.getHeight(); i < k || j < l; j *= 2)
-        {
-            i *= 2;
-        }
-
-        BufferedImage bufferedimage = new BufferedImage(i, j, 2);
-        Graphics graphics = bufferedimage.getGraphics();
-        graphics.drawImage(p_parseCape_1_, 0, 0, (ImageObserver)null);
-        graphics.dispose();
-        return bufferedimage;
+    public void setLocationOfCape(ResourceLocation p_setLocationOfCape_1_)
+    {
+        this.locationOfCape = p_setLocationOfCape_1_;
     }
 }

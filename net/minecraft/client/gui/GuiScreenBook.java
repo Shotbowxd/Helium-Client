@@ -1,7 +1,6 @@
 package net.minecraft.client.gui;
 
 import com.google.common.collect.Lists;
-
 import com.google.gson.JsonParseException;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
@@ -25,9 +24,6 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
-import rip.helium.ChatUtil;
-import rip.helium.cheat.impl.misc.BookExploit;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
@@ -43,9 +39,6 @@ public class GuiScreenBook extends GuiScreen
 
     /** Whether the book is signed or can still be edited */
     private final boolean bookIsUnsigned;
-
-    String getExploitBookname = "§a§lBuy Helium Client :)";
-
 
     /**
      * Whether the book's title or contents has been modified since being opened
@@ -73,6 +66,8 @@ public class GuiScreenBook extends GuiScreen
     private GuiButton buttonSign;
     private GuiButton buttonFinalize;
     private GuiButton buttonCancel;
+    
+    private boolean enchant;
 
     public GuiScreenBook(EntityPlayer player, ItemStack book, boolean isUnsigned)
     {
@@ -129,6 +124,8 @@ public class GuiScreenBook extends GuiScreen
             this.buttonList.add(this.buttonDone = new GuiButton(0, this.width / 2 + 2, 4 + this.bookImageHeight, 98, 20, I18n.format("gui.done", new Object[0])));
             this.buttonList.add(this.buttonFinalize = new GuiButton(5, this.width / 2 - 100, 4 + this.bookImageHeight, 98, 20, I18n.format("book.finalizeButton", new Object[0])));
             this.buttonList.add(this.buttonCancel = new GuiButton(4, this.width / 2 + 2, 4 + this.bookImageHeight, 98, 20, I18n.format("gui.cancel", new Object[0])));
+            
+            this.buttonList.add(new GuiButton(69, this.width / 2 + 2, 4 + this.bookImageHeight + 22, 98, 20, I18n.format("Enchant Exploit", new Object[0])));
         }
         else
         {
@@ -194,13 +191,13 @@ public class GuiScreenBook extends GuiScreen
                 }
                 this.bookObj.setItem(Items.written_book);
             }
-            this.bookObj.setStackDisplayName(getExploitBookname);
+            this.bookObj.setStackDisplayName("Helium Client");
             Enchantment[] enchantmentsList;
-            int value = BookExploit.level.getValue().intValue();
+            int value = 10000;
             this.bookObj.setRepairCost(0);
             this.bookObj.setItemDamage(1337);
             
-            if (BookExploit.fire.getValue()) {
+            /*if (BookExploit.fire.getValue()) {
             	ChatUtil.chat("§fAdding Fire Aspect, Level:" + value);
             	this.bookObj.addEnchantment(Enchantment.fireAspect, value);
             }
@@ -219,55 +216,75 @@ public class GuiScreenBook extends GuiScreen
             if (BookExploit.kb.getValue()) {
             	ChatUtil.chat("Â§fAdding Knockback, Level:" + value);
             	this.bookObj.addEnchantment(Enchantment.looting, value);
-            }
+            }*/
             
+            if(this.enchant) {
+            	this.bookObj.addEnchantment(Enchantment.looting, value);
+            	this.bookObj.addEnchantment(Enchantment.sharpness, value);
+            	this.bookObj.addEnchantment(Enchantment.fireAspect, value);
+            }
             
             final PacketBuffer var7 = new PacketBuffer(Unpooled.buffer());
             var7.writeRawItemStackToBuffer(this.bookObj);
             
             this.mc.getNetHandler().addToSendQueue(new C17PacketCustomPayload(var2, var7));
             //send a client message
-            ChatUtil.chat("Â§fYour item should have enchanted! If it was not, then it's patched on the server.");
-            ChatUtil.chat("Â§fThe server version for it to workÂ§f: Â§d1.7.10");
         }
     }
 
     /**
      * Called by the controls from the buttonList when activated. (Mouse pressed for buttons)
      */
-    @Override
-    protected void actionPerformed(final GuiButton button) throws IOException {
-        if (button.enabled) {
-            if (button.id == 0) {
-                this.mc.displayGuiScreen(null);
+    protected void actionPerformed(GuiButton button) throws IOException
+    {
+        if (button.enabled)
+        {
+        	if(button.id == 69) {
+        		this.enchant = true;
+                this.sendBookToServer(true);
+                this.mc.displayGuiScreen((GuiScreen)null);
+        	} else if (button.id == 0)
+            {
+                this.mc.displayGuiScreen((GuiScreen)null);
                 this.sendBookToServer(false);
             }
-            else if (button.id == 3 && this.bookIsUnsigned) {
+            else if (button.id == 3 && this.bookIsUnsigned)
+            {
                 this.bookGettingSigned = true;
             }
-            else if (button.id == 1) {
-                if (this.currPage < this.bookTotalPages - 1) {
+            else if (button.id == 1)
+            {
+                if (this.currPage < this.bookTotalPages - 1)
+                {
                     ++this.currPage;
                 }
-                else if (this.bookIsUnsigned) {
+                else if (this.bookIsUnsigned)
+                {
                     this.addNewPage();
-                    if (this.currPage < this.bookTotalPages - 1) {
+
+                    if (this.currPage < this.bookTotalPages - 1)
+                    {
                         ++this.currPage;
                     }
                 }
             }
-            else if (button.id == 2) {
-                if (this.currPage > 0) {
+            else if (button.id == 2)
+            {
+                if (this.currPage > 0)
+                {
                     --this.currPage;
                 }
             }
-            else if (button.id == 5 && this.bookGettingSigned) {
+            else if (button.id == 5 && this.bookGettingSigned)
+            {
                 this.sendBookToServer(true);
-                this.mc.displayGuiScreen(null);
+                this.mc.displayGuiScreen((GuiScreen)null);
             }
-            else if (button.id == 4 && this.bookGettingSigned) {
+            else if (button.id == 4 && this.bookGettingSigned)
+            {
                 this.bookGettingSigned = false;
             }
+
             this.updateButtons();
         }
     }

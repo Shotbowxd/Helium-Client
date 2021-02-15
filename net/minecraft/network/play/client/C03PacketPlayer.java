@@ -8,15 +8,44 @@ import net.minecraft.network.play.INetHandlerPlayServer;
 public class C03PacketPlayer implements Packet<INetHandlerPlayServer>
 {
     protected double x;
+    
+    //TODO: Client
     public double y;
-    protected double z;
-    protected float yaw;
-    protected float pitch;
-    protected boolean onGround;
+    public double z;
+    public float yaw;
+    public float pitch;
+    
+    //TODO: Client
+    public boolean onGround;
+    
     protected boolean moving;
     protected boolean rotating;
 
-    public C03PacketPlayer()
+    public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getZ() {
+		return z;
+	}
+
+	public void setZ(double z) {
+		this.z = z;
+	}
+
+	public C03PacketPlayer()
     {
     }
 
@@ -92,20 +121,6 @@ public class C03PacketPlayer implements Packet<INetHandlerPlayServer>
     public void setMoving(boolean isMoving)
     {
         this.moving = isMoving;
-    }
-
-    public void setY(double y)
-    {
-        this.y = y;
-    }
-
-    public void setX(double x)
-    {
-        this.x = x;
-    }
-    public void setZ(double z)
-    {
-        this.z = z;
     }
 
     public static class C04PacketPlayerPosition extends C03PacketPlayer

@@ -1,15 +1,13 @@
 package net.minecraft.network.play.client;
 
 import java.io.IOException;
-
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayServer;
-import rip.helium.utils.property.impl.DoubleProperty;
 
 public class C00PacketKeepAlive implements Packet<INetHandlerPlayServer>
 {
-    public static int key;
+    private int key;
 
     public C00PacketKeepAlive()
     {
@@ -48,8 +46,4 @@ public class C00PacketKeepAlive implements Packet<INetHandlerPlayServer>
     {
         return this.key;
     }
-
-	public void setKey(int bullshitdelay) {
-		key = bullshitdelay;
-	}
 }

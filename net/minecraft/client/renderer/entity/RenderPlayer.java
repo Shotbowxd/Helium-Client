@@ -1,6 +1,6 @@
 package net.minecraft.client.renderer.entity;
 
-import me.hippo.systems.lwjeb.EventBus;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelPlayer;
@@ -18,8 +18,8 @@ import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ResourceLocation;
-import rip.helium.Helium;
-import rip.helium.event.minecraft.RenderPlayerNameEvent;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.player.UpdateEvent;
 
 public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
 {
@@ -39,7 +39,7 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
         this.addLayer(new LayerHeldItem(this));
         this.addLayer(new LayerArrow(this));
         this.addLayer(new LayerDeadmau5Head(this));
-//        this.addLayer(new LayerCape(this));
+        this.addLayer(new LayerCape(this));
         this.addLayer(new LayerCustomHead(this.getMainModel().bipedHead));
     }
 
@@ -144,13 +144,6 @@ public class RenderPlayer extends RendererLivingEntity<AbstractClientPlayer>
 
     protected void renderOffsetLivingLabel(AbstractClientPlayer entityIn, double x, double y, double z, String str, float p_177069_9_, double p_177069_10_)
     {
-    	RenderPlayerNameEvent playerNameEvent = new RenderPlayerNameEvent(entityIn);
-    	Helium.eventBus.publish(playerNameEvent);
-    	
-    	if (playerNameEvent.isCancelled())
-    		return;
-    	
-    	
         if (p_177069_10_ < 100.0D)
         {
             Scoreboard scoreboard = entityIn.getWorldScoreboard();

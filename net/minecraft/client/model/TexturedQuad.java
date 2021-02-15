@@ -4,12 +4,15 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Vec3;
+import optifine.Config;
+import shadersmod.client.SVertexFormat;
 
 public class TexturedQuad
 {
     public PositionTextureVertex[] vertexPositions;
     public int nVertices;
     private boolean invertNormal;
+    private static final String __OBFID = "CL_00000850";
 
     public TexturedQuad(PositionTextureVertex[] vertices)
     {
@@ -60,7 +63,14 @@ public class TexturedQuad
             f2 = -f2;
         }
 
-        renderer.begin(7, DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL);
+        if (Config.isShaders())
+        {
+            renderer.begin(7, SVertexFormat.defVertexFormatTextured);
+        }
+        else
+        {
+            renderer.begin(7, DefaultVertexFormats.OLDMODEL_POSITION_TEX_NORMAL);
+        }
 
         for (int i = 0; i < 4; ++i)
         {

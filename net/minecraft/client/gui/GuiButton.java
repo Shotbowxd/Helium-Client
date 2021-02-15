@@ -4,12 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
-import org.lwjgl.opengl.GL11;
-
-import java.awt.*;
 
 public class GuiButton extends Gui
 {
@@ -80,20 +75,20 @@ public class GuiButton extends Gui
     /**
      * Draws this button to the screen.
      */
-    /*/public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Minecraft mc, int mouseX, int mouseY)
     {
         if (this.visible)
         {
+            FontRenderer fontrenderer = mc.fontRendererObj;
+            mc.getTextureManager().bindTexture(buttonTextures);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int i = this.getHoverState(this.hovered);
-            if (!this.enabled) {
-                rip.helium.utils.Draw.drawBorderedRectangle(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 1, new Color(0, 0, 0, 120).getRGB(), new Color(0,0,0).getRGB(), true);
-            } else if (this.hovered) {
-                rip.helium.utils.Draw.drawBorderedRectangle(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 1, new Color(0, 0, 0, 120).getRGB(), new Color(0,0,0,0).getRGB(), true);
-                //this.transition = Minecraft.fontRendererObj.getStringWidth(StringUtils.stripControlCodes(this.displayString)) - 10;
-            } else {
-                rip.helium.utils.Draw.drawBorderedRectangle(this.xPosition, this.yPosition, this.xPosition + this.width, this.yPosition + this.height, 1, new Color(0, 0, 0, 120).getRGB(), new Color(0,0,0).getRGB(), true);
-            }
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+            GlStateManager.blendFunc(770, 771);
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + i * 20, this.width / 2, this.height);
+            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
             this.mouseDragged(mc, mouseX, mouseY);
             int j = 14737632;
 
@@ -106,34 +101,10 @@ public class GuiButton extends Gui
                 j = 16777120;
             }
 
-            mc.fontRendererObj.drawString(this.displayString, this.xPosition - 24 + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
+            this.drawCenteredString(fontrenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, j);
         }
     }
-/*/
-    public void drawButton(Minecraft mc, int mouseX, int mouseY) {
-        if (this.visible) {
-            FontRenderer var4 = Minecraft.getMinecraft().fontRendererObj;
-            mc.getTextureManager().bindTexture(buttonTextures);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int var5 = this.getHoverState(this.hovered);
-            GL11.glEnable(GL11.GL_BLEND);
-            OpenGlHelper.glBlendFunc(770, 771, 1, 0);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 46 + var5 * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 46 + var5 * 20, this.width / 2, this.height);
-            this.mouseDragged(mc, mouseX, mouseY);
-            int var6 = 14737632;
 
-            if (!this.enabled) {
-                var6 = 10526880;
-            } else if (this.hovered) {
-                var6 = 16777120;
-            }
-
-            this.drawCenteredString(var4, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, var6);
-        }
-    }
     /**
      * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
      */

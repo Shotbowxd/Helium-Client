@@ -26,7 +26,7 @@ public abstract class EntityGolem extends EntityCreature implements IAnimals
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "none";
     }

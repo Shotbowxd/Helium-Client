@@ -212,7 +212,7 @@ public class EntityPigZombie extends EntityZombie
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "mob.zombiepig.zpighurt";
     }

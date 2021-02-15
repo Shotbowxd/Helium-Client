@@ -1,11 +1,15 @@
 package rip.helium.gui.components;
 
-import net.minecraft.client.gui.Gui;
-import org.lwjgl.input.Keyboard;
-import rip.helium.utils.*;
-import rip.helium.utils.font.FontRenderer;
-
+import java.awt.Color;
 import java.io.IOException;
+
+import org.lwjgl.input.Keyboard;
+
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import rip.helium.utils.client.SystemUtils;
+import rip.helium.utils.client.Timer;
+import rip.helium.utils.render.Render2DUtils;
 
 public class TextField extends Gui {
     private final FontRenderer fontRenderer;
@@ -35,7 +39,7 @@ public class TextField extends Gui {
     private char character;
     private int key;
     private int ticksKeyDown;
-    private final Stopwatch keyStopwatch;
+    private final Timer keyStopwatch;
 
     private String replaceAll;
 
@@ -53,13 +57,13 @@ public class TextField extends Gui {
         this.defaultContent = "";
         this.typedContent = "";
 
-        this.defaultTextColor = ColorCreator.create(180, 180, 180);
-        this.typedTextColor = ColorCreator.create(230, 230, 230);
+        this.defaultTextColor = new Color(180, 180, 180).getRGB();
+        this.typedTextColor = new Color(230, 230, 230).getRGB();
 
-        this.backgroundColor = ColorCreator.create(15, 15, 15, 255);
-        this.borderColor = ColorCreator.create(10, 10, 10, 255);
-        this.focusedBackgroundColor = ColorCreator.create(10, 10, 10, 255);
-        this.focusedBorderColor = DefaultColors.CLOVERHOOK_2.getColor();
+        this.backgroundColor = new Color(15, 15, 15, 255).getRGB();
+        this.borderColor = new Color(10, 10, 10, 255).getRGB();
+        this.focusedBackgroundColor = new Color(10, 10, 10, 255).getRGB();
+        this.focusedBorderColor = 0xff32CD32;
         this.borderWidth = 1;
 
         this.charLimit = -1;
@@ -69,7 +73,7 @@ public class TextField extends Gui {
 
         key = 0;
         ticksKeyDown = 0;
-        keyStopwatch = new Stopwatch();
+        keyStopwatch = new Timer();
 
         replaceAll = "";
 
@@ -107,7 +111,7 @@ public class TextField extends Gui {
             character = typedChar;
             key = keyCode;
             ticksKeyDown = 0;
-            keyStopwatch.reset();
+            keyStopwatch.updateLastTime();
         }
 
         if (keyCode == Keyboard.KEY_BACK || keyCode == Keyboard.KEY_DELETE) {
@@ -116,7 +120,7 @@ public class TextField extends Gui {
         }
 
         if (keyCode == Keyboard.KEY_V && (Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))) {
-            String clipboardContent = USystem.readClipboard();
+            String clipboardContent = SystemUtils.readClipboard();
 
             typedContent += clipboardContent;
             return;
@@ -169,7 +173,7 @@ public class TextField extends Gui {
 
         typedContent += charAsString;
 
-        if (fontRenderer.getStringWidthCust(typedContent) >= width - 4)
+        if (fontRenderer.getStringWidth(typedContent) >= width - 4)
             startIndex++;
     }
 
@@ -181,28 +185,28 @@ public class TextField extends Gui {
         if (hidden)
             return;
 
-        Draw.drawBorderedRectangle(posX, posY,
+        Render2DUtils.drawRect(posX, posY,
                 posX + width, posY + height,
-                1, focused ? focusedBackgroundColor : backgroundColor, focused ? focusedBorderColor : borderColor, true);
+                focused ? focusedBackgroundColor : backgroundColor);
 
         String content = getReplacedContent().substring(startIndex);
 
         fontRenderer.drawString(typedContent.isEmpty() ? defaultContent : (replaceAll != "" ? content.replaceAll(".", replaceAll) : content),
-                posX + 1, posY + height / 2 - fontRenderer.getHeight() / 2,
+                posX + 1, posY + height / 2 - fontRenderer.FONT_HEIGHT / 2,
                 typedContent.isEmpty() ? defaultTextColor : typedTextColor);
 
         if (focused) {
-            Draw.drawRectangle(
+            Render2DUtils.drawRect(
                     typedContent.isEmpty() ? posX + 2 : posX + 2 + fontRenderer.getStringWidth(content),
-                    posY + height / 2 + fontRenderer.getHeight() / 2,
+                    posY + height / 2 + fontRenderer.FONT_HEIGHT / 2,
                     typedContent.isEmpty() ? posX + 5 : posX + 5 + fontRenderer.getStringWidth(content),
-                    posY + height / 2 + fontRenderer.getHeight() / 2 + 1,
+                    posY + height / 2 + fontRenderer.FONT_HEIGHT / 2 + 1,
                     0xffffffff);
         }
 
         //in draw so it can go faster than 20/s lol
         if (ticksKeyDown == 10) {
-            keyStopwatch.reset();
+            keyStopwatch.updateLastTime();
         } else if (ticksKeyDown > 5 && ticksKeyDown < 25) {
             if (keyStopwatch.hasPassed(100)) {
                 try {
@@ -210,7 +214,7 @@ public class TextField extends Gui {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                keyStopwatch.reset();
+                keyStopwatch.updateLastTime();
             }
         } else if (ticksKeyDown > 25) {
             if (keyStopwatch.hasPassed(25)) {
@@ -219,7 +223,7 @@ public class TextField extends Gui {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                keyStopwatch.reset();
+                keyStopwatch.updateLastTime();
             }
         }
     }

@@ -82,14 +82,14 @@ public class Stitcher
 
         for (Object stitcher$slot : this.stitchSlots)
         {
-            ((Stitcher.Slot) stitcher$slot).getAllStitchSlots(arraylist);
+            ((Slot) stitcher$slot).getAllStitchSlots(arraylist);
         }
 
         ArrayList arraylist1 = Lists.newArrayList();
 
         for (Object stitcher$slot10 : arraylist)
         {
-            Stitcher.Slot stitcher$slot1 = (Stitcher.Slot) stitcher$slot10;
+            Slot stitcher$slot1 = (Slot) stitcher$slot10;
             Stitcher.Holder stitcher$holder = stitcher$slot1.getStitchHolder();
             TextureAtlasSprite textureatlassprite = stitcher$holder.getAtlasSprite();
             textureatlassprite.initSprite(this.currentWidth, this.currentHeight, stitcher$slot1.getOriginX(), stitcher$slot1.getOriginY(), stitcher$holder.isRotated());
@@ -268,7 +268,7 @@ public class Stitcher
 
         public String toString()
         {
-            return "Holder{width=" + this.width + ", height=" + this.height + '}';
+            return "Holder{width=" + this.width + ", height=" + this.height + ", name=" + this.theTexture.getIconName() + '}';
         }
 
         public int compareTo(Stitcher.Holder p_compareTo_1_)
@@ -391,7 +391,7 @@ public class Stitcher
 
                         for (Object stitcher$slot : this.subSlots)
                         {
-                            if (((Stitcher.Slot) stitcher$slot).addSlot(holderIn))
+                            if (((Slot) stitcher$slot).addSlot(holderIn))
                             {
                                 return true;
                             }
@@ -417,7 +417,7 @@ public class Stitcher
             {
                 for (Object stitcher$slot : this.subSlots)
                 {
-                    ((Stitcher.Slot) stitcher$slot).getAllStitchSlots(p_94184_1_);
+                    ((Slot) stitcher$slot).getAllStitchSlots(p_94184_1_);
                 }
             }
         }

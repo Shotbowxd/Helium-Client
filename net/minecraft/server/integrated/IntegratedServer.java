@@ -28,8 +28,8 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.demo.DemoWorldServer;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import optfine.Reflector;
-import optfine.WorldServerOF;
+import optifine.Reflector;
+import optifine.WorldServerOF;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -65,7 +65,6 @@ public class IntegratedServer extends MinecraftServer
         this.setConfigManager(new IntegratedPlayerList(this));
         this.mc = mcIn;
         this.theWorldSettings = this.isDemo() ? DemoWorldServer.demoWorldSettings : settings;
-        Reflector.callVoid(Reflector.ModLoader_registerServer, new Object[] {this});
     }
 
     protected ServerCommandManager createNewCommandManager()
@@ -77,6 +76,7 @@ public class IntegratedServer extends MinecraftServer
     {
         this.convertMapIfNeeded(p_71247_1_);
         ISaveHandler isavehandler = this.getActiveAnvilConverter().getSaveLoader(p_71247_1_, true);
+        this.setResourcePackFromWorld(this.getFolderName(), isavehandler);
         WorldInfo worldinfo = isavehandler.loadWorldInfo();
 
         if (Reflector.DimensionManager.exists())

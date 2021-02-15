@@ -1,11 +1,11 @@
 package rip.helium.gui.components;
 
-import net.minecraft.client.gui.Gui;
-import rip.helium.utils.ColorCreator;
-import rip.helium.utils.font.FontRenderer;
-
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
 
 /**
  * @author antja03
@@ -27,7 +27,7 @@ public class Dropbox extends Gui {
     private final int optionBackgroundColor;
     private final int selectedBackgroundColor;
     private final int selectedColor;
-    private final int optionColor;
+    private final int optionColor;	
 
     private final String[] options;
     private int currentOption;
@@ -44,11 +44,11 @@ public class Dropbox extends Gui {
         this.options = options;
 
         this.optionHeight = 15;
-        this.backroundColor = ColorCreator.create(10, 10, 255, 255);
-        this.optionBackgroundColor = ColorCreator.create(18, 18, 18);
-        this.selectedBackgroundColor = ColorCreator.create(18, 18, 18);
-        this.selectedColor = ColorCreator.create(220, 220, 220);
-        this.optionColor = ColorCreator.create(150, 150, 150);
+        this.backroundColor = new Color(10, 10, 255, 255).getRGB();
+        this.optionBackgroundColor = new Color(18, 18, 18).getRGB();
+        this.selectedBackgroundColor = new Color(18, 18, 18).getRGB();
+        this.selectedColor = new Color(220, 220, 220).getRGB();
+        this.optionColor = new Color(150, 150, 150).getRGB();
     }
 
     public void keyTyped(char typedChar, int keyCode) throws IOException {
@@ -86,11 +86,11 @@ public class Dropbox extends Gui {
             drawRect(posX, posY, posX + width, posY + height, backroundColor);
             drawRect(posX, posY + height, posX + width, posY + height + uninclusiveOptions.size() * optionHeight, optionBackgroundColor);
             for (String string : uninclusiveOptions) {
-                fontRenderer.drawCenteredString(string, posX + width / 2, posY + height + 1 + uninclusiveOptions.indexOf(string) * optionHeight + fontRenderer.getHeight() / 2, optionColor);
+                this.drawCenteredString(fontRenderer, string, posX + width / 2, posY + height + 1 + uninclusiveOptions.indexOf(string) * optionHeight + fontRenderer.FONT_HEIGHT / 2, optionColor);
             }
         }
 
-        fontRenderer.drawCenteredString(options[currentOption], posX + width / 2, posY + height / 2 - fontRenderer.getHeight() / 2, selectedColor);
+        this.drawCenteredString(fontRenderer, options[currentOption], posX + width / 2, posY + height / 2 - fontRenderer.FONT_HEIGHT / 2, selectedColor);
     }
 
     public ArrayList<String> getOptionsWithoutSelected() {

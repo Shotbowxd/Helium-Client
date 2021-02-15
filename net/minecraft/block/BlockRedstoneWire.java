@@ -131,10 +131,9 @@ public class BlockRedstoneWire extends Block
 
         int l = 0;
 
-        for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+        for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
         {
-            EnumFacing enumfacing = (EnumFacing) enumfacing0;
-            BlockPos blockpos = pos1.offset(enumfacing);
+            BlockPos blockpos = pos1.offset((EnumFacing) enumfacing);
             boolean flag = blockpos.getX() != pos2.getX() || blockpos.getZ() != pos2.getZ();
 
             if (flag)
@@ -345,13 +344,11 @@ public class BlockRedstoneWire extends Block
             {
                 EnumSet<EnumFacing> enumset = EnumSet.<EnumFacing>noneOf(EnumFacing.class);
 
-                for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                 {
-                    EnumFacing enumfacing = (EnumFacing) enumfacing0;
-
-                    if (this.func_176339_d(worldIn, pos, enumfacing))
+                    if (this.func_176339_d(worldIn, pos, (EnumFacing) enumfacing))
                     {
-                        enumset.add(enumfacing);
+                        enumset.add((EnumFacing) enumfacing);
                     }
                 }
 

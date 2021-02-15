@@ -1,7 +1,5 @@
 package net.minecraft.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
@@ -14,7 +12,7 @@ public class Gui
     public static final ResourceLocation optionsBackground = new ResourceLocation("textures/gui/options_background.png");
     public static final ResourceLocation statIcons = new ResourceLocation("textures/gui/container/stats_icons.png");
     public static final ResourceLocation icons = new ResourceLocation("textures/gui/icons.png");
-    public static float zLevel;
+    protected float zLevel;
 
     /**
      * Draw a 1 pixel wide horizontal line. Args: x1, x2, y, color
@@ -84,49 +82,12 @@ public class Gui
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
-    
-    
-    public static void drawRecter(Double left, int top, double right, int bottom, int color)
-    {
-        if (left < right)
-        {
-            double i = left;
-            left = right;
-            right = i;
-        }
-
-        if (top < bottom)
-        {
-            int j = top;
-            top = bottom;
-            bottom = j;
-        }
-
-        float f3 = (float)(color >> 24 & 255) / 255.0F;
-        float f = (float)(color >> 16 & 255) / 255.0F;
-        float f1 = (float)(color >> 8 & 255) / 255.0F;
-        float f2 = (float)(color & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.color(f, f1, f2, f3);
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION);
-        worldrenderer.pos((double)left, (double)bottom, 0.0D).endVertex();
-        worldrenderer.pos((double)right, (double)bottom, 0.0D).endVertex();
-        worldrenderer.pos((double)right, (double)top, 0.0D).endVertex();
-        worldrenderer.pos((double)left, (double)top, 0.0D).endVertex();
-        tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-    }
 
     /**
      * Draws a rectangle with a vertical gradient between the specified colors (ARGB format). Args : x1, y1, x2, y2,
      * topColor, bottomColor
      */
-    public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
+    protected void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
     {
         float f = (float)(startColor >> 24 & 255) / 255.0F;
         float f1 = (float)(startColor >> 16 & 255) / 255.0F;
@@ -144,10 +105,10 @@ public class Gui
         Tessellator tessellator = Tessellator.getInstance();
         WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        worldrenderer.pos((double)right, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)left, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
-        worldrenderer.pos((double)left, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
-        worldrenderer.pos((double)right, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos((double)right, (double)top, (double)this.zLevel).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos((double)left, (double)top, (double)this.zLevel).color(f1, f2, f3, f).endVertex();
+        worldrenderer.pos((double)left, (double)bottom, (double)this.zLevel).color(f5, f6, f7, f4).endVertex();
+        worldrenderer.pos((double)right, (double)bottom, (double)this.zLevel).color(f5, f6, f7, f4).endVertex();
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();
@@ -158,7 +119,8 @@ public class Gui
     /**
      * Renders the specified text to the screen, center-aligned. Args : renderer, string, x, y, color
      */
-    public void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    //TODO: Client
+    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
         fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
     }
@@ -240,39 +202,17 @@ public class Gui
     /**
      * Draws a scaled, textured, tiled modal rect at z = 0. This method isn't used anywhere in vanilla code.
      */
-    public static void drawScaledCustomSizeModalRect(final double x, final double y, final float u, final float v, final double uWidth, final double vHeight, final double width, final double height, final float tileWidth, final float tileHeight) {
-        final float var10 = 1.0f / tileWidth;
-        final float var11 = 1.0f / tileHeight;
-        final Tessellator var12 = Tessellator.getInstance();
-        final WorldRenderer var13 = var12.getWorldRenderer();
-
-        var13.begin(7, DefaultVertexFormats.POSITION_TEX);
-        var13.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * var10), (double)((v + (float)vHeight) * var11)).endVertex();
-        var13.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * var10), (double)((v + (float)vHeight) * var11)).endVertex();
-        var13.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * var10), (double)(v * var11)).endVertex();
-        var13.pos((double)x, (double)y, 0.0D).tex((double)(u * var10), (double)(v * var11)).endVertex();
-
-        var12.draw();
-    }
-
-	  public static void drawRect(final double d, final double e, final double f2, final double f3, final int paramColor) {
-        final float alpha = (paramColor >> 24 & 0xFF) / 255.0f;
-        final float red = (paramColor >> 16 & 0xFF) / 255.0f;
-        final float green = (paramColor >> 8 & 0xFF) / 255.0f;
-        final float blue = (paramColor & 0xFF) / 255.0f;
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-        GL11.glPushMatrix();
-        GL11.glColor4f(red, green, blue, alpha);
-        GL11.glBegin(7);
-        GL11.glVertex2d(f2, e);
-        GL11.glVertex2d(d, e);
-        GL11.glVertex2d(d, f3);
-        GL11.glVertex2d(f2, f3);
-        GL11.glEnd();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-        GL11.glPopMatrix();
+    public static void drawScaledCustomSizeModalRect(int x, int y, float u, float v, int uWidth, int vHeight, int width, int height, float tileWidth, float tileHeight)
+    {
+        float f = 1.0F / tileWidth;
+        float f1 = 1.0F / tileHeight;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos((double)x, (double)(y + height), 0.0D).tex((double)(u * f), (double)((v + (float)vHeight) * f1)).endVertex();
+        worldrenderer.pos((double)(x + width), (double)(y + height), 0.0D).tex((double)((u + (float)uWidth) * f), (double)((v + (float)vHeight) * f1)).endVertex();
+        worldrenderer.pos((double)(x + width), (double)y, 0.0D).tex((double)((u + (float)uWidth) * f), (double)(v * f1)).endVertex();
+        worldrenderer.pos((double)x, (double)y, 0.0D).tex((double)(u * f), (double)(v * f1)).endVertex();
+        tessellator.draw();
     }
 }

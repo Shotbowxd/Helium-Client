@@ -2,8 +2,6 @@ package net.minecraft.client.model;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import rip.helium.cheat.impl.visual.SkeletonESP;
 
 public class ModelPlayer extends ModelBiped
 {
@@ -131,9 +129,6 @@ public class ModelPlayer extends ModelBiped
         copyModelAngles(this.bipedLeftArm, this.bipedLeftArmwear);
         copyModelAngles(this.bipedRightArm, this.bipedRightArmwear);
         copyModelAngles(this.bipedBody, this.bipedBodyWear);
-        if (entityIn instanceof EntityPlayer) {
-            SkeletonESP.addEntity((EntityPlayer) entityIn, this);
-        }
     }
 
     public void renderRightArm()

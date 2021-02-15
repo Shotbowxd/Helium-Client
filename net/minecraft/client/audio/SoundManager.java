@@ -93,6 +93,7 @@ public class SoundManager
     /**
      * Tries to add the paulscode library and the relevant codecs. If it fails, the master volume  will be set to zero.
      */
+
     private synchronized void loadSoundSystem()
     {
         if (!this.loaded)
@@ -346,7 +347,7 @@ public class SoundManager
 
                 if (soundeventaccessorcomposite == null)
                 {
-                    //logger.warn(LOG_MARKER, "Unable to play unknown soundEvent: {}", new Object[] {sound.getSoundLocation()});
+                    logger.warn(LOG_MARKER, "Unable to play unknown soundEvent: {}", new Object[] {sound.getSoundLocation()});
                 }
                 else
                 {

@@ -1,26 +1,32 @@
 package net.minecraft.client.gui;
 
-import com.google.common.collect.Lists;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class GuiNewChat extends Gui
+//TODO: Client
+public class GuiNewChat extends GuiScreen
 {
     private static final Logger logger = LogManager.getLogger();
     private final Minecraft mc;
     private final List<String> sentMessages = Lists.<String>newArrayList();
     private final List<ChatLine> chatLines = Lists.<ChatLine>newArrayList();
-    private final List<ChatLine> field_146253_i = Lists.<ChatLine>newArrayList();
-    private int scrollPos;
-    private boolean isScrolled;
+    
+    //TODO: Client
+    public final List<ChatLine> field_146253_i = Lists.<ChatLine>newArrayList();
+    public int scrollPos;
+    public boolean isScrolled;
 
     public GuiNewChat(Minecraft mcIn)
     {
@@ -79,11 +85,10 @@ public class GuiNewChat extends Gui
                             {
                                 int i2 = 0;
                                 int j2 = -i1 * 9;
-                                //drawRect(i2, j2 - 9, i2 + l + 4, j2, l1 / 2 << 24);
+                                drawRect(i2, j2 - 9, i2 + l + 4, j2, l1 / 2 << 24);
                                 String s = chatline.getChatComponent().getFormattedText();
                                 GlStateManager.enableBlend();
-                                //Fonts.verdanaChat.drawStringWithShadow(s, (float)i2, (float)(j2 - 8), 16777215 + (l1 << 24));
-                                mc.fontRendererObj.drawStringWithShadow(s, (float)i2, (float)(j2 - 8), 16777215 + (l1 << 24));
+                                this.mc.fontRendererObj.drawStringWithShadow(s, (float)i2, (float)(j2 - 8), 16777215 + (l1 << 24));
                                 GlStateManager.disableAlpha();
                                 GlStateManager.disableBlend();
                             }
@@ -367,5 +372,15 @@ public class GuiNewChat extends Gui
     public int getLineCount()
     {
         return this.getChatHeight() / 9;
+    }
+    
+    //TODO: Client
+    public List getChatLines() {
+        return this.chatLines;
+    }
+    
+    //TODO: Client
+    public List getField_146253_i() {
+        return this.field_146253_i;
     }
 }

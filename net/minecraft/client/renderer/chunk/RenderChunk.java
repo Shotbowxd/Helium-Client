@@ -12,6 +12,7 @@ import net.minecraft.block.BlockCactus;
 import net.minecraft.block.BlockRedstoneWire;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
@@ -29,8 +30,11 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.world.World;
-import optfine.BlockPosM;
-import optfine.Reflector;
+import optifine.BlockPosM;
+import optifine.Config;
+import optifine.Reflector;
+import optifine.ReflectorForge;
+import shadersmod.client.SVertexBuilder;
 
 public class RenderChunk
 {
@@ -54,6 +58,9 @@ public class RenderChunk
     private BlockPos[] positionOffsets16 = new BlockPos[EnumFacing.VALUES.length];
     private static EnumWorldBlockLayer[] ENUM_WORLD_BLOCK_LAYERS = EnumWorldBlockLayer.values();
     private EnumWorldBlockLayer[] blockLayersSingle = new EnumWorldBlockLayer[1];
+    private boolean isMipmaps = Config.isMipmaps();
+    private boolean fixBlockLayer = !Reflector.BetterFoliageClient.exists();
+    private boolean playerUpdate = false;
 
     public RenderChunk(World worldIn, RenderGlobal renderGlobalIn, BlockPos blockPosIn, int indexIn)
     {
@@ -98,13 +105,11 @@ public class RenderChunk
         this.stopCompileTask();
         this.position = pos;
         this.boundingBox = new AxisAlignedBB(pos, pos.add(16, 16, 16));
-        EnumFacing[] aenumfacing = EnumFacing.values();
-        int i = aenumfacing.length;
         this.initModelviewMatrix();
 
-        for (int j = 0; j < this.positionOffsets16.length; ++j)
+        for (int i = 0; i < this.positionOffsets16.length; ++i)
         {
-            this.positionOffsets16[j] = null;
+            this.positionOffsets16[i] = null;
         }
     }
 
@@ -142,7 +147,13 @@ public class RenderChunk
                 return;
             }
 
-            regionrendercache = new RegionRenderCache(this.world, blockpos.add(-1, -1, -1), blockpos1.add(1, 1, 1), 1);
+            regionrendercache = this.createRegionRenderCache(this.world, blockpos.add(-1, -1, -1), blockpos1.add(1, 1, 1), 1);
+
+            if (Reflector.MinecraftForgeClient_onRebuildChunk.exists())
+            {
+                Reflector.call(Reflector.MinecraftForgeClient_onRebuildChunk, new Object[] {this.world, this.position, regionrendercache});
+            }
+
             generator.setCompiledChunk(compiledchunk);
         }
         finally
@@ -156,7 +167,7 @@ public class RenderChunk
         if (!regionrendercache.extendedLevelsInChunkCache())
         {
             ++renderChunksUpdated;
-            boolean[] aboolean = new boolean[EnumWorldBlockLayer.values().length];
+            boolean[] aboolean = new boolean[ENUM_WORLD_BLOCK_LAYERS.length];
             BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
             Iterator iterator = BlockPosM.getAllInBoxMutable(blockpos, blockpos1).iterator();
             boolean flag1 = Reflector.ForgeBlock_hasTileEntity.exists();
@@ -174,18 +185,7 @@ public class RenderChunk
                     var10.func_178606_a(blockposm);
                 }
 
-                boolean flag4;
-
-                if (flag1)
-                {
-                    flag4 = Reflector.callBoolean(iterator, Reflector.ForgeBlock_hasTileEntity, new Object[] {blockrendererdispatcher});
-                }
-                else
-                {
-                    flag4 = block.hasTileEntity();
-                }
-
-                if (flag4)
+                if (ReflectorForge.blockHasTileEntity(iblockstate))
                 {
                     TileEntity tileentity = regionrendercache.getTileEntity(new BlockPos(blockposm));
                     TileEntitySpecialRenderer tileentityspecialrenderer = TileEntityRendererDispatcher.instance.getSpecialRenderer(tileentity);
@@ -219,19 +219,22 @@ public class RenderChunk
 
                     if (flag2)
                     {
-                        boolean flag5 = Reflector.callBoolean(block, Reflector.ForgeBlock_canRenderInLayer, new Object[] {enumworldblocklayer});
+                        boolean flag4 = Reflector.callBoolean(block, Reflector.ForgeBlock_canRenderInLayer, new Object[] {enumworldblocklayer});
 
-                        if (!flag5)
+                        if (!flag4)
                         {
                             continue;
                         }
                     }
 
-                    enumworldblocklayer = this.fixBlockLayer(block, enumworldblocklayer);
-
                     if (flag3)
                     {
                         Reflector.callVoid(Reflector.ForgeHooksClient_setRenderLayer, new Object[] {enumworldblocklayer});
+                    }
+
+                    if (this.fixBlockLayer)
+                    {
+                        enumworldblocklayer = this.fixBlockLayer(block, enumworldblocklayer);
                     }
 
                     int j = enumworldblocklayer.ordinal();
@@ -252,7 +255,7 @@ public class RenderChunk
                 }
             }
 
-            for (EnumWorldBlockLayer enumworldblocklayer1 : EnumWorldBlockLayer.values())
+            for (EnumWorldBlockLayer enumworldblocklayer1 : ENUM_WORLD_BLOCK_LAYERS)
             {
                 if (aboolean[enumworldblocklayer1.ordinal()])
                 {
@@ -261,6 +264,11 @@ public class RenderChunk
 
                 if (compiledchunk.isLayerStarted(enumworldblocklayer1))
                 {
+                    if (Config.isShaders())
+                    {
+                        SVertexBuilder.calcNormalChunkLayer(generator.getRegionRenderCacheBuilder().getWorldRendererByLayer(enumworldblocklayer1));
+                    }
+
                     this.postRenderBlocks(enumworldblocklayer1, x, y, z, generator.getRegionRenderCacheBuilder().getWorldRendererByLayer(enumworldblocklayer1), compiledchunk);
                 }
             }
@@ -440,6 +448,18 @@ public class RenderChunk
     public void setNeedsUpdate(boolean needsUpdateIn)
     {
         this.needsUpdate = needsUpdateIn;
+
+        if (this.needsUpdate)
+        {
+            if (this.isWorldPlayerUpdate())
+            {
+                this.playerUpdate = true;
+            }
+        }
+        else
+        {
+            this.playerUpdate = false;
+        }
     }
 
     public boolean isNeedsUpdate()
@@ -466,8 +486,53 @@ public class RenderChunk
         return blockpos;
     }
 
+    private boolean isWorldPlayerUpdate()
+    {
+        if (this.world instanceof WorldClient)
+        {
+            WorldClient worldclient = (WorldClient)this.world;
+            return worldclient.isPlayerUpdate();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public boolean isPlayerUpdate()
+    {
+        return this.playerUpdate;
+    }
+
+    protected RegionRenderCache createRegionRenderCache(World p_createRegionRenderCache_1_, BlockPos p_createRegionRenderCache_2_, BlockPos p_createRegionRenderCache_3_, int p_createRegionRenderCache_4_)
+    {
+        return new RegionRenderCache(p_createRegionRenderCache_1_, p_createRegionRenderCache_2_, p_createRegionRenderCache_3_, p_createRegionRenderCache_4_);
+    }
+
     private EnumWorldBlockLayer fixBlockLayer(Block p_fixBlockLayer_1_, EnumWorldBlockLayer p_fixBlockLayer_2_)
     {
-        return p_fixBlockLayer_2_ == EnumWorldBlockLayer.CUTOUT ? (p_fixBlockLayer_1_ instanceof BlockRedstoneWire ? p_fixBlockLayer_2_ : (p_fixBlockLayer_1_ instanceof BlockCactus ? p_fixBlockLayer_2_ : EnumWorldBlockLayer.CUTOUT_MIPPED)) : p_fixBlockLayer_2_;
+        if (this.isMipmaps)
+        {
+            if (p_fixBlockLayer_2_ == EnumWorldBlockLayer.CUTOUT)
+            {
+                if (p_fixBlockLayer_1_ instanceof BlockRedstoneWire)
+                {
+                    return p_fixBlockLayer_2_;
+                }
+
+                if (p_fixBlockLayer_1_ instanceof BlockCactus)
+                {
+                    return p_fixBlockLayer_2_;
+                }
+
+                return EnumWorldBlockLayer.CUTOUT_MIPPED;
+            }
+        }
+        else if (p_fixBlockLayer_2_ == EnumWorldBlockLayer.CUTOUT_MIPPED)
+        {
+            return EnumWorldBlockLayer.CUTOUT;
+        }
+
+        return p_fixBlockLayer_2_;
     }
 }

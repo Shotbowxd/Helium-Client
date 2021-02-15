@@ -3,12 +3,14 @@ package net.minecraft.client.gui;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
+
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
-
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Random;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -19,17 +21,14 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import optfine.Config;
-import org.apache.commons.lang3.RandomStringUtils;
-import rip.helium.Helium;
+import optifine.Config;
+import optifine.CustomColors;
+import optifine.FontUtils;
+import rip.helium.friend.Friend;
 
 import org.apache.commons.io.IOUtils;
 import org.lwjgl.opengl.GL11;
-import rip.helium.cheat.FriendManager;
-import rip.helium.cheat.impl.visual.Protect;
 
 public class FontRenderer implements IResourceManagerReloadListener
 {
@@ -110,7 +109,7 @@ public class FontRenderer implements IResourceManagerReloadListener
     public GameSettings gameSettings;
     public ResourceLocation locationFontTextureBase;
     public boolean enabled = true;
-    public float scaleFactor = 1.0F;
+    public float offsetBold = 1.0F;
 
     public FontRenderer(GameSettings gameSettingsIn, ResourceLocation location, TextureManager textureManagerIn, boolean unicode)
     {
@@ -119,8 +118,8 @@ public class FontRenderer implements IResourceManagerReloadListener
         this.locationFontTexture = location;
         this.renderEngine = textureManagerIn;
         this.unicodeFlag = unicode;
-        this.locationFontTexture = getHdFontLocation(this.locationFontTextureBase);
-        textureManagerIn.bindTexture(this.locationFontTexture);
+        this.locationFontTexture = FontUtils.getHdFontLocation(this.locationFontTextureBase);
+        this.bindTexture(this.locationFontTexture);
 
         for (int i = 0; i < 32; ++i)
         {
@@ -159,7 +158,7 @@ public class FontRenderer implements IResourceManagerReloadListener
 
     public void onResourceManagerReload(IResourceManager resourceManager)
     {
-        this.locationFontTexture = getHdFontLocation(this.locationFontTextureBase);
+        this.locationFontTexture = FontUtils.getHdFontLocation(this.locationFontTextureBase);
 
         for (int i = 0; i < unicodePageLocations.length; ++i)
         {
@@ -167,6 +166,7 @@ public class FontRenderer implements IResourceManagerReloadListener
         }
 
         this.readFontTexture();
+        this.readGlyphSizes();
     }
 
     private void readFontTexture()
@@ -175,19 +175,28 @@ public class FontRenderer implements IResourceManagerReloadListener
 
         try
         {
-            bufferedimage = TextureUtil.readBufferedImage(Minecraft.getMinecraft().getResourceManager().getResource(this.locationFontTexture).getInputStream());
+            bufferedimage = TextureUtil.readBufferedImage(this.getResourceInputStream(this.locationFontTexture));
         }
         catch (IOException ioexception)
         {
             throw new RuntimeException(ioexception);
         }
 
+        Properties properties = FontUtils.readFontProperties(this.locationFontTexture);
         int i = bufferedimage.getWidth();
         int j = bufferedimage.getHeight();
         int k = i / 16;
         int l = j / 16;
         float f = (float)i / 128.0F;
-        this.scaleFactor = f;
+        float f1 = Config.limit(f, 1.0F, 2.0F);
+        this.offsetBold = 1.0F / f1;
+        float f2 = FontUtils.readFloat(properties, "offsetBold", -1.0F);
+
+        if (f2 >= 0.0F)
+        {
+            this.offsetBold = f2;
+        }
+
         int[] aint = new int[i * j];
         bufferedimage.getRGB(0, 0, i, j, aint, 0, i);
 
@@ -218,7 +227,12 @@ public class FontRenderer implements IResourceManagerReloadListener
                 {
                     break;
                 }
-            } 
+            }
+
+            if (i1 == 65)
+            {
+                i1 = i1;
+            }
 
             if (i1 == 32)
             {
@@ -235,7 +249,7 @@ public class FontRenderer implements IResourceManagerReloadListener
             this.charWidth[i1] = (float)(l1 + 1) / f + 1.0F;
         }
 
-        this.readCustomCharWidths();
+        FontUtils.readCustomCharWidths(properties, this.charWidth);
     }
 
     private void readGlyphSizes()
@@ -244,7 +258,7 @@ public class FontRenderer implements IResourceManagerReloadListener
 
         try
         {
-            inputstream = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin")).getInputStream();
+            inputstream = this.getResourceInputStream(new ResourceLocation("font/glyph_sizes.bin"));
             inputstream.read(this.glyphWidth);
         }
         catch (IOException ioexception)
@@ -261,7 +275,7 @@ public class FontRenderer implements IResourceManagerReloadListener
     {
         if (p_181559_1_ == 32)
         {
-            return this.charWidth[p_181559_1_];
+            return !this.unicodeFlag ? this.charWidth[p_181559_1_] : 4.0F;
         }
         else
         {
@@ -278,7 +292,7 @@ public class FontRenderer implements IResourceManagerReloadListener
         int i = p_78266_1_ % 16 * 8;
         int j = p_78266_1_ / 16 * 8;
         int k = p_78266_2_ ? 1 : 0;
-        this.renderEngine.bindTexture(this.locationFontTexture);
+        this.bindTexture(this.locationFontTexture);
         float f = this.charWidth[p_78266_1_];
         float f1 = 7.99F;
         GL11.glBegin(GL11.GL_TRIANGLE_STRIP);
@@ -299,7 +313,7 @@ public class FontRenderer implements IResourceManagerReloadListener
         if (unicodePageLocations[p_111271_1_] == null)
         {
             unicodePageLocations[p_111271_1_] = new ResourceLocation(String.format("textures/font/unicode_page_%02x.png", new Object[] {Integer.valueOf(p_111271_1_)}));
-            unicodePageLocations[p_111271_1_] = getHdFontLocation(unicodePageLocations[p_111271_1_]);
+            unicodePageLocations[p_111271_1_] = FontUtils.getHdFontLocation(unicodePageLocations[p_111271_1_]);
         }
 
         return unicodePageLocations[p_111271_1_];
@@ -310,7 +324,7 @@ public class FontRenderer implements IResourceManagerReloadListener
      */
     private void loadGlyphTexture(int p_78257_1_)
     {
-        this.renderEngine.bindTexture(this.getUnicodePageLocation(p_78257_1_));
+        this.bindTexture(this.getUnicodePageLocation(p_78257_1_));
     }
 
     /**
@@ -328,6 +342,7 @@ public class FontRenderer implements IResourceManagerReloadListener
             this.loadGlyphTexture(i);
             int j = this.glyphWidth[p_78277_1_] >>> 4;
             int k = this.glyphWidth[p_78277_1_] & 15;
+            j = j & 15;
             float f = (float)j;
             float f1 = (float)(k + 1);
             float f2 = (float)(p_78277_1_ % 16 * 16) + f;
@@ -367,55 +382,18 @@ public class FontRenderer implements IResourceManagerReloadListener
     /**
      * Draws the specified string.
      */
-    public int drawString(String text, float x, float y, int color, boolean dropShadow)
+    public int drawString(String textIn, float x, float y, int color, boolean dropShadow)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        GlStateManager.enableAlpha();
+        this.enableAlpha();
         this.resetStyles();
         int i;
 
-        try {
-            if (Helium.instance.cheatManager.isCheatEnabled("NoStrike")) {
-                text = text.replaceAll("Viper", "Helium");
-                text = text.replaceAll("Faithful", "Helium");
-                text = text.replaceAll("faithful", "Helium");
-                text = text.replaceAll("viper", "Helium");
-                text = text.replaceAll("Hypixel", "Helium");
-                text = text.replaceAll("hypixel", "Helium");
-                text = text.replaceAll("WaterMC", "Helium");
-                text = text.replaceAll("watermc", "Helium");
-                text = text.replaceAll("VeltPvP", "Helium");
-                text = text.replaceAll("Velt", "Helium");
-                text = text.replaceAll("veltpvp", "Helium");
-                text = text.replaceAll("DynamicPvP", "Helium");
-                text = text.replaceAll("Dynamic", "Helium");
-                text = text.replaceAll("dynamic", "Helium");
-                text = text.replaceAll("dynamicpvp", "Helium");
-                text = text.replaceAll("SunPvP", "Helium");
-                text = text.replaceAll("sunpvp", "Helium");
-                text = text.replaceAll("Sun", "Helium");
-                text = text.replaceAll("sun", "Helium");
-            }
-        } catch (Exception e) {
-
+        //TODO: Client
+        String text = textIn;
+        for(Friend f: Minecraft.getMinecraft().hackedClient.getFriendManager().getFriendsList()) {
+        	text = text.replace(f.getName(), "\2479" + f.getAlias() +  "\247r");
         }
-        try {
-            if (Helium.instance.cheatManager.isCheatEnabled("Protector")) {
-                if (Protect.nameprotect.getValue()) {
-                    text = text.replaceAll(mc.thePlayer.getName(), "§b" + Helium.clientUser + "§r");
-                }
-
-                if (Protect.friendprotect.getValue()) {
-                    for (String name : FriendManager.friends) {
-                        text = text.replaceAll(name, RandomStringUtils.random(name.length(), true, false));
-                    }
-                }
-
-            }
-        } catch (Exception e) {
-
-        }
-
+        
         if (dropShadow)
         {
             i = this.renderString(text, x + 1.0F, y + 1.0F, color, true);
@@ -490,8 +468,14 @@ public class FontRenderer implements IResourceManagerReloadListener
                     }
 
                     int j1 = this.colorCode[i1];
+
+                    if (Config.isCustomColors())
+                    {
+                        j1 = CustomColors.getTextColor(i1, j1);
+                    }
+
                     this.textColor = j1;
-                    GlStateManager.color((float)(j1 >> 16) / 255.0F, (float)(j1 >> 8 & 255) / 255.0F, (float)(j1 & 255) / 255.0F, this.alpha);
+                    this.setColor((float)(j1 >> 16) / 255.0F, (float)(j1 >> 8 & 255) / 255.0F, (float)(j1 & 255) / 255.0F, this.alpha);
                 }
                 else if (i1 == 16)
                 {
@@ -520,7 +504,7 @@ public class FontRenderer implements IResourceManagerReloadListener
                     this.strikethroughStyle = false;
                     this.underlineStyle = false;
                     this.italicStyle = false;
-                    GlStateManager.color(this.red, this.blue, this.green, this.alpha);
+                    this.setColor(this.red, this.blue, this.green, this.alpha);
                 }
 
                 ++i;
@@ -548,7 +532,7 @@ public class FontRenderer implements IResourceManagerReloadListener
                     c0 = c1;
                 }
 
-                float f1 = this.unicodeFlag ? 0.5F : 1.0F / this.scaleFactor;
+                float f1 = j != -1 && !this.unicodeFlag ? this.offsetBold : 0.5F;
                 boolean flag = (c0 == 0 || j == -1 || this.unicodeFlag) && p_78255_2_;
 
                 if (flag)
@@ -665,7 +649,7 @@ public class FontRenderer implements IResourceManagerReloadListener
             this.blue = (float)(color >> 8 & 255) / 255.0F;
             this.green = (float)(color & 255) / 255.0F;
             this.alpha = (float)(color >> 24 & 255) / 255.0F;
-            GlStateManager.color(this.red, this.blue, this.green, this.alpha);
+            this.setColor(this.red, this.blue, this.green, this.alpha);
             this.posX = x;
             this.posY = y;
             this.renderStringAtPos(text, dropShadow);
@@ -676,8 +660,16 @@ public class FontRenderer implements IResourceManagerReloadListener
     /**
      * Returns the width of this string. Equivalent of FontMetrics.stringWidth(String s).
      */
-    public int getStringWidth(String text)
+    public int getStringWidth(String textIn)
     {
+        //TODO: Client
+        String text = textIn;
+        if(Minecraft.getMinecraft().hackedClient != null) {
+        	for(Friend f: Minecraft.getMinecraft().hackedClient.getFriendManager().getFriendsList()) {
+            	text = text.replace(f.getName(), "\2479" + f.getAlias() +  "\247r");
+            }
+        }
+    	
         if (text == null)
         {
             return 0;
@@ -716,7 +708,7 @@ public class FontRenderer implements IResourceManagerReloadListener
 
                 if (flag && f1 > 0.0F)
                 {
-                    ++f;
+                    f += this.unicodeFlag ? 1.0F : this.offsetBold;
                 }
             }
 
@@ -754,13 +746,7 @@ public class FontRenderer implements IResourceManagerReloadListener
             {
                 int j = this.glyphWidth[p_getCharWidthFloat_1_] >>> 4;
                 int k = this.glyphWidth[p_getCharWidthFloat_1_] & 15;
-
-                if (k > 7)
-                {
-                    k = 15;
-                    j = 0;
-                }
-
+                j = j & 15;
                 ++k;
                 return (float)((k - j) / 2 + 1);
             }
@@ -1069,93 +1055,41 @@ public class FontRenderer implements IResourceManagerReloadListener
     public int getColorCode(char character)
     {
         int i = "0123456789abcdef".indexOf(character);
-        return i >= 0 && i < this.colorCode.length ? this.colorCode[i] : 16777215;
-    }
 
-    private void readCustomCharWidths()
-    {
-        String s = this.locationFontTexture.getResourcePath();
-        String s1 = ".png";
-
-        if (s.endsWith(s1))
+        if (i >= 0 && i < this.colorCode.length)
         {
-            String s2 = s.substring(0, s.length() - s1.length()) + ".properties";
+            int j = this.colorCode[i];
 
-            try
+            if (Config.isCustomColors())
             {
-                ResourceLocation resourcelocation = new ResourceLocation(this.locationFontTexture.getResourceDomain(), s2);
-                InputStream inputstream = Config.getResourceStream(Config.getResourceManager(), resourcelocation);
-
-                if (inputstream == null)
-                {
-                    return;
-                }
-
-                Config.log("Loading " + s2);
-                Properties properties = new Properties();
-                properties.load(inputstream);
-
-                for (Object s30 : properties.keySet())
-                {
-                    String s3 = (String) s30;
-                    String s4 = "width.";
-
-                    if (s3.startsWith(s4))
-                    {
-                        String s5 = s3.substring(s4.length());
-                        int i = Config.parseInt(s5, -1);
-
-                        if (i >= 0 && i < this.charWidth.length)
-                        {
-                            String s6 = properties.getProperty(s3);
-                            float f = Config.parseFloat(s6, -1.0F);
-
-                            if (f >= 0.0F)
-                            {
-                                this.charWidth[i] = f;
-                            }
-                        }
-                    }
-                }
+                j = CustomColors.getTextColor(i, j);
             }
-            catch (FileNotFoundException var15)
-            {
-                ;
-            }
-            catch (IOException ioexception)
-            {
-                ioexception.printStackTrace();
-            }
-        }
-    }
 
-    private static ResourceLocation getHdFontLocation(ResourceLocation p_getHdFontLocation_0_)
-    {
-        if (!Config.isCustomFonts())
-        {
-            return p_getHdFontLocation_0_;
-        }
-        else if (p_getHdFontLocation_0_ == null)
-        {
-            return p_getHdFontLocation_0_;
+            return j;
         }
         else
         {
-            String s = p_getHdFontLocation_0_.getResourcePath();
-            String s1 = "textures/";
-            String s2 = "mcpatcher/";
-
-            if (!s.startsWith(s1))
-            {
-                return p_getHdFontLocation_0_;
-            }
-            else
-            {
-                s = s.substring(s1.length());
-                s = s2 + s;
-                ResourceLocation resourcelocation = new ResourceLocation(p_getHdFontLocation_0_.getResourceDomain(), s);
-                return Config.hasResource(Config.getResourceManager(), resourcelocation) ? resourcelocation : p_getHdFontLocation_0_;
-            }
+            return 16777215;
         }
+    }
+
+    protected void setColor(float p_setColor_1_, float p_setColor_2_, float p_setColor_3_, float p_setColor_4_)
+    {
+        GlStateManager.color(p_setColor_1_, p_setColor_2_, p_setColor_3_, p_setColor_4_);
+    }
+
+    protected void enableAlpha()
+    {
+        GlStateManager.enableAlpha();
+    }
+
+    protected void bindTexture(ResourceLocation p_bindTexture_1_)
+    {
+        this.renderEngine.bindTexture(p_bindTexture_1_);
+    }
+
+    protected InputStream getResourceInputStream(ResourceLocation p_getResourceInputStream_1_) throws IOException
+    {
+        return Minecraft.getMinecraft().getResourceManager().getResource(p_getResourceInputStream_1_).getInputStream();
     }
 }

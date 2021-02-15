@@ -2,11 +2,14 @@ package net.minecraft.client.renderer.texture;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.MathHelper;
+import optifine.Config;
+import shadersmod.client.ShadersTex;
 
 public class TextureClock extends TextureAtlasSprite
 {
     private double field_94239_h;
     private double field_94240_i;
+    private static final String __OBFID = "CL_00001070";
 
     public TextureClock(String iconName)
     {
@@ -56,7 +59,15 @@ public class TextureClock extends TextureAtlasSprite
             if (i != this.frameCounter)
             {
                 this.frameCounter = i;
-                TextureUtil.uploadTextureMipmap((int[][])this.framesTextureData.get(this.frameCounter), this.width, this.height, this.originX, this.originY, false, false);
+
+                if (Config.isShaders())
+                {
+                    ShadersTex.uploadTexSub((int[][])((int[][])this.framesTextureData.get(this.frameCounter)), this.width, this.height, this.originX, this.originY, false, false);
+                }
+                else
+                {
+                    TextureUtil.uploadTextureMipmap((int[][])((int[][])this.framesTextureData.get(this.frameCounter)), this.width, this.height, this.originX, this.originY, false, false);
+                }
             }
         }
     }

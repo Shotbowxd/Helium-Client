@@ -252,8 +252,4 @@ public class PotionEffect
     {
         return this.isPotionDurationMax;
     }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
 }

@@ -208,7 +208,7 @@ public class GameRules
         private static final GameRules.ValueType[] $VALUES = new GameRules.ValueType[]{ANY_VALUE, BOOLEAN_VALUE, NUMERICAL_VALUE};
         private static final String __OBFID = "CL_00002151";
 
-        private ValueType(String p_i15_3_, int p_i15_4_)
+        private ValueType(String p_i19_3_, int p_i19_4_)
         {
         }
     }

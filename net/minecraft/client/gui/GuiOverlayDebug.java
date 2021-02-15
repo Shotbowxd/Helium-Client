@@ -1,12 +1,17 @@
 package net.minecraft.client.gui;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.GL11;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
@@ -26,10 +31,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.chunk.Chunk;
-import optfine.Reflector;
-
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
+import optifine.Reflector;
 
 public class GuiOverlayDebug extends Gui
 {
@@ -68,12 +70,12 @@ public class GuiOverlayDebug extends Gui
 
             if (!Strings.isNullOrEmpty(s))
             {
-                int j = this.fontRenderer.FONT_HEIGHT;
-                int k = this.fontRenderer.getStringWidth(s);
+                int j = 12;
+                int k = Minecraft.getMinecraft().fontRendererObj.getStringWidth(s);
                 boolean flag = true;
                 int l = 2 + j * i;
-                drawRect(1, l - 1, 2 + k + 1, l + j - 1, -1873784752);
-                this.fontRenderer.drawString(s, 2, l, 14737632);
+                //drawRect(1, l - 1, 2 + k + 1, l + j - 1, -1873784752);
+                Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(s, 2, l, 14737632);
             }
         }
     }
@@ -88,12 +90,12 @@ public class GuiOverlayDebug extends Gui
 
             if (!Strings.isNullOrEmpty(s))
             {
-                int j = this.fontRenderer.FONT_HEIGHT;
-                int k = this.fontRenderer.getStringWidth(s);
+                int j = 12;
+                int k = Minecraft.getMinecraft().fontRendererObj.getStringWidth(s);
                 int l = p_175239_1_.getScaledWidth() - 2 - k;
                 int i1 = 2 + j * i;
-                drawRect(l - 1, i1 - 1, l + k + 1, i1 + j - 1, -1873784752);
-                this.fontRenderer.drawString(s, l, i1, 14737632);
+                //drawRect(l - 1, i1 - 1, l + k + 1, i1 + j - 1, -1873784752);
+                Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(s, l, i1, 14737632);
             }
         }
     }
@@ -233,7 +235,7 @@ public class GuiOverlayDebug extends Gui
         ScaledResolution scaledresolution = new ScaledResolution(this.mc);
         int k = i;
         int l = 0;
-        drawRect(0, scaledresolution.getScaledHeight() - 60, 240, scaledresolution.getScaledHeight(), -1873784752);
+        //drawRect(0, scaledresolution.getScaledHeight() - 60, 240, scaledresolution.getScaledHeight(), -1873784752);
 
         while (k != j)
         {
@@ -244,11 +246,11 @@ public class GuiOverlayDebug extends Gui
             k = frametimer.func_181751_b(k + 1);
         }
 
-        drawRect(1, scaledresolution.getScaledHeight() - 30 + 1, 14, scaledresolution.getScaledHeight() - 30 + 10, -1873784752);
-        this.fontRenderer.drawString("60", 2, scaledresolution.getScaledHeight() - 30 + 2, 14737632);
+        //drawRect(1, scaledresolution.getScaledHeight() - 30 + 1, 14, scaledresolution.getScaledHeight() - 30 + 10, -1873784752);
+        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow("60", 2, scaledresolution.getScaledHeight() - 30 + 2, 14737632);
         this.drawHorizontalLine(0, 239, scaledresolution.getScaledHeight() - 30, -1);
-        drawRect(1, scaledresolution.getScaledHeight() - 60 + 1, 14, scaledresolution.getScaledHeight() - 60 + 10, -1873784752);
-        this.fontRenderer.drawString("30", 2, scaledresolution.getScaledHeight() - 60 + 2, 14737632);
+        //drawRect(1, scaledresolution.getScaledHeight() - 60 + 1, 14, scaledresolution.getScaledHeight() - 60 + 10, -1873784752);
+        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow("30", 2, scaledresolution.getScaledHeight() - 60 + 2, 14737632);
         this.drawHorizontalLine(0, 239, scaledresolution.getScaledHeight() - 60, -1);
         this.drawHorizontalLine(0, 239, scaledresolution.getScaledHeight() - 1, -1);
         this.drawVerticalLine(0, scaledresolution.getScaledHeight() - 60, scaledresolution.getScaledHeight(), -1);

@@ -111,7 +111,7 @@ public class EntityWither extends EntityMob implements IBossDisplayData, IRanged
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "mob.wither.hurt";
     }

@@ -1,5 +1,6 @@
 package net.minecraft.crash;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -12,17 +13,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import net.minecraft.util.ReportedException;
+import net.minecraft.world.gen.layer.IntCache;
+import optifine.CrashReportCpu;
+import optifine.CrashReporter;
+import optifine.Reflector;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.util.ReportedException;
-import net.minecraft.world.gen.layer.IntCache;
-import optfine.CrashReporter;
-import optfine.Reflector;
 
 public class CrashReport
 {
@@ -76,10 +76,9 @@ public class CrashReport
                 return System.getProperty("os.name") + " (" + System.getProperty("os.arch") + ") version " + System.getProperty("os.version");
             }
         });
-        this.theReportCategory.addCrashSectionCallable("CPU", new CrashReport3(this));
-        this.theReportCategory.addCrashSectionCallable("Java Version", new Callable()
+        this.theReportCategory.addCrashSectionCallable("CPU", new CrashReportCpu());
+        this.theReportCategory.addCrashSectionCallable("Java Version", new Callable<String>()
         {
-            private static final String __OBFID = "CL_00001248";
             public String call()
             {
                 return System.getProperty("java.version") + ", " + System.getProperty("java.vendor");
@@ -111,7 +110,7 @@ public class CrashReport
         this.theReportCategory.addCrashSectionCallable("JVM Flags", new Callable()
         {
             private static final String __OBFID = "CL_00001329";
-            public String call() throws Exception
+            public String call()
             {
                 RuntimeMXBean runtimemxbean = ManagementFactory.getRuntimeMXBean();
                 List list = runtimemxbean.getInputArguments();
@@ -137,10 +136,8 @@ public class CrashReport
         this.theReportCategory.addCrashSectionCallable("IntCache", new Callable()
         {
             private static final String __OBFID = "CL_00001355";
-            @Override
-            public Object call() throws Exception
+            public String call() throws Exception
             {
-                // TODO Auto-generated method stub
                 return IntCache.getCacheSizes();
             }
         });
@@ -254,11 +251,13 @@ public class CrashReport
         if (!this.reported)
         {
             this.reported = true;
-            CrashReporter.onCrashReport(this);
+            CrashReporter.onCrashReport(this, this.theReportCategory);
         }
 
         StringBuilder stringbuilder = new StringBuilder();
         stringbuilder.append("---- Minecraft Crash Report ----\n");
+        Reflector.call(Reflector.BlamingTransformer_onCrash, new Object[] {stringbuilder});
+        Reflector.call(Reflector.CoreModManager_onCrash, new Object[] {stringbuilder});
         stringbuilder.append("// ");
         stringbuilder.append(getWittyComment());
         stringbuilder.append("\n\n");

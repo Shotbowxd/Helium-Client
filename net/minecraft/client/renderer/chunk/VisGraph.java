@@ -7,7 +7,10 @@ import java.util.Set;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import optfine.IntegerCache;
+import optifine.IntegerCache;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.render.BlockCullEvent;
+import rip.helium.event.events.impl.render.SetVisibilityEvent;
 
 public class VisGraph
 {
@@ -21,6 +24,11 @@ public class VisGraph
 
     public void func_178606_a(BlockPos pos)
     {
+    	//TODO: Client
+    	BlockCullEvent event = new BlockCullEvent();
+    	EventManager.call(event);
+    	if(event.isCancelled()) return;
+    	
         this.field_178612_d.set(getIndex(pos), true);
         --this.field_178611_f;
     }
@@ -38,6 +46,14 @@ public class VisGraph
     public SetVisibility computeVisibility()
     {
         SetVisibility setvisibility = new SetVisibility();
+        
+        //TODO: Client
+        SetVisibilityEvent event = new SetVisibilityEvent(true, false);
+        EventManager.call(event);
+        if(event.isShouldSet()) {
+        	setvisibility.setAllVisible(event.isVisible());
+        	return setvisibility;
+        }
 
         if (4096 - this.field_178611_f < 256)
         {

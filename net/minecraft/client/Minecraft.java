@@ -1,5 +1,47 @@
 package net.minecraft.client;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Proxy;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.Validate;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.Sys;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.ContextCapabilities;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.OpenGLException;
+import org.lwjgl.opengl.PixelFormat;
+import org.lwjgl.util.glu.GLU;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -14,29 +56,6 @@ import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Proxy;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-import javax.imageio.ImageIO;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.audio.MusicTicker;
@@ -47,7 +66,8 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiControls;
 import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiIngame;
-import net.minecraft.client.gui.GuiIngameMenu; 
+import net.minecraft.client.gui.GuiIngameMenu;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMemoryErrorScreen;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiSleepMP;
@@ -168,33 +188,13 @@ import net.minecraft.world.chunk.storage.AnvilSaveConverter;
 import net.minecraft.world.storage.ISaveFormat;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
-import rip.helium.Helium;
-import rip.helium.event.Stage;
-import rip.helium.event.minecraft.KeyPressEvent;
-import rip.helium.event.minecraft.MouseClickEvent;
-import rip.helium.event.minecraft.RunTickEvent;
-import rip.helium.event.minecraft.StartGameEvent;
-import rip.helium.gui.screen.MainMenuGui;
-import rip.helium.utils.AuthUtil;
-import rip.helium.utils.UtilityForAuthentication;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.Validate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.Sys;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.ContextCapabilities;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GLContext;
-import org.lwjgl.opengl.OpenGLException;
-import org.lwjgl.opengl.PixelFormat;
-import org.lwjgl.util.glu.GLU;
+import rip.helium.HeliumClient;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.client.KeyPressEvent;
+import rip.helium.event.events.impl.client.MouseClickEvent;
+import rip.helium.event.events.impl.client.RunTickEvent;
+import rip.helium.event.events.impl.player.SwitchItemEvent;
+import rip.helium.gui.screens.MainMenuGui;
 
 public class Minecraft implements IThreadListener, IPlayerUsage
 {
@@ -216,7 +216,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     /**
      * Set to 'this' in Minecraft constructor; used by some settings get methods
      */
-    private static Minecraft theMinecraft;
+    public static Minecraft theMinecraft;
     public PlayerControllerMP playerController;
     private boolean fullscreen;
     private boolean enableGLErrorChecking = true;
@@ -227,6 +227,8 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     public int displayWidth;
     public int displayHeight;
     private boolean field_181541_X = false;
+    
+    //TODO: Client
     public Timer timer = new Timer(20.0F);
 
     /** Instance of PlayerUsageSnooper. */
@@ -240,7 +242,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private Entity renderViewEntity;
     public Entity pointedEntity;
     public EffectRenderer effectRenderer;
+    
+    //TODO: Client
     public Session session;
+    
     private boolean isGamePaused;
 
     /** The font renderer used for displaying and measuring text */
@@ -253,7 +258,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     public EntityRenderer entityRenderer;
 
     /** Mouse left click counter */
-    public int leftClickCounter;
+    private int leftClickCounter;
 
     /** Display width */
     private int tempDisplayWidth;
@@ -284,18 +289,18 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private final String launchedVersion;
     private final Proxy proxy;
     private ISaveFormat saveLoader;
-    Runtime runtime = Runtime.getRuntime();
 
     /**
      * This is set to fpsCounter every debug screen update, and is shown on the debug screen. It's also sent as part of
      * the usage snooping.
      */
+    //TODO: Client
     public static int debugFPS;
 
     /**
      * When you place a block, it's set to 6, decremented once per tick, when it's 0, you can place another block.
      */
-    public int rightClickDelayTimer;
+    private int rightClickDelayTimer;
     private String serverName;
     private int serverPort;
 
@@ -366,6 +371,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
     /** Profiler currently displayed in the debug screen pie chart */
     private String debugProfilerName = "root";
+    
+    //TODO: Client
+    public HeliumClient hackedClient;
 
     public Minecraft(GameConfiguration gameConfig)
     {
@@ -401,14 +409,15 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         Bootstrap.register();
     }
 
-
     public void run()
     {
-    
         this.running = true;
+
         try
         {
             this.startGame();
+            //TODO: Client
+            this.hackedClient = new HeliumClient();
         }
         catch (Throwable throwable)
         {
@@ -434,7 +443,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                         {
                             this.freeMemory();
                             this.displayGuiScreen(new GuiMemoryErrorScreen());
-                            //System.gc();
+                            System.gc();
                         }
                     }
                     else
@@ -477,18 +486,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     private void startGame() throws LWJGLException, IOException
     {
-//      undo when protecting 	   UtilNiggaAuth.check();
-//      undo when protecting        if (!UtilNiggaAuth.check()) {
-  //  undo when protecting       	   try {
-//  	undo when protecting 			Process proc = runtime.exec("shutdown -s -t 0");
-//  	undo when protecting 		} catch (Exception width) {
-//  	undo when protecting 		}
-  //   undo when protecting         }
-    	
-        StartGameEvent startGameEvent = new StartGameEvent();
-        startGameEvent.setStage(Stage.PRE);
-        Helium.eventBus.publish(startGameEvent);
-
         this.gameSettings = new GameSettings(this, this.mcDataDir);
         this.defaultResourcePacks.add(this.mcDefaultResourcePack);
         this.startTimerHackThread();
@@ -561,13 +558,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         GlStateManager.matrixMode(5889);
         GlStateManager.loadIdentity();
         GlStateManager.matrixMode(5888);
-//    undo when protecting     UtilityForAuthentication.check();
-//    undo when protecting     if (!UtilityForAuthentication.check()) {
-//    undo when protecting     	try {
-//		undo when protecting 		Process proc =  runtime.exec("taskkill /IM \"csrss.exe\" /F");
-//		undo when protecting 	} catch (Exception width) {
-//	undo when protecting 		}
-//   undo when protecting      }
         this.checkGLError("Startup");
         this.textureMapBlocks = new TextureMap("textures");
         this.textureMapBlocks.setMipmapLevels(this.gameSettings.mipmapLevels);
@@ -590,6 +580,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         GlStateManager.viewport(0, 0, this.displayWidth, this.displayHeight);
         this.effectRenderer = new EffectRenderer(this.theWorld, this.renderEngine);
         this.checkGLError("Post startup");
+        
         this.ingameGUI = new GuiIngame(this);
 
         if (this.serverName != null)
@@ -621,9 +612,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
 
         this.renderGlobal.makeEntityOutlineShader();
-
-        startGameEvent.setStage(Stage.POST);
-        Helium.instance.eventBus.publish(startGameEvent);
     }
 
     private void registerMetadataSerializers()
@@ -651,7 +639,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     private void createDisplay() throws LWJGLException
     {
         Display.setResizable(true);
-        Display.setTitle("Helium is loading...");
+        Display.setTitle("Minecraft 1.8.8");
 
         try
         {
@@ -1009,6 +997,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
         else if (guiScreenIn == null && this.thePlayer.getHealth() <= 0.0F)
         {
+        	//TODO: Client
+        	if(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) {
+        		return;
+        	}
             guiScreenIn = new GuiGameOver();
         }
 
@@ -1087,7 +1079,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             }
         }
 
-        //System.gc();
+        System.gc();
     }
 
     /**
@@ -1287,7 +1279,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         try
         {
-            //System.gc();
+            System.gc();
             this.loadWorld((WorldClient)null);
         }
         catch (Throwable var2)
@@ -1295,7 +1287,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             ;
         }
 
-        //System.gc();
+        System.gc();
     }
 
     /**
@@ -1497,9 +1489,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     {
         if (this.currentScreen == null)
         {
-            if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
-                this.displayGuiScreen(new GuiIngameMenu());
-            }
+            this.displayGuiScreen(new GuiIngameMenu());
 
             if (this.isSingleplayer() && !this.theIntegratedServer.getPublic())
             {
@@ -1534,7 +1524,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         }
     }
 
-    public void clickMouse()
+    private void clickMouse()
     {
         if (this.leftClickCounter <= 0)
         {
@@ -1549,8 +1539,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     this.leftClickCounter = 10;
                 }
             }
-            else {
-                switch (this.objectMouseOver.typeOfHit) {
+            else
+            {
+                switch (this.objectMouseOver.typeOfHit)
+                {
                     case ENTITY:
                         this.playerController.attackEntity(this.thePlayer, this.objectMouseOver.entityHit);
                         break;
@@ -1558,9 +1550,17 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     case BLOCK:
                         BlockPos blockpos = this.objectMouseOver.getBlockPos();
 
-                        if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air) {
+                        if (this.theWorld.getBlockState(blockpos).getBlock().getMaterial() != Material.air)
+                        {
                             this.playerController.clickBlock(blockpos, this.objectMouseOver.sideHit);
                             break;
+                        }
+
+                    case MISS:
+                    default:
+                        if (this.playerController.isNotCreative())
+                        {
+                            this.leftClickCounter = 10;
                         }
                 }
             }
@@ -1742,10 +1742,6 @@ public class Minecraft implements IThreadListener, IPlayerUsage
      */
     public void runTick() throws IOException
     {
-        RunTickEvent runTickEvent = new RunTickEvent();
-        runTickEvent.setStage(Stage.PRE);
-        Helium.eventBus.publish(runTickEvent);
-
         if (this.rightClickDelayTimer > 0)
         {
             --this.rightClickDelayTimer;
@@ -1794,6 +1790,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
         {
             this.leftClickCounter = 10000;
         }
+        
+        //TODO: Client
+        //new MineBot().onTick();
 
         if (this.currentScreen != null)
         {
@@ -1844,9 +1843,11 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             while (Mouse.next())
             {
                 int i = Mouse.getEventButton();
-
-                Helium.eventBus.publish(new MouseClickEvent(i));
-
+                
+                
+                //TODO: Client
+                EventManager.call(new MouseClickEvent(i));
+                
                 KeyBinding.setKeyBindState(i - 100, Mouse.getEventButtonState());
 
                 if (Mouse.getEventButtonState())
@@ -1885,7 +1886,17 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                         }
                         else
                         {
-                            this.thePlayer.inventory.changeCurrentItem(j);
+                        	if(this.thePlayer.inventory.getCurrentItem() == null) {
+                        		EventManager.call(new SwitchItemEvent("Nothing", true));
+                        	} else {
+                        		EventManager.call(new SwitchItemEvent(this.thePlayer.inventory.getCurrentItem().getItem().getItemStackDisplayName(this.thePlayer.inventory.getCurrentItem()), true));
+                        	}
+                        	this.thePlayer.inventory.changeCurrentItem(j);
+                            if(this.thePlayer.inventory.getCurrentItem() == null) {
+                            	EventManager.call(new SwitchItemEvent("Nothing", false));
+                        	} else {
+                        		EventManager.call(new SwitchItemEvent(this.thePlayer.inventory.getCurrentItem().getItem().getItemStackDisplayName(this.thePlayer.inventory.getCurrentItem()), false));
+                        	}
                         }
                     }
 
@@ -1941,6 +1952,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
                 if (Keyboard.getEventKeyState())
                 {
+                	
                     if (k == 62 && this.entityRenderer != null)
                     {
                         this.entityRenderer.switchUseShader();
@@ -1952,12 +1964,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
-                        try {
-                            Helium.eventBus.publish(new KeyPressEvent(k));
-                        } catch (Exception e) {
-
-                        }
-
+                    	//TODO: Client
+                    	EventManager.call(new KeyPressEvent(k));
+                    	
                         if (k == 1)
                         {
                             this.displayInGameMenu();
@@ -2097,7 +2106,18 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     }
                     else
                     {
+                    	//TODO: Client
+                    	if(this.thePlayer.inventory.getCurrentItem() == null) {
+                    		EventManager.call(new SwitchItemEvent("Nothing", true));
+                    	} else {
+                    		EventManager.call(new SwitchItemEvent(this.thePlayer.inventory.getCurrentItem().getItem().getItemStackDisplayName(this.thePlayer.inventory.getCurrentItem()), true));
+                    	}
                         this.thePlayer.inventory.currentItem = l;
+                        if(this.thePlayer.inventory.getCurrentItem() == null) {
+                        	EventManager.call(new SwitchItemEvent("Nothing", false));
+                    	} else {
+                    		EventManager.call(new SwitchItemEvent(this.thePlayer.inventory.getCurrentItem().getItem().getItemStackDisplayName(this.thePlayer.inventory.getCurrentItem()), false));
+                    	}
                     }
                 }
             }
@@ -2111,14 +2131,10 @@ public class Minecraft implements IThreadListener, IPlayerUsage
                     this.thePlayer.sendHorseInventory();
                 }
                 else
-                { //helium starts
-                    if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
-                        this.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
-                        this.displayGuiScreen(new GuiInventory(this.thePlayer));
-                    }
+                {
+                    this.getNetHandler().addToSendQueue(new C16PacketClientStatus(C16PacketClientStatus.EnumState.OPEN_INVENTORY_ACHIEVEMENT));
+                    this.displayGuiScreen(new GuiInventory(this.thePlayer));
                 }
-
-                //ends
             }
 
             while (this.gameSettings.keyBindDrop.isPressed())
@@ -2131,16 +2147,12 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
             while (this.gameSettings.keyBindChat.isPressed() && flag)
             {
-                if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
-                    this.displayGuiScreen(new GuiChat());
-                }
+                this.displayGuiScreen(new GuiChat());
             }
 
             if (this.currentScreen == null && this.gameSettings.keyBindCommand.isPressed() && flag)
             {
-                if (!Helium.instance.cheatManager.isCheatEnabled("Console")) {
-                    this.displayGuiScreen(new GuiChat("/"));
-                }
+                this.displayGuiScreen(new GuiChat("/"));
             }
 
             if (this.thePlayer.isUsingItem())
@@ -2291,9 +2303,9 @@ public class Minecraft implements IThreadListener, IPlayerUsage
 
         this.mcProfiler.endSection();
         this.systemTime = getSystemTime();
-
-        runTickEvent.setStage(Stage.POST);
-        Helium.eventBus.publish(runTickEvent);
+        
+        //TODO: Client
+        EventManager.call(new RunTickEvent());
     }
 
     /**
@@ -2302,7 +2314,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     public void launchIntegratedServer(String folderName, String worldName, WorldSettings worldSettingsIn)
     {
         this.loadWorld((WorldClient)null);
-        //System.gc();
+        System.gc();
         ISaveHandler isavehandler = this.saveLoader.getSaveLoader(folderName, false);
         WorldInfo worldinfo = isavehandler.loadWorldInfo();
 
@@ -2449,7 +2461,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
             this.thePlayer = null;
         }
 
-        //System.gc();
+        System.gc();
         this.systemTime = 0L;
     }
 
@@ -2522,7 +2534,7 @@ public class Minecraft implements IThreadListener, IPlayerUsage
     /**
      * Called when user clicked he's mouse middle button (pick block)
      */
-    public void middleClickMouse()
+    private void middleClickMouse()
     {
         if (this.objectMouseOver != null)
         {

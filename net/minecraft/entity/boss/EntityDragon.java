@@ -766,7 +766,7 @@ public class EntityDragon extends EntityLiving implements IBossDisplayData, IEnt
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "mob.enderdragon.hit";
     }

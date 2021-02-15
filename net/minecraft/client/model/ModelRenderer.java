@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import optfine.ModelSprite;
+import optifine.ModelSprite;
 
 import org.lwjgl.opengl.GL11;
 
@@ -49,6 +49,7 @@ public class ModelRenderer
     private static final String __OBFID = "CL_00000874";
     public List spriteList;
     public boolean mirrorV;
+    float savedScale;
 
     public ModelRenderer(ModelBase model, String boxNameIn)
     {
@@ -287,7 +288,12 @@ public class ModelRenderer
      */
     private void compileDisplayList(float scale)
     {
-        this.displayList = GLAllocation.generateDisplayLists(1);
+        if (this.displayList == 0)
+        {
+            this.savedScale = scale;
+            this.displayList = GLAllocation.generateDisplayLists(1);
+        }
+
         GL11.glNewList(this.displayList, GL11.GL_COMPILE);
         WorldRenderer worldrenderer = Tessellator.getInstance().getWorldRenderer();
 
@@ -319,5 +325,24 @@ public class ModelRenderer
     public void addSprite(float p_addSprite_1_, float p_addSprite_2_, float p_addSprite_3_, int p_addSprite_4_, int p_addSprite_5_, int p_addSprite_6_, float p_addSprite_7_)
     {
         this.spriteList.add(new ModelSprite(this, this.textureOffsetX, this.textureOffsetY, p_addSprite_1_, p_addSprite_2_, p_addSprite_3_, p_addSprite_4_, p_addSprite_5_, p_addSprite_6_, p_addSprite_7_));
+    }
+
+    public boolean getCompiled()
+    {
+        return this.compiled;
+    }
+
+    public int getDisplayList()
+    {
+        return this.displayList;
+    }
+
+    public void resetDisplayList()
+    {
+        if (this.compiled)
+        {
+            this.compiled = false;
+            this.compileDisplayList(this.savedScale);
+        }
     }
 }

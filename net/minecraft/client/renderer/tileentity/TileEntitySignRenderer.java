@@ -7,17 +7,22 @@ import net.minecraft.client.gui.GuiUtilRenderComponents;
 import net.minecraft.client.model.ModelSign;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
+import optifine.Config;
+import optifine.CustomColors;
+
 import org.lwjgl.opengl.GL11;
 
-public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntitySign>
+public class TileEntitySignRenderer extends TileEntitySpecialRenderer
 {
     private static final ResourceLocation SIGN_TEXTURE = new ResourceLocation("textures/entity/sign.png");
 
     /** The ModelSign instance for use in this renderer */
     private final ModelSign model = new ModelSign();
+    private static final String __OBFID = "CL_00000970";
 
     public void renderTileEntityAt(TileEntitySign te, double x, double y, double z, float partialTicks, int destroyStage)
     {
@@ -28,32 +33,32 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
         if (block == Blocks.standing_sign)
         {
             GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * f, (float)z + 0.5F);
-            float f1 = (float)(te.getBlockMetadata() * 360) / 16.0F;
-            GlStateManager.rotate(-f1, 0.0F, 1.0F, 0.0F);
+            float f2 = (float)(te.getBlockMetadata() * 360) / 16.0F;
+            GlStateManager.rotate(-f2, 0.0F, 1.0F, 0.0F);
             this.model.signStick.showModel = true;
         }
         else
         {
             int k = te.getBlockMetadata();
-            float f2 = 0.0F;
+            float f1 = 0.0F;
 
             if (k == 2)
             {
-                f2 = 180.0F;
+                f1 = 180.0F;
             }
 
             if (k == 4)
             {
-                f2 = 90.0F;
+                f1 = 90.0F;
             }
 
             if (k == 5)
             {
-                f2 = -90.0F;
+                f1 = -90.0F;
             }
 
             GlStateManager.translate((float)x + 0.5F, (float)y + 0.75F * f, (float)z + 0.5F);
-            GlStateManager.rotate(-f2, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-f1, 0.0F, 1.0F, 0.0F);
             GlStateManager.translate(0.0F, -0.3125F, -0.4375F);
             this.model.signStick.showModel = false;
         }
@@ -85,6 +90,11 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
         GlStateManager.depthMask(false);
         int i = 0;
 
+        if (Config.isCustomColors())
+        {
+            i = CustomColors.getSignTextColor(i);
+        }
+
         if (destroyStage < 0)
         {
             for (int j = 0; j < te.signText.length; ++j)
@@ -92,7 +102,7 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
                 if (te.signText[j] != null)
                 {
                     IChatComponent ichatcomponent = te.signText[j];
-                    List<IChatComponent> list = GuiUtilRenderComponents.func_178908_a(ichatcomponent, 90, fontrenderer, false, true);
+                    List list = GuiUtilRenderComponents.func_178908_a(ichatcomponent, 90, fontrenderer, false, true);
                     String s = list != null && list.size() > 0 ? ((IChatComponent)list.get(0)).getFormattedText() : "";
 
                     if (j == te.lineBeingEdited)
@@ -118,5 +128,10 @@ public class TileEntitySignRenderer extends TileEntitySpecialRenderer<TileEntity
             GlStateManager.popMatrix();
             GlStateManager.matrixMode(5888);
         }
+    }
+
+    public void renderTileEntityAt(TileEntity te, double x, double y, double z, float partialTicks, int destroyStage)
+    {
+        this.renderTileEntityAt((TileEntitySign)te, x, y, z, partialTicks, destroyStage);
     }
 }

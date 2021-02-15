@@ -1,7 +1,12 @@
 package net.minecraft.client.renderer;
 
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+
+import optifine.Config;
 
 public class GlStateManager
 {
@@ -20,7 +25,7 @@ public class GlStateManager
     private static GlStateManager.StencilState stencilState = new GlStateManager.StencilState((GlStateManager.GlStateManager$1)null);
     private static GlStateManager.BooleanState normalizeState = new GlStateManager.BooleanState(2977);
     private static int activeTextureUnit = 0;
-    private static GlStateManager.TextureState[] textureState = new GlStateManager.TextureState[8];
+    private static GlStateManager.TextureState[] textureState = new GlStateManager.TextureState[32];
     private static int activeShadeModel = 7425;
     private static GlStateManager.BooleanState rescaleNormalState = new GlStateManager.BooleanState(32826);
     private static GlStateManager.ColorMask colorMaskState = new GlStateManager.ColorMask((GlStateManager.GlStateManager$1)null);
@@ -335,13 +340,16 @@ public class GlStateManager
 
     public static void deleteTexture(int texture)
     {
-        GL11.glDeleteTextures(texture);
-
-        for (GlStateManager.TextureState glstatemanager$texturestate : textureState)
+        if (texture != 0)
         {
-            if (glstatemanager$texturestate.textureName == texture)
+            GL11.glDeleteTextures(texture);
+
+            for (GlStateManager.TextureState glstatemanager$texturestate : textureState)
             {
-                glstatemanager$texturestate.textureName = -1;
+                if (glstatemanager$texturestate.textureName == texture)
+                {
+                    glstatemanager$texturestate.textureName = 0;
+                }
             }
         }
     }
@@ -522,6 +530,48 @@ public class GlStateManager
         GL11.glCallList(list);
     }
 
+    public static int getActiveTextureUnit()
+    {
+        return OpenGlHelper.defaultTexUnit + activeTextureUnit;
+    }
+
+    public static int getBoundTexture()
+    {
+        return textureState[activeTextureUnit].textureName;
+    }
+
+    public static void checkBoundTexture()
+    {
+        if (Config.isMinecraftThread())
+        {
+            int i = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE);
+            int j = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D);
+            int k = getActiveTextureUnit();
+            int l = getBoundTexture();
+
+            if (l > 0)
+            {
+                if (i != k || j != l)
+                {
+                    Config.dbg("checkTexture: act: " + k + ", glAct: " + i + ", tex: " + l + ", glTex: " + j);
+                }
+            }
+        }
+    }
+
+    public static void deleteTextures(IntBuffer p_deleteTextures_0_)
+    {
+        p_deleteTextures_0_.rewind();
+
+        while (p_deleteTextures_0_.position() < p_deleteTextures_0_.limit())
+        {
+            int i = p_deleteTextures_0_.get();
+            deleteTexture(i);
+        }
+
+        p_deleteTextures_0_.rewind();
+    }
+
     static
     {
         for (int i = 0; i < 8; ++i)
@@ -529,7 +579,7 @@ public class GlStateManager
             lightState[i] = new GlStateManager.BooleanState(16384 + i);
         }
 
-        for (int j = 0; j < 8; ++j)
+        for (int j = 0; j < textureState.length; ++j)
         {
             textureState[j] = new GlStateManager.TextureState((GlStateManager.GlStateManager$1)null);
         }

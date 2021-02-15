@@ -141,5 +141,4 @@ public interface INetHandlerPlayServer extends INetHandler
     void handleSpectate(C18PacketSpectate packetIn);
 
     void handleResourcePackStatus(C19PacketResourcePackStatus packetIn);
-
 }

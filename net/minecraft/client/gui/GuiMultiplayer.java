@@ -1,20 +1,25 @@
 package net.minecraft.client.gui;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.input.Keyboard;
+
+import com.github.creeper123123321.viafabric.ViaFabric;
+import com.github.creeper123123321.viafabric.util.ProtocolUtils;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.network.LanServerDetector;
 import net.minecraft.client.network.OldServerPinger;
 import net.minecraft.client.resources.I18n;
-import rip.helium.buttons.UIButton;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.input.Keyboard;
+import rip.helium.gui.screens.DirectLoginGui;
+import rip.helium.viaversion.gui.GuiProtocolSelector;
 
 public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 {
@@ -93,13 +98,17 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
 
     public void createButtons()
     {
-        this.buttonList.add(this.btnEditServer = new UIButton(7, this.width / 2 - 154, this.height - 28, 70, 20, I18n.format("selectServer.edit", new Object[0])));
-        this.buttonList.add(this.btnDeleteServer = new UIButton(2, this.width / 2 - 74, this.height - 28, 70, 20, I18n.format("selectServer.delete", new Object[0])));
-        this.buttonList.add(this.btnSelectServer = new UIButton(1, this.width / 2 - 154, this.height - 52, 100, 20, I18n.format("selectServer.select", new Object[0])));
-        this.buttonList.add(new UIButton(4, this.width / 2 - 50, this.height - 52, 100, 20, I18n.format("selectServer.direct", new Object[0])));
-        this.buttonList.add(new UIButton(3, this.width / 2 + 4 + 50, this.height - 52, 100, 20, I18n.format("selectServer.add", new Object[0])));
-        this.buttonList.add(new UIButton(8, this.width / 2 + 4, this.height - 28, 70, 20, I18n.format("selectServer.refresh", new Object[0])));
-        this.buttonList.add(new UIButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel", new Object[0])));
+        this.buttonList.add(this.btnEditServer = new GuiButton(7, this.width / 2 - 154, this.height - 28, 70, 20, I18n.format("selectServer.edit", new Object[0])));
+        this.buttonList.add(this.btnDeleteServer = new GuiButton(2, this.width / 2 - 74, this.height - 28, 70, 20, I18n.format("selectServer.delete", new Object[0])));
+        this.buttonList.add(this.btnSelectServer = new GuiButton(1, this.width / 2 - 154, this.height - 52, 100, 20, I18n.format("selectServer.select", new Object[0])));
+        this.buttonList.add(new GuiButton(4, this.width / 2 - 50, this.height - 52, 100, 20, I18n.format("selectServer.direct", new Object[0])));
+        this.buttonList.add(new GuiButton(3, this.width / 2 + 4 + 50, this.height - 52, 100, 20, I18n.format("selectServer.add", new Object[0])));
+        this.buttonList.add(new GuiButton(8, this.width / 2 + 4, this.height - 28, 70, 20, I18n.format("selectServer.refresh", new Object[0])));
+        this.buttonList.add(new GuiButton(0, this.width / 2 + 4 + 76, this.height - 28, 75, 20, I18n.format("gui.cancel", new Object[0])));
+        
+        //TODO: Client
+        this.buttonList.add(new GuiButton(69, 2, 2, 98, 20, ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion)));
+        
         this.selectServer(this.serverListSelector.func_148193_k());
     }
 
@@ -145,6 +154,10 @@ public class GuiMultiplayer extends GuiScreen implements GuiYesNoCallback
         {
             GuiListExtended.IGuiListEntry guilistextended$iguilistentry = this.serverListSelector.func_148193_k() < 0 ? null : this.serverListSelector.getListEntry(this.serverListSelector.func_148193_k());
 
+            //TODO: Client
+            if (button.id == 69)
+            	mc.displayGuiScreen(new GuiProtocolSelector(this));
+            
             if (button.id == 2 && guilistextended$iguilistentry instanceof ServerListEntryNormal)
             {
                 String s4 = ((ServerListEntryNormal)guilistextended$iguilistentry).getServerData().serverName;

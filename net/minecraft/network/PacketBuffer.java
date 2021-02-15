@@ -1,13 +1,5 @@
 package net.minecraft.network;
 
-import com.google.common.base.Charsets;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.buffer.ByteBufProcessor;
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.EncoderException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -17,6 +9,16 @@ import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.ScatteringByteChannel;
 import java.nio.charset.Charset;
 import java.util.UUID;
+
+import com.google.common.base.Charsets;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.ByteBufOutputStream;
+import io.netty.buffer.ByteBufProcessor;
+import io.netty.handler.codec.DecoderException;
+import io.netty.handler.codec.EncoderException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -34,12 +36,7 @@ public class PacketBuffer extends ByteBuf
         this.buf = wrapped;
     }
 
-    /**
-     * Calculates the number of bytes required to fit the supplied int (0-5) if it were to be read/written using
-     * readVarIntFromBuffer or writeVarIntToBuffer
-     */
-    
-    
+    //TODO: Client
     public void writeRawItemStackToBuffer(final ItemStack stack) {
         if (stack == null) {
             this.writeShort(-1);
@@ -55,6 +52,11 @@ public class PacketBuffer extends ByteBuf
             this.writeNBTTagCompoundToBuffer(var2);
         }
     }
+    
+    /**
+     * Calculates the number of bytes required to fit the supplied int (0-5) if it were to be read/written using
+     * readVarIntFromBuffer or writeVarIntToBuffer
+     */
     public static int getVarIntSize(int input)
     {
         for (int i = 1; i < 5; ++i)

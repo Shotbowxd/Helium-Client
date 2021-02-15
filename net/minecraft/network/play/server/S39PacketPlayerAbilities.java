@@ -8,12 +8,12 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 
 public class S39PacketPlayerAbilities implements Packet<INetHandlerPlayClient>
 {
-    public boolean invulnerable;
-    public boolean flying;
-    public boolean allowFlying;
-    public boolean creativeMode;
-    public float flySpeed;
-    public float walkSpeed;
+    private boolean invulnerable;
+    private boolean flying;
+    private boolean allowFlying;
+    private boolean creativeMode;
+    private float flySpeed;
+    private float walkSpeed;
 
     public S39PacketPlayerAbilities()
     {

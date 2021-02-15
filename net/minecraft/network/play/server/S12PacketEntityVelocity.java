@@ -9,6 +9,7 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 public class S12PacketEntityVelocity implements Packet<INetHandlerPlayClient>
 {
     private int entityID;
+    //TODO: Client
     public int motionX;
     public int motionY;
     public int motionZ;

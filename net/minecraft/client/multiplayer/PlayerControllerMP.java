@@ -28,7 +28,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import rip.helium.utils.Vec3d;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.player.BreakBlockEvent;
+import rip.helium.event.events.impl.player.PlaceBlockEvent;
+import rip.helium.event.events.impl.player.ReachEvent;
+import rip.helium.utils.misc.Vec3d;
 
 public class PlayerControllerMP
 {
@@ -54,10 +58,11 @@ public class PlayerControllerMP
     private int blockHitDelay;
 
     /** Tells if the player is hitting a block */
+    //TODO: Client
     public boolean isHittingBlock;
 
     /** Current game type for the player */
-    public WorldSettings.GameType currentGameType = WorldSettings.GameType.SURVIVAL;
+    private WorldSettings.GameType currentGameType = WorldSettings.GameType.SURVIVAL;
 
     /** Index of the current item held by the player in the inventory hotbar */
     private int currentPlayerItem;
@@ -227,6 +232,8 @@ public class PlayerControllerMP
             if (this.currentGameType.isCreative())
             {
                 this.netClientHandler.addToSendQueue(new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.START_DESTROY_BLOCK, loc, face));
+                //TODO: Client
+                EventManager.call(new BreakBlockEvent(mc.theWorld.getBlockState(loc).getBlock()));
                 clickBlockCreative(this.mc, this, loc, face);
                 this.blockHitDelay = 5;
             }
@@ -248,6 +255,8 @@ public class PlayerControllerMP
 
                 if (flag && block1.getPlayerRelativeBlockHardness(this.mc.thePlayer, this.mc.thePlayer.worldObj, loc) >= 1.0F)
                 {
+                    //TODO: Client
+                    EventManager.call(new BreakBlockEvent(mc.theWorld.getBlockState(loc).getBlock()));
                     this.onPlayerDestroyBlock(loc, face);
                 }
                 else
@@ -306,7 +315,7 @@ public class PlayerControllerMP
             }
             else
             {
-                this.curBlockDamageMP += block.getPlayerRelativeBlockHardness(this.mc.thePlayer, this.mc.thePlayer.worldObj, posBlock);
+                this.curBlockDamageMP += (mc.hackedClient.getModuleManager().getModule("SpeedMine").getState() ? (block.getPlayerRelativeBlockHardness(this.mc.thePlayer, this.mc.thePlayer.worldObj, posBlock) * 2) : block.getPlayerRelativeBlockHardness(this.mc.thePlayer, this.mc.thePlayer.worldObj, posBlock));
 
                 if (this.stepSoundTickCounter % 4.0F == 0.0F)
                 {
@@ -340,7 +349,10 @@ public class PlayerControllerMP
      */
     public float getBlockReachDistance()
     {
-        return this.currentGameType.isCreative() ? 5.0F : 4.5F;
+    	//TODO: Client
+    	ReachEvent event = new ReachEvent(this.currentGameType.isCreative() ? 5.0F : 4.5F);
+    	EventManager.call(event);
+        return event.getReach();
     }
 
     public void updateController()
@@ -373,7 +385,7 @@ public class PlayerControllerMP
     /**
      * Syncs the current player item with the server
      */
-    public void syncCurrentPlayItem()
+    private void syncCurrentPlayItem()
     {
         int i = this.mc.thePlayer.inventory.currentItem;
 
@@ -411,6 +423,10 @@ public class PlayerControllerMP
                 {
                     ItemBlock itemblock = (ItemBlock)heldStack.getItem();
 
+                    //TODO: Client
+                    PlaceBlockEvent event = new PlaceBlockEvent(itemblock.getBlock());
+                    EventManager.call(event);
+                    
                     if (!itemblock.canPlaceBlockOnSide(worldIn, hitPos, side, player, heldStack))
                     {
                         return false;
@@ -447,6 +463,70 @@ public class PlayerControllerMP
         }
     }
 
+    //TODO: Client
+    public boolean onPlayerRightClick(EntityPlayerSP player, WorldClient worldIn, ItemStack heldStack, BlockPos hitPos, EnumFacing side, Vec3d hitVec)
+    {
+        this.syncCurrentPlayItem();
+        float f = (float)(hitVec.xCoord - (double)hitPos.getX());
+        float f1 = (float)(hitVec.yCoord - (double)hitPos.getY());
+        float f2 = (float)(hitVec.zCoord - (double)hitPos.getZ());
+        boolean flag = false;
+
+        if (!this.mc.theWorld.getWorldBorder().contains(hitPos))
+        {
+            return false;
+        }
+        else
+        {
+            if (this.currentGameType != WorldSettings.GameType.SPECTATOR)
+            {
+                IBlockState iblockstate = worldIn.getBlockState(hitPos);
+
+                if ((!player.isSneaking() || player.getHeldItem() == null) && iblockstate.getBlock().onBlockActivated(worldIn, hitPos, iblockstate, player, side, f, f1, f2))
+                {
+                    flag = true;
+                }
+
+                if (!flag && heldStack != null && heldStack.getItem() instanceof ItemBlock)
+                {
+                    ItemBlock itemblock = (ItemBlock)heldStack.getItem();
+                    
+                    if (!itemblock.canPlaceBlockOnSide(worldIn, hitPos, side, player, heldStack))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            this.netClientHandler.addToSendQueue(new C08PacketPlayerBlockPlacement(hitPos, side.getIndex(), player.inventory.getCurrentItem(), f, f1, f2));
+
+            if (!flag && this.currentGameType != WorldSettings.GameType.SPECTATOR)
+            {
+                if (heldStack == null)
+                {
+                    return false;
+                }
+                else if (this.currentGameType.isCreative())
+                {
+                    int i = heldStack.getMetadata();
+                    int j = heldStack.stackSize;
+                    boolean flag1 = heldStack.onItemUse(player, worldIn, hitPos, side, f, f1, f2);
+                    heldStack.setItemDamage(i);
+                    heldStack.stackSize = j;
+                    return flag1;
+                }
+                else
+                {
+                    return heldStack.onItemUse(player, worldIn, hitPos, side, f, f1, f2);
+                }
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
+    
     /**
      * Notifies the server of things like consuming food, etc...
      */
@@ -618,49 +698,4 @@ public class PlayerControllerMP
     {
         return this.isHittingBlock;
     }
-
-    public boolean processRightClickBlock(EntityPlayerSP p_178890_1_, WorldClient p_178890_2_, ItemStack p_178890_3_, BlockPos p_178890_4_, EnumFacing p_178890_5_, Vec3 p_178890_6_) {
-        this.syncCurrentPlayItem();
-        float var7 = (float)(p_178890_6_.xCoord - (double)p_178890_4_.getX());
-        float var8 = (float)(p_178890_6_.yCoord - (double)p_178890_4_.getY());
-        float var9 = (float)(p_178890_6_.zCoord - (double)p_178890_4_.getZ());
-        boolean var10 = false;
-        if (!mc.theWorld.getWorldBorder().contains(p_178890_4_)) {
-            return false;
-        }
-        if (this.currentGameType != WorldSettings.GameType.SPECTATOR) {
-            ItemBlock var12;
-            IBlockState var11 = p_178890_2_.getBlockState(p_178890_4_);
-            if ((!p_178890_1_.isSneaking() || p_178890_1_.getHeldItem() == null) && var11.getBlock().onBlockActivated(p_178890_2_, p_178890_4_, var11, p_178890_1_, p_178890_5_, var7, var8, var9)) {
-                var10 = true;
-            }
-            if (!var10 && p_178890_3_ != null && p_178890_3_.getItem() instanceof ItemBlock && !(var12 = (ItemBlock)p_178890_3_.getItem()).canPlaceBlockOnSide(p_178890_2_, p_178890_4_, p_178890_5_, p_178890_1_, p_178890_3_)) {
-                return false;
-            }
-        }
-        this.netClientHandler.addToSendQueue(new C08PacketPlayerBlockPlacement(p_178890_4_, p_178890_5_.getIndex(), p_178890_1_.inventory.getCurrentItem(), var7, var8, var9));
-        if (var10 || this.currentGameType == WorldSettings.GameType.SPECTATOR) {
-            return true;
-        }
-        if (p_178890_3_ == null) {
-            return false;
-        }
-        if (this.currentGameType.isCreative()) {
-            int var13 = p_178890_3_.getMetadata();
-            int var14 = p_178890_3_.stackSize;
-            boolean var15 = p_178890_3_.onItemUse(p_178890_1_, p_178890_2_, p_178890_4_, p_178890_5_, var7, var8, var9);
-            p_178890_3_.setItemDamage(var13);
-            p_178890_3_.stackSize = var14;
-            return var15;
-        }
-        return p_178890_3_.onItemUse(p_178890_1_, p_178890_2_, p_178890_4_, p_178890_5_, var7, var8, var9);
-    }
-
-    public void processRightClickBlock(BlockPos pos, EnumFacing side, Vec3 hitVec) {
-        processRightClickBlock(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem(), pos, side, hitVec);
-    }
-
-	  public void onPlayerRightClic(EntityPlayerSP thePlayer, WorldClient theWorld, ItemStack stack, BlockPos position, EnumFacing face, Vec3d vec3d) {
-    onPlayerRightClick(thePlayer, theWorld, stack, position, face, new Vec3(vec3d.xCoord, vec3d.yCoord, vec3d.zCoord));
-  }
 }

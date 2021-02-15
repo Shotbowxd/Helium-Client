@@ -305,7 +305,7 @@ public class EntityRabbit extends EntityAnimal
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "mob.rabbit.hurt";
     }

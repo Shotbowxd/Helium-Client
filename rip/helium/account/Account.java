@@ -1,7 +1,7 @@
 package rip.helium.account;
 
 import com.thealtening.AltService;
-import rip.helium.Helium;
+
 
 /**
  * @author antja03
@@ -20,7 +20,7 @@ public class Account {
     }
 
     public void attemptLogin() throws IllegalArgumentException {
-        Helium.instance.accountLoginService.attemptLogin(this);
+
     }
 
     public String getUsername() {

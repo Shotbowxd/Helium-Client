@@ -10,8 +10,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
-import optfine.CustomColorizer;
-import optfine.RenderEnv;
+import optifine.CustomColors;
+import optifine.RenderEnv;
 
 public class BlockFluidRenderer
 {
@@ -38,13 +38,13 @@ public class BlockFluidRenderer
         BlockLiquid blockliquid = (BlockLiquid)blockStateIn.getBlock();
         blockliquid.setBlockBoundsBasedOnState(blockAccess, blockPosIn);
         TextureAtlasSprite[] atextureatlassprite = blockliquid.getMaterial() == Material.lava ? this.atlasSpritesLava : this.atlasSpritesWater;
-        int i = CustomColorizer.getFluidColor(blockliquid, blockAccess, blockPosIn);
+        RenderEnv renderenv = RenderEnv.getInstance(blockAccess, blockStateIn, blockPosIn);
+        int i = CustomColors.getFluidColor(blockAccess, blockStateIn, blockPosIn, renderenv);
         float f = (float)(i >> 16 & 255) / 255.0F;
         float f1 = (float)(i >> 8 & 255) / 255.0F;
         float f2 = (float)(i & 255) / 255.0F;
         boolean flag = blockliquid.shouldSideBeRendered(blockAccess, blockPosIn.up(), EnumFacing.UP);
         boolean flag1 = blockliquid.shouldSideBeRendered(blockAccess, blockPosIn.down(), EnumFacing.DOWN);
-        RenderEnv renderenv = RenderEnv.getInstance(blockAccess, blockStateIn, blockPosIn);
         boolean[] aboolean = renderenv.getBorderFlags();
         aboolean[0] = blockliquid.shouldSideBeRendered(blockAccess, blockPosIn.north(), EnumFacing.NORTH);
         aboolean[1] = blockliquid.shouldSideBeRendered(blockAccess, blockPosIn.south(), EnumFacing.SOUTH);

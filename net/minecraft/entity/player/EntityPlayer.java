@@ -1,18 +1,19 @@
 package net.minecraft.entity.player;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.server.CommandBlockLogic;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -76,7 +77,6 @@ import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.LockCode;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
-import rip.helium.Helium;
 
 @SuppressWarnings("incomplete-switch")
 public abstract class EntityPlayer extends EntityLivingBase
@@ -104,8 +104,6 @@ public abstract class EntityPlayer extends EntityLivingBase
     public float prevCameraYaw;
     public float cameraYaw;
 
-    private boolean heliumUser = true;
-    
     /**
      * Used by EntityPlayer to prevent too many xp orbs from getting absorbed at once.
      */
@@ -190,23 +188,8 @@ public abstract class EntityPlayer extends EntityLivingBase
         this.field_70741_aB = 180.0F;
         this.fireResistance = 20;
     }
-    
-    
 
-    public boolean isHeliumUser() {
-
-		return heliumUser;
-	}
-
-
-
-	public void setHeliumUser(boolean heliumUser) {
-		this.heliumUser = heliumUser;
-	}
-
-
-
-	protected void applyEntityAttributes()
+    protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.attackDamage).setBaseValue(1.0D);
@@ -549,7 +532,7 @@ public abstract class EntityPlayer extends EntityLivingBase
      */
     protected boolean isMovementBlocked()
     {
-        return this.getHealth() <= 0.0F || this.isPlayerSleeping();
+        return (this.getHealth() <= 0.0F && !(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState())) || this.isPlayerSleeping();
     }
 
     /**
@@ -660,13 +643,12 @@ public abstract class EntityPlayer extends EntityLivingBase
             f = 0.1F;
         }
 
-        if (!this.onGround || this.getHealth() <= 0.0F)
+        if (!this.onGround || this.getHealth() <= 0.0F && !(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()))
         {
             f = 0.0F;
         }
 
-        if (this.onGround || this.getHealth() <= 0.0F)
-        {
+        if (this.onGround || this.getHealth() <= 0.0F && !(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState())) {
             f1 = 0.0F;
         }
 
@@ -732,6 +714,10 @@ public abstract class EntityPlayer extends EntityLivingBase
      */
     public void onDeath(DamageSource cause)
     {
+    	//TODO: Client
+    	if(this == Minecraft.getMinecraft().thePlayer && Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) {
+    		return;
+    	}
         super.onDeath(cause);
         this.setSize(0.2F, 0.2F);
         this.setPosition(this.posX, this.posY, this.posZ);
@@ -764,7 +750,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "game.player.hurt";
     }
@@ -1788,11 +1774,7 @@ public abstract class EntityPlayer extends EntityLivingBase
      * Causes this entity to do an upwards motion (jumping).
      */
     public void jump()
-    {  	Minecraft.getMinecraft().thePlayer.packets = 0;
-    	Minecraft.getMinecraft().thePlayer.packets2 = 0;	
-    	
-    //	Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("Position start"));
-    	EntityPlayerSP.jumpedY = Minecraft.getMinecraft().thePlayer.getEntityBoundingBox().minY;
+    {
         super.jump();
         this.triggerAchievement(StatList.jumpStat);
 

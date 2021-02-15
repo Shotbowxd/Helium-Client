@@ -28,8 +28,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import optfine.Config;
-import optfine.Reflector;
+import optifine.Config;
+import optifine.Reflector;
 
 public class EffectRenderer
 {
@@ -154,7 +154,10 @@ public class EffectRenderer
                     this.fxLayers[i][j].remove(0);
                 }
 
-                this.fxLayers[i][j].add(effect);
+                if (!(effect instanceof Barrier) || !this.reuseBarrierParticle(effect, this.fxLayers[i][j]))
+                {
+                    this.fxLayers[i][j].add(effect);
+                }
             }
         }
     }
@@ -497,6 +500,20 @@ public class EffectRenderer
         }
 
         return "" + i;
+    }
+
+    private boolean reuseBarrierParticle(EntityFX p_reuseBarrierParticle_1_, List<EntityFX> p_reuseBarrierParticle_2_)
+    {
+        for (EntityFX entityfx : p_reuseBarrierParticle_2_)
+        {
+            if (entityfx instanceof Barrier && p_reuseBarrierParticle_1_.posX == entityfx.posX && p_reuseBarrierParticle_1_.posY == entityfx.posY && p_reuseBarrierParticle_1_.posZ == entityfx.posZ)
+            {
+                entityfx.particleAge = 0;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void addBlockHitEffects(BlockPos p_addBlockHitEffects_1_, MovingObjectPosition p_addBlockHitEffects_2_)

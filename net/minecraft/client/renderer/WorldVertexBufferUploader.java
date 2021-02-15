@@ -4,9 +4,11 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import optfine.Reflector;
+import optifine.Config;
+import optifine.Reflector;
 
 import org.lwjgl.opengl.GL11;
+import shadersmod.client.SVertexBuilder;
 
 public class WorldVertexBufferUploader
 {
@@ -30,7 +32,7 @@ public class WorldVertexBufferUploader
 
                 if (flag)
                 {
-                    Reflector.callVoid(vertexformatelement$enumusage, Reflector.ForgeVertexFormatElementEnumUseage_preDraw, new Object[] {vertexformatelement, Integer.valueOf(i), bytebuffer});
+                    Reflector.callVoid(vertexformatelement$enumusage, Reflector.ForgeVertexFormatElementEnumUseage_preDraw, new Object[] {vertexformat, Integer.valueOf(j), Integer.valueOf(i), bytebuffer});
                 }
                 else
                 {
@@ -68,6 +70,10 @@ public class WorldVertexBufferUploader
             {
                 p_181679_1_.drawMultiTexture();
             }
+            else if (Config.isShaders())
+            {
+                SVertexBuilder.drawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount(), p_181679_1_);
+            }
             else
             {
                 GL11.glDrawArrays(p_181679_1_.getDrawMode(), 0, p_181679_1_.getVertexCount());
@@ -82,7 +88,7 @@ public class WorldVertexBufferUploader
 
                 if (flag1)
                 {
-                    Reflector.callVoid(vertexformatelement$enumusage1, Reflector.ForgeVertexFormatElementEnumUseage_postDraw, new Object[] {vertexformatelement1, Integer.valueOf(i), bytebuffer});
+                    Reflector.callVoid(vertexformatelement$enumusage1, Reflector.ForgeVertexFormatElementEnumUseage_postDraw, new Object[] {vertexformat, Integer.valueOf(i1), Integer.valueOf(i), bytebuffer});
                 }
                 else
                 {

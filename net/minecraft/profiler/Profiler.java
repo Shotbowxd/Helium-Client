@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.client.renderer.GlStateManager;
-import optfine.Config;
-import optfine.Lagometer;
+import optifine.Config;
+import optifine.Lagometer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -199,7 +199,7 @@ public class Profiler
 
             for (Object s10 : this.profilingMap.keySet())
             {
-                String s1 = (String) s10;
+                String s1 = (String)s10;
 
                 if (s1.length() > p_76321_1_.length() && s1.startsWith(p_76321_1_) && s1.indexOf(".", p_76321_1_.length() + 1) < 0)
                 {

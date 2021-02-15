@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import optfine.Config;
+import optifine.Config;
 
 import org.lwjgl.opengl.ARBFramebufferObject;
 import org.lwjgl.opengl.ARBMultitexture;
@@ -926,7 +926,7 @@ public class OpenGlHelper
 
     public static boolean isFramebufferEnabled()
     {
-        return Config.isFastRender() ? false : (Config.getAntialiasingLevel() > 0 ? false : framebufferSupported && Minecraft.getMinecraft().gameSettings.fboEnable);
+        return Config.isFastRender() ? false : (Config.isAntialiasing() ? false : framebufferSupported && Minecraft.getMinecraft().gameSettings.fboEnable);
     }
 
     public static String func_183029_j()

@@ -1,7 +1,9 @@
 package net.minecraft.client.gui;
 
 import java.io.IOException;
+
 import net.minecraft.client.resources.I18n;
+import rip.helium.gui.screens.MainMenuGui;
 
 public class GuiMemoryErrorScreen extends GuiScreen
 {
@@ -23,7 +25,7 @@ public class GuiMemoryErrorScreen extends GuiScreen
     {
         if (button.id == 0)
         {
-            this.mc.displayGuiScreen(new rip.helium.gui.screen.MainMenuGui());
+            this.mc.displayGuiScreen(new MainMenuGui());
         }
         else if (button.id == 1)
         {

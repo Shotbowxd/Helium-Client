@@ -9,8 +9,6 @@ public class C19PacketResourcePackStatus implements Packet<INetHandlerPlayServer
 {
     private String hash;
     private C19PacketResourcePackStatus.Action status;
-    public String field_179720_a;
-    public Action field_179719_b;
 
     public C19PacketResourcePackStatus()
     {
@@ -35,7 +33,6 @@ public class C19PacketResourcePackStatus implements Packet<INetHandlerPlayServer
         this.hash = buf.readStringFromBuffer(40);
         this.status = (C19PacketResourcePackStatus.Action)buf.readEnumValue(C19PacketResourcePackStatus.Action.class);
     }
-
 
     /**
      * Writes the raw packet data to the data stream.

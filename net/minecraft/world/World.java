@@ -1,8 +1,5 @@
 package net.minecraft.world;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,6 +8,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockLiquid;
@@ -19,6 +21,7 @@ import net.minecraft.block.BlockSnow;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -52,6 +55,8 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.world.EntityRemovedEvent;
 
 public abstract class World implements IBlockAccess
 {
@@ -1187,6 +1192,11 @@ public abstract class World implements IBlockAccess
 
     protected void onEntityRemoved(Entity entityIn)
     {
+    	//TODO: Client
+    	EntityRemovedEvent event = new EntityRemovedEvent(entityIn);
+    	EventManager.call(event);
+    	if(event.isCancelled()) return;
+    	
         for (int i = 0; i < this.worldAccesses.size(); ++i)
         {
             ((IWorldAccess)this.worldAccesses.get(i)).onEntityRemoved(entityIn);
@@ -3410,6 +3420,9 @@ public abstract class World implements IBlockAccess
     public void setWorldTime(long time)
     {
         this.worldInfo.setWorldTime(time);
+        if(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Night").getState()) {
+    		this.worldInfo.setWorldTime(18000);
+    	}
     }
 
     /**

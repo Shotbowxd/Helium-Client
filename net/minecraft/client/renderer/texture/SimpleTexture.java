@@ -7,13 +7,17 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.data.TextureMetadataSection;
 import net.minecraft.util.ResourceLocation;
+import optifine.Config;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shadersmod.client.ShadersTex;
 
 public class SimpleTexture extends AbstractTexture
 {
     private static final Logger logger = LogManager.getLogger();
     protected final ResourceLocation textureLocation;
+    private static final String __OBFID = "CL_00001052";
 
     public SimpleTexture(ResourceLocation textureResourceLocation)
     {
@@ -51,7 +55,14 @@ public class SimpleTexture extends AbstractTexture
                 }
             }
 
-            TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), bufferedimage, flag, flag1);
+            if (Config.isShaders())
+            {
+                ShadersTex.loadSimpleTexture(this.getGlTextureId(), bufferedimage, flag, flag1, resourceManager, this.textureLocation, this.getMultiTexID());
+            }
+            else
+            {
+                TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), bufferedimage, flag, flag1);
+            }
         }
         finally
         {

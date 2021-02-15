@@ -10,7 +10,10 @@ import net.minecraft.network.play.INetHandlerPlayClient;
 public class S08PacketPlayerPosLook implements Packet<INetHandlerPlayClient>
 {
     private double x;
+    
+    //TODO: Client
     public double y;
+    
     private double z;
     private float yaw;
     private float pitch;
@@ -63,8 +66,18 @@ public class S08PacketPlayerPosLook implements Packet<INetHandlerPlayClient>
     {
         handler.handlePlayerPosLook(this);
     }
+    
+    //TODO: Client
+    public void setYaw(float yaw) {
+		this.yaw = yaw;
+	}
 
-    public double getX()
+    //TODO: Client
+	public void setPitch(float pitch) {
+		this.pitch = pitch;
+	}
+
+	public double getX()
     {
         return this.x;
     }
@@ -87,14 +100,6 @@ public class S08PacketPlayerPosLook implements Packet<INetHandlerPlayClient>
     public float getPitch()
     {
         return this.pitch;
-    }
-
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
     }
 
     public Set<S08PacketPlayerPosLook.EnumFlags> func_179834_f()

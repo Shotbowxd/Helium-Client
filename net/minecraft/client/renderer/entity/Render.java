@@ -18,7 +18,10 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import optifine.Config;
+
 import org.lwjgl.opengl.GL11;
+import shadersmod.client.Shaders;
 
 public abstract class Render<T extends Entity>
 {
@@ -30,6 +33,7 @@ public abstract class Render<T extends Entity>
      * Determines the darkness of the object's shadow. Higher value makes a darker shadow.
      */
     protected float shadowOpaque = 1.0F;
+    private static final String __OBFID = "CL_00000992";
 
     protected Render(RenderManager renderManager)
     {
@@ -166,54 +170,57 @@ public abstract class Render<T extends Entity>
      */
     private void renderShadow(Entity entityIn, double x, double y, double z, float shadowAlpha, float partialTicks)
     {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(770, 771);
-        this.renderManager.renderEngine.bindTexture(shadowTextures);
-        World world = this.getWorldFromRenderManager();
-        GlStateManager.depthMask(false);
-        float f = this.shadowSize;
-
-        if (entityIn instanceof EntityLiving)
+        if (!Config.isShaders() || !Shaders.shouldSkipDefaultShadow)
         {
-            EntityLiving entityliving = (EntityLiving)entityIn;
-            f *= entityliving.getRenderSizeModifier();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(770, 771);
+            this.renderManager.renderEngine.bindTexture(shadowTextures);
+            World world = this.getWorldFromRenderManager();
+            GlStateManager.depthMask(false);
+            float f = this.shadowSize;
 
-            if (entityliving.isChild())
+            if (entityIn instanceof EntityLiving)
             {
-                f *= 0.5F;
+                EntityLiving entityliving = (EntityLiving)entityIn;
+                f *= entityliving.getRenderSizeModifier();
+
+                if (entityliving.isChild())
+                {
+                    f *= 0.5F;
+                }
             }
-        }
 
-        double d5 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double)partialTicks;
-        double d0 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double)partialTicks;
-        double d1 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double)partialTicks;
-        int i = MathHelper.floor_double(d5 - (double)f);
-        int j = MathHelper.floor_double(d5 + (double)f);
-        int k = MathHelper.floor_double(d0 - (double)f);
-        int l = MathHelper.floor_double(d0);
-        int i1 = MathHelper.floor_double(d1 - (double)f);
-        int j1 = MathHelper.floor_double(d1 + (double)f);
-        double d2 = x - d5;
-        double d3 = y - d0;
-        double d4 = z - d1;
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
+            double d5 = entityIn.lastTickPosX + (entityIn.posX - entityIn.lastTickPosX) * (double)partialTicks;
+            double d0 = entityIn.lastTickPosY + (entityIn.posY - entityIn.lastTickPosY) * (double)partialTicks;
+            double d1 = entityIn.lastTickPosZ + (entityIn.posZ - entityIn.lastTickPosZ) * (double)partialTicks;
+            int i = MathHelper.floor_double(d5 - (double)f);
+            int j = MathHelper.floor_double(d5 + (double)f);
+            int k = MathHelper.floor_double(d0 - (double)f);
+            int l = MathHelper.floor_double(d0);
+            int i1 = MathHelper.floor_double(d1 - (double)f);
+            int j1 = MathHelper.floor_double(d1 + (double)f);
+            double d2 = x - d5;
+            double d3 = y - d0;
+            double d4 = z - d1;
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
 
-        for (BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(i, k, i1), new BlockPos(j, l, j1)))
-        {
-            Block block = world.getBlockState(blockpos.down()).getBlock();
-
-            if (block.getRenderType() != -1 && world.getLightFromNeighbors(blockpos) > 3)
+            for (BlockPos blockpos : BlockPos.getAllInBoxMutable(new BlockPos(i, k, i1), new BlockPos(j, l, j1)))
             {
-                this.func_180549_a(block, x, y, z, blockpos, shadowAlpha, f, d2, d3, d4);
-            }
-        }
+                Block block = world.getBlockState(blockpos.down()).getBlock();
 
-        tessellator.draw();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.disableBlend();
-        GlStateManager.depthMask(true);
+                if (block.getRenderType() != -1 && world.getLightFromNeighbors(blockpos) > 3)
+                {
+                    this.func_180549_a(block, x, y, z, blockpos, shadowAlpha, f, d2, d3, d4);
+                }
+            }
+
+            tessellator.draw();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.disableBlend();
+            GlStateManager.depthMask(true);
+        }
     }
 
     /**
@@ -354,26 +361,26 @@ public abstract class Render<T extends Entity>
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
             Tessellator tessellator = Tessellator.getInstance();
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-            int i = 0;
+            byte b0 = 0;
 
             if (str.equals("deadmau5"))
             {
-                i = -10;
+                b0 = -10;
             }
 
-            int j = fontrenderer.getStringWidth(str) / 2;
+            int i = fontrenderer.getStringWidth(str) / 2;
             GlStateManager.disableTexture2D();
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-            worldrenderer.pos((double)(-j - 1), (double)(-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double)(-j - 1), (double)(8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double)(j + 1), (double)(8 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double)(j + 1), (double)(-1 + i), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double)(-i - 1), (double)(-1 + b0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double)(-i - 1), (double)(8 + b0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double)(i + 1), (double)(8 + b0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double)(i + 1), (double)(-1 + b0), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
             tessellator.draw();
             GlStateManager.enableTexture2D();
-            fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, 553648127);
+            fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, b0, 553648127);
             GlStateManager.enableDepth();
             GlStateManager.depthMask(true);
-            fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
+            fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, b0, -1);
             GlStateManager.enableLighting();
             GlStateManager.disableBlend();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -385,5 +392,4 @@ public abstract class Render<T extends Entity>
     {
         return this.renderManager;
     }
-
 }

@@ -59,9 +59,11 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback
     protected RenderItem itemRender;
 
     /** The width of the screen object. */
+    //TODO: Client
     public static int width;
 
     /** The height of the screen object. */
+    //TODO: Client
     public static int height;
     protected List<GuiButton> buttonList = Lists.<GuiButton>newArrayList();
     protected List<GuiLabel> labelList = Lists.<GuiLabel>newArrayList();

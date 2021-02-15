@@ -8,13 +8,16 @@ import net.minecraft.world.World;
 public class ShapedRecipes implements IRecipe
 {
     /** How many horizontal slots this recipe is wide. */
-    private final int recipeWidth;
+	//TODO: Client
+    public final int recipeWidth;
 
     /** How many vertical slots this recipe uses. */
-    private final int recipeHeight;
+    //TODO: Client
+    public final int recipeHeight;
 
     /** Is a array of ItemStack that composes the recipe. */
-    private final ItemStack[] recipeItems;
+    //TODO: Client
+    public final ItemStack[] recipeItems;
 
     /** Is the ItemStack that you get when craft the recipe. */
     private final ItemStack recipeOutput;

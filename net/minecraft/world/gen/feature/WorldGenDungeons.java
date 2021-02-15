@@ -112,11 +112,9 @@ public class WorldGenDungeons extends WorldGenerator
                     {
                         int j3 = 0;
 
-                        for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                        for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                         {
-                            EnumFacing enumfacing = (EnumFacing) enumfacing0;
-
-                            if (worldIn.getBlockState(blockpos2.offset(enumfacing)).getBlock().getMaterial().isSolid())
+                            if (worldIn.getBlockState(blockpos2.offset((EnumFacing) enumfacing)).getBlock().getMaterial().isSolid())
                             {
                                 ++j3;
                             }

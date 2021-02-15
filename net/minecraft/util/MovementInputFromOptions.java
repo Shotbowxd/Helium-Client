@@ -1,6 +1,8 @@
 package net.minecraft.util;
 
 import net.minecraft.client.settings.GameSettings;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.player.InputUpdateEvent;
 
 public class MovementInputFromOptions extends MovementInput
 {
@@ -13,6 +15,9 @@ public class MovementInputFromOptions extends MovementInput
 
     public void updatePlayerMoveState()
     {
+    	//TODO: Client
+    	EventManager.call(new InputUpdateEvent());
+    	
         this.moveStrafe = 0.0F;
         this.moveForward = 0.0F;
 

@@ -877,24 +877,23 @@ public final class ItemStack
     /**
      * Adds an enchantment with a desired level on the ItemStack.
      */
-    public void addEnchantment(final Enchantment ench, final int level) {
-        if (this.stackTagCompound == null) {
+    public void addEnchantment(Enchantment ench, int level)
+    {
+        if (this.stackTagCompound == null)
+        {
             this.setTagCompound(new NBTTagCompound());
         }
-        if (!this.stackTagCompound.hasKey("ench", 9)) {
+
+        if (!this.stackTagCompound.hasKey("ench", 9))
+        {
             this.stackTagCompound.setTag("ench", new NBTTagList());
         }
-        final NBTTagList var3 = this.stackTagCompound.getTagList("ench", 10);
-        final NBTTagCompound var4 = new NBTTagCompound();
-        var4.setShort("id", (short)ench.effectId);
-        if (level != 1337) {
-            var4.setShort("lvl", (short)level);
-        }
-        else {
-            var4.setShort("lvl", (short)32767);
-        }
-        var3.appendTag(var4);
-        //System.out.println("Applied enchant " + ench.effectId + ", level: " + (byte)level);
+
+        NBTTagList nbttaglist = this.stackTagCompound.getTagList("ench", 10);
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        nbttagcompound.setShort("id", (short)ench.effectId);
+        nbttagcompound.setShort("lvl", (short)((byte)level));
+        nbttaglist.appendTag(nbttagcompound);
     }
 
     /**

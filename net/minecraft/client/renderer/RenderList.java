@@ -3,7 +3,7 @@ package net.minecraft.client.renderer;
 import net.minecraft.client.renderer.chunk.ListedRenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraft.util.EnumWorldBlockLayer;
-import optfine.Config;
+import optifine.Config;
 
 import org.lwjgl.opengl.GL11;
 

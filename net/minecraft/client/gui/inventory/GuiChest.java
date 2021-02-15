@@ -11,6 +11,8 @@ public class GuiChest extends GuiContainer
     /** The ResourceLocation containing the chest GUI texture. */
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
     private IInventory upperChestInventory;
+    
+    //TODO: Client
     public IInventory lowerChestInventory;
 
     /**

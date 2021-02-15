@@ -65,12 +65,4 @@ public class S03PacketTimeUpdate implements Packet<INetHandlerPlayClient>
     {
         return this.worldTime;
     }
-
-    public void setTotalWorldTime(long totalWorldTime) {
-        this.totalWorldTime = totalWorldTime;
-    }
-
-    public void setWorldTime(long worldTime) {
-        this.worldTime = worldTime;
-    }
 }

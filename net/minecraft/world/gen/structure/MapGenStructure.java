@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.MapGenBase;
 import net.minecraft.world.storage.MapStorage;
-import optfine.Reflector;
+import optifine.Reflector;
 
 public abstract class MapGenStructure extends MapGenBase
 {
@@ -126,7 +126,7 @@ public abstract class MapGenStructure extends MapGenBase
 
         for (Object structurestart0 : this.structureMap.values())
         {
-            StructureStart structurestart = (StructureStart) structurestart0;
+            StructureStart structurestart = (StructureStart)structurestart0;
 
             if (structurestart.isSizeableStructure() && structurestart.getBoundingBox().isVecInside(pos))
             {
@@ -160,7 +160,7 @@ public abstract class MapGenStructure extends MapGenBase
 
         for (Object structurestart0 : this.structureMap.values())
         {
-            StructureStart structurestart = (StructureStart) structurestart0;
+            StructureStart structurestart = (StructureStart)structurestart0;
 
             if (structurestart.isSizeableStructure() && structurestart.getBoundingBox().isVecInside(pos))
             {
@@ -187,7 +187,7 @@ public abstract class MapGenStructure extends MapGenBase
 
         for (Object structurestart0 : this.structureMap.values())
         {
-            StructureStart structurestart = (StructureStart) structurestart0;
+            StructureStart structurestart = (StructureStart)structurestart0;
 
             if (structurestart.isSizeableStructure())
             {

@@ -209,13 +209,4 @@ public class Vec3
         double d2 = this.zCoord * (double)f - this.xCoord * (double)f1;
         return new Vec3(d0, d1, d2);
     }
-
-    public Vec3 scale(double p_186678_1_) {
-        return new Vec3(this.xCoord * p_186678_1_, this.yCoord * p_186678_1_, this.zCoord * p_186678_1_);
-    }
-
-	public Vec3 floor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

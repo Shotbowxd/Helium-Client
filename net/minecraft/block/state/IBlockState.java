@@ -7,10 +7,6 @@ import net.minecraft.block.properties.IProperty;
 
 public interface IBlockState
 {
-    default boolean isFullBlock() {
-        return this.getBlock().isFullBlock();
-    }
-    
     Collection<IProperty> getPropertyNames();
 
     <T extends Comparable<T>> T getValue(IProperty<T> property);

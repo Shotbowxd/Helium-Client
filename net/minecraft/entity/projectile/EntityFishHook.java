@@ -55,7 +55,7 @@ public class EntityFishHook extends Entity
     private double fishYaw;
     private double fishPitch;
     private double clientMotionX;
-    public double clientMotionY;
+    private double clientMotionY;
     private double clientMotionZ;
 
     public static List<WeightedRandomFishable> func_174855_j()

@@ -37,9 +37,9 @@ import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.BiomeGenBase;
-import optfine.BlockPosM;
-import optfine.Config;
-import optfine.Reflector;
+import optifine.BlockPosM;
+import optifine.Config;
+import optifine.Reflector;
 
 public abstract class EntityLiving extends EntityLivingBase
 {
@@ -1381,8 +1381,8 @@ public abstract class EntityLiving extends EntityLivingBase
             else
             {
                 Entity entity = (Entity)world.playerEntities.get(0);
-                double d0 = Math.abs(this.posX - entity.posX) - 16.0D;
-                double d1 = Math.abs(this.posZ - entity.posZ) - 16.0D;
+                double d0 = Math.max(Math.abs(this.posX - entity.posX) - 16.0D, 0.0D);
+                double d1 = Math.max(Math.abs(this.posZ - entity.posZ) - 16.0D, 0.0D);
                 double d2 = d0 * d0 + d1 * d1;
                 return !this.isInRangeToRenderDist(d2);
             }
@@ -1415,7 +1415,7 @@ public abstract class EntityLiving extends EntityLivingBase
         private static final EntityLiving.SpawnPlacementType[] $VALUES = new EntityLiving.SpawnPlacementType[]{ON_GROUND, IN_AIR, IN_WATER};
         private static final String __OBFID = "CL_00002255";
 
-        private SpawnPlacementType(String p_i14_3_, int p_i14_4_)
+        private SpawnPlacementType(String p_i18_3_, int p_i18_4_)
         {
         }
     }

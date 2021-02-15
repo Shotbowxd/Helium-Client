@@ -16,6 +16,7 @@ public class S27PacketExplosion implements Packet<INetHandlerPlayClient>
     private double posZ;
     private float strength;
     private List<BlockPos> affectedBlockPositions;
+    //TODO: Client
     public float field_149152_f;
     public float field_149153_g;
     public float field_149159_h;

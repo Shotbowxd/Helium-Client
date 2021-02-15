@@ -1,19 +1,15 @@
 package net.minecraft.network.play.client;
 
 import java.io.IOException;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayServer;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import rip.helium.Helium;
-import rip.helium.cheat.impl.combat.aura.*;
 
 public class C02PacketUseEntity implements Packet<INetHandlerPlayServer>
 {
-    public Entity entity;
     private int entityId;
     private C02PacketUseEntity.Action action;
     private Vec3 hitVec;
@@ -24,10 +20,9 @@ public class C02PacketUseEntity implements Packet<INetHandlerPlayServer>
 
     public C02PacketUseEntity(Entity entity, C02PacketUseEntity.Action action)
     {
-    	((Aura) Helium.instance.cheatManager.getCheatRegistry().get("KillAura")).lastHit = System.currentTimeMillis();
-        this.entity = entity;
         this.entityId = entity.getEntityId();
         this.action = action;
+        
     }
 
     public C02PacketUseEntity(Entity entity, Vec3 hitVec)

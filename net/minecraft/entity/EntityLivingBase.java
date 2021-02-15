@@ -1,21 +1,20 @@
 package net.minecraft.entity;
 
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Maps;
-
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
+
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
@@ -54,20 +53,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import rip.helium.Helium;
-import rip.helium.cheat.impl.visual.BlockAnimation;
-import rip.helium.event.minecraft.PlayerJumpEvent;
-import rip.helium.utils.UPlayer;
+import rip.helium.event.EventManager;
+import rip.helium.event.events.impl.player.PlayerJumpEvent;
 
 public abstract class EntityLivingBase extends Entity
 {
-    public boolean hasBeenOffGround = false;
-    public boolean hasBeenInvisible;
-    public double maxDistanceFromLocalPlayer = -1;
-    public int ticksGroundSynced = 0;
-    public int ticksGroundDesycned = 0;
-    public boolean hasfallen;
-
     private static final UUID sprintingSpeedBoostModifierUUID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
     private static final AttributeModifier sprintingSpeedBoostModifier = (new AttributeModifier(sprintingSpeedBoostModifierUUID, "Sprinting speed boost", 0.30000001192092896D, 2)).setSaved(false);
     private BaseAttributeMap attributeMap;
@@ -157,7 +147,7 @@ public abstract class EntityLivingBase extends Entity
     protected float lastDamage;
 
     /** used to check whether entity is jumping. */
-    public boolean isJumping;
+    protected boolean isJumping;
     public float moveStrafing;
     public float moveForward;
     protected float randomYawVelocity;
@@ -200,7 +190,6 @@ public abstract class EntityLivingBase extends Entity
     /** Number of ticks since last jump */
     private int jumpTicks;
     private float absorptionAmount;
-	public int tablistTime;
 
     /**
      * Called by the /kill command.
@@ -279,7 +268,6 @@ public abstract class EntityLivingBase extends Entity
      */
     public void onEntityUpdate()
     {
-
         this.prevSwingProgress = this.swingProgress;
         super.onEntityUpdate();
         this.worldObj.theProfiler.startSection("livingEntityBaseTick");
@@ -361,7 +349,7 @@ public abstract class EntityLivingBase extends Entity
             --this.hurtResistantTime;
         }
 
-        if (this.getHealth() <= 0.0F)
+        if (this.getHealth() <= 0.0F && !((Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) && this == Minecraft.getMinecraft().thePlayer))
         {
             this.onDeathUpdate();
         }
@@ -399,25 +387,8 @@ public abstract class EntityLivingBase extends Entity
         this.prevRotationYaw = this.rotationYaw;
         this.prevRotationPitch = this.rotationPitch;
         this.worldObj.theProfiler.endSection();
-        if (Minecraft.getMinecraft().getCurrentServerData() != null && !Minecraft.getMinecraft().isSingleplayer()) {
-	        if (getPlayersOnPlayerList().contains(this)) {
-	        	tablistTime += 1;
-	        } else {
-	        	tablistTime = 0;
-	        }
-        } else {
-        	tablistTime = 0;
-        }
     }
-    
-    public List<EntityLivingBase> getPlayersOnPlayerList() {
-        final List<EntityLivingBase> list = new ArrayList<>();
-        GuiPlayerTabOverlay.field_175252_a.sortedCopy(Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap()).forEach(info -> {
-            list.add(Minecraft.getMinecraft().theWorld.getPlayerEntityByName(info.getGameProfile().getName()));
-        });
-        return list;
-    }
-    
+
     /**
      * If Animal, checks if the age timer is negative
      */
@@ -1001,7 +972,7 @@ public abstract class EntityLivingBase extends Entity
                     }
                 }
 
-                if (this.getHealth() <= 0.0F)
+                if (this.getHealth() <= 0.0F && (!(Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) && this == Minecraft.getMinecraft().thePlayer))
                 {
                     String s = this.getDeathSound();
 
@@ -1053,6 +1024,10 @@ public abstract class EntityLivingBase extends Entity
      */
     public void onDeath(DamageSource cause)
     {
+    	//TODO: Client
+    	if(this == Minecraft.getMinecraft().thePlayer && Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) {
+    		return;
+    	}
         Entity entity = cause.getEntity();
         EntityLivingBase entitylivingbase = this.func_94060_bK();
 
@@ -1127,7 +1102,8 @@ public abstract class EntityLivingBase extends Entity
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    //TODO: Client
+    public String getHurtSound()
     {
         return "game.neutral.hurt";
     }
@@ -1589,10 +1565,13 @@ public abstract class EntityLivingBase extends Entity
      */
     protected void jump()
     {
-        PlayerJumpEvent playerJumpEvent = new PlayerJumpEvent();
-        Helium.eventBus.publish(playerJumpEvent);
-        if (playerJumpEvent.isCancelled())
-        	return;
+    	//TODO: Client
+    	PlayerJumpEvent event = new PlayerJumpEvent();
+    	if(this == Minecraft.getMinecraft().thePlayer) {
+    		EventManager.call(event);
+    	}
+    	if(event.isCancelled()) return;
+    	
         this.motionY = (double)this.getJumpUpwardsMotion();
 
         if (this.isPotionActive(Potion.jump))
@@ -1811,29 +1790,6 @@ public abstract class EntityLivingBase extends Entity
     public void onUpdate()
     {
         super.onUpdate();
-
-        if (!onGround) {
-            hasBeenOffGround = true;
-        }
-
-        if (isInvisible()) {
-            hasBeenInvisible = true;
-        }
-
-        if (this != Minecraft.getMinecraft().thePlayer && UPlayer.getDistanceToEntity(this) > maxDistanceFromLocalPlayer) {
-            maxDistanceFromLocalPlayer = UPlayer.getDistanceToEntity(this);
-        }
-
-        if (onGround && fallDistance == 0) {
-            ticksGroundSynced++;
-            ticksGroundDesycned = 0;
-        } else {
-            ticksGroundDesycned++;
-            ticksGroundSynced = 0;
-        }
-        if (this.fallDistance > 0.0) {
-            this.hasfallen = true;
-        }
 
         if (!this.worldObj.isRemote)
         {

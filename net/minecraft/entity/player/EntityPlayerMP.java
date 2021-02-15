@@ -95,7 +95,6 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import rip.helium.Helium;
 
 public class EntityPlayerMP extends EntityPlayer implements ICrafting
 {
@@ -926,17 +925,19 @@ public class EntityPlayerMP extends EntityPlayer implements ICrafting
 
     public void setEntityActionState(float p_110430_1_, float p_110430_2_, boolean p_110430_3_, boolean sneaking)
     {
-        if (this.ridingEntity != null) {
-            if (p_110430_1_ >= -1.0F && p_110430_1_ <= 1.0F) {
+        if (this.ridingEntity != null)
+        {
+            if (p_110430_1_ >= -1.0F && p_110430_1_ <= 1.0F)
+            {
                 this.moveStrafing = p_110430_1_;
             }
 
-            if (p_110430_2_ >= -1.0F && p_110430_2_ <= 1.0F) {
+            if (p_110430_2_ >= -1.0F && p_110430_2_ <= 1.0F)
+            {
                 this.moveForward = p_110430_2_;
             }
 
             this.isJumping = p_110430_3_;
-            //if (!(Helium.instance.cheatManager.getCheatRegistry().get("Speed").getMode().equals("Faithful")) || (Helium.instance.cheatManager.getCheatRegistry().get("Fly'").getMode().equals("Faithful2"))) {
             this.setSneaking(sneaking);
         }
     }

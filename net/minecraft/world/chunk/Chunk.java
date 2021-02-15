@@ -337,18 +337,16 @@ public class Chunk
                         int i1 = this.zPosition * 16 + j;
                         int j1 = Integer.MAX_VALUE;
 
-                        for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                        for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                         {
-                            EnumFacing enumfacing = (EnumFacing) enumfacing0;
-                            j1 = Math.min(j1, this.worldObj.getChunksLowestHorizon(l + enumfacing.getFrontOffsetX(), i1 + enumfacing.getFrontOffsetZ()));
+                            j1 = Math.min(j1, this.worldObj.getChunksLowestHorizon(l + ((EnumFacing) enumfacing).getFrontOffsetX(), i1 + ((EnumFacing) enumfacing).getFrontOffsetZ()));
                         }
 
                         this.checkSkylightNeighborHeight(l, i1, j1);
 
-                        for (Object enumfacing10 : EnumFacing.Plane.HORIZONTAL)
+                        for (Object enumfacing1 : EnumFacing.Plane.HORIZONTAL)
                         {
-                            EnumFacing enumfacing1 = (EnumFacing) enumfacing10;
-                            this.checkSkylightNeighborHeight(l + enumfacing1.getFrontOffsetX(), i1 + enumfacing1.getFrontOffsetZ(), k);
+                            this.checkSkylightNeighborHeight(l + ((EnumFacing) enumfacing1).getFrontOffsetX(), i1 + ((EnumFacing) enumfacing1).getFrontOffsetZ(), k);
                         }
 
                         if (p_150803_1_)
@@ -495,10 +493,9 @@ public class Chunk
 
             if (!this.worldObj.provider.getHasNoSky())
             {
-                for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                 {
-                    EnumFacing enumfacing = (EnumFacing) enumfacing0;
-                    this.updateSkylightNeighborHeight(k + enumfacing.getFrontOffsetX(), l + enumfacing.getFrontOffsetZ(), j2, k2);
+                    this.updateSkylightNeighborHeight(k + ((EnumFacing) enumfacing).getFrontOffsetX(), l + ((EnumFacing) enumfacing).getFrontOffsetZ(), j2, k2);
                 }
 
                 this.updateSkylightNeighborHeight(k, l, j2, k2);
@@ -521,7 +518,7 @@ public class Chunk
     /**
      * Returns the block corresponding to the given coordinates inside a chunk.
      */
-    public Block getBlock0(int x, int y, int z)
+    private Block getBlock0(int x, int y, int z)
     {
         Block block = Blocks.air;
 
@@ -1504,11 +1501,10 @@ public class Chunk
 
                 if (this.isLightPopulated)
                 {
-                    for (Object enumfacing0 : EnumFacing.Plane.HORIZONTAL)
+                    for (Object enumfacing : EnumFacing.Plane.HORIZONTAL)
                     {
-                        EnumFacing enumfacing = (EnumFacing) enumfacing0;
-                        int k = enumfacing.getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 16 : 1;
-                        this.worldObj.getChunkFromBlockCoords(blockpos.offset(enumfacing, k)).func_180700_a(enumfacing.getOpposite());
+                        int k = ((EnumFacing) enumfacing).getAxisDirection() == EnumFacing.AxisDirection.POSITIVE ? 16 : 1;
+                        this.worldObj.getChunkFromBlockCoords(blockpos.offset((EnumFacing) enumfacing, k)).func_180700_a(((EnumFacing) enumfacing).getOpposite());
                     }
 
                     this.func_177441_y();

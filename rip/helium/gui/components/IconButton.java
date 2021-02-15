@@ -1,13 +1,14 @@
 package rip.helium.gui.components;
 
+import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import rip.helium.utils.ColorCreator;
-import rip.helium.utils.Draw;
+import rip.helium.utils.render.Render2DUtils;
 
 public class IconButton extends GuiButton {
 
@@ -35,11 +36,11 @@ public class IconButton extends GuiButton {
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            Draw.drawRectangle(this.xPosition, this.yPosition - (this.hovered ? 2 : 0), this.xPosition + this.width, this.yPosition + this.height - (this.hovered ? 2 : 0),
-                    ColorCreator.create(10, 10, 10, 150));
+            Render2DUtils.drawRect(this.xPosition, this.yPosition - (this.hovered ? 2 : 0), this.xPosition + this.width, this.yPosition + this.height - (this.hovered ? 2 : 0),
+                    new Color(10, 10, 10, 150).getRGB());
 
             GlStateManager.color(1f, 1f, 1f, this.hovered ? 0.85f : 0.5f);
-            Draw.drawImg(iconLocation, this.xPosition + this.width / 2 - iconDimensions / 2, this.yPosition + this.height / 2 - iconDimensions / 2 - (this.hovered ? 2 : 0), iconDimensions, iconDimensions);
+            Render2DUtils.drawImg(iconLocation, this.xPosition + this.width / 2 - iconDimensions / 2, this.yPosition + this.height / 2 - iconDimensions / 2 - (this.hovered ? 2 : 0), iconDimensions, iconDimensions);
         }
     }
 

@@ -1,13 +1,13 @@
 package rip.helium.gui.components;
 
+import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
-import rip.helium.utils.ColorCreator;
-import rip.helium.utils.Draw;
-import rip.helium.utils.font.Fonts;
+import rip.helium.utils.render.Render2DUtils;
 
 public class TextButton extends GuiButton {
 
@@ -31,11 +31,11 @@ public class TextButton extends GuiButton {
         if (this.visible) {
             this.hovered = enabled && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 
-            Draw.drawRectangle(this.xPosition - (this.hovered ? 1 : 0), this.yPosition - (this.hovered ? 1 : 0), this.xPosition + this.width + (this.hovered ? 1 : 0), this.yPosition + this.height + (this.hovered ? 1 : 0),
-                    enabled ? ColorCreator.create(10, 10, 10, 150) : ColorCreator.create(10, 10, 10, 75));
+            Render2DUtils.drawRect(this.xPosition - (this.hovered ? 1 : 0), this.yPosition - (this.hovered ? 1 : 0), this.xPosition + this.width + (this.hovered ? 1 : 0), this.yPosition + this.height + (this.hovered ? 1 : 0),
+                    enabled ? new Color(10, 10, 10, 150).getRGB() : new Color(10, 10, 10, 75).getRGB());
 
-            Fonts.f18.drawCenteredString(this.displayString, this.xPosition + this.width / 2, this.yPosition + this.height / 2 - Fonts.f16.getStringHeight(this.displayString) / 2,
-                    this.hovered ? ColorCreator.create(255, 255, 255, enabled ? 255 : 100) : ColorCreator.create(150, 150, 150, enabled ? 255 : 100));
+            this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + this.width / 2, this.yPosition + this.height / 2 - mc.fontRendererObj.FONT_HEIGHT / 2,
+                    this.hovered ? new Color(255, 255, 255, enabled ? 255 : 100).getRGB() : new Color(150, 150, 150, enabled ? 255 : 100).getRGB());
         }
     }
 
@@ -56,7 +56,7 @@ public class TextButton extends GuiButton {
      * e).
      */
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+    	return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
     }
 
     /**

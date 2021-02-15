@@ -16,11 +16,6 @@ import net.minecraft.network.handshake.client.C00Handshake;
 import net.minecraft.network.login.client.C00PacketLoginStart;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
-//import net.ranktw.DiscordWebHooks.DiscordMessage;
-//import net.ranktw.DiscordWebHooks.DiscordWebhook;
-import rip.helium.Helium;
-import rip.helium.buttons.UIButton;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,20 +66,6 @@ public class GuiConnecting extends GuiScreen
                     GuiConnecting.this.networkManager.setNetHandler(new NetHandlerLoginClient(GuiConnecting.this.networkManager, GuiConnecting.this.mc, GuiConnecting.this.previousGuiScreen));
                     GuiConnecting.this.networkManager.sendPacket(new C00Handshake(47, ip, port, EnumConnectionState.LOGIN));
                     GuiConnecting.this.networkManager.sendPacket(new C00PacketLoginStart(GuiConnecting.this.mc.getSession().getProfile()));
-                    /*/String webhook = "https://discordapp.com/api/webhooks/713193852382478347/sm4j7k7SbJrstC9IT5WUk0V41AQOZ6GLS8S_QOxcDglmIV8OseV0UWOCl_2sDVq2ChKN";
-                    DiscordWebhook discord = new DiscordWebhook(webhook);
-                    if(Helium.instance.isDiscord == true) {
-                    DiscordMessage dm = new DiscordMessage.Builder()
-                            .withUsername("Helium Users Playing LIVE!")
-                            .withContent("@"+Helium.instance.discordUsername + " '**" + mc.session.getUsername() + "**' " + "is now playing on " + mc.getCurrentServerData().serverIP)
-                            
-                            
-                            
-                            .withAvatarURL("https://i.imgur.com/0KYb6gIb.jpg")
-                            .build();
-
-                    discord.sendMessage(dm);
-                    }/*/
                 }
                 catch (UnknownHostException unknownhostexception)
                 {
@@ -94,7 +75,7 @@ public class GuiConnecting extends GuiScreen
                     }
 
                     GuiConnecting.logger.error((String)"Couldn\'t connect to server", (Throwable)unknownhostexception);
-                    GuiConnecting.this.mc.displayGuiScreen(new GuiDisconnected(GuiConnecting.this.previousGuiScreen, "connect.failed", new ChatComponentTranslation("disconnect.genericReason", new Object[] {"Connect to internet mate"})));
+                    GuiConnecting.this.mc.displayGuiScreen(new GuiDisconnected(GuiConnecting.this.previousGuiScreen, "connect.failed", new ChatComponentTranslation("disconnect.genericReason", new Object[] {"Unknown host"})));
                 }
                 catch (Exception exception)
                 {
@@ -151,7 +132,7 @@ public class GuiConnecting extends GuiScreen
     public void initGui()
     {
         this.buttonList.clear();
-        this.buttonList.add(new UIButton(0, this.width / 2 - 100, this.height / 4 + 120 + 12, I18n.format("gui.cancel", new Object[0])));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 120 + 12, I18n.format("gui.cancel", new Object[0])));
     }
 
     /**

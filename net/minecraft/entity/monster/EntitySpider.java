@@ -98,7 +98,7 @@ public class EntitySpider extends EntityMob
     /**
      * Returns the sound this mob makes when it is hurt.
      */
-    protected String getHurtSound()
+    public String getHurtSound()
     {
         return "mob.spider.say";
     }

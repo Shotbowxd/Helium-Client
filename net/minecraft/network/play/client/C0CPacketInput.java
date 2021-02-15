@@ -7,9 +7,9 @@ import net.minecraft.network.play.INetHandlerPlayServer;
 
 public class C0CPacketInput implements Packet<INetHandlerPlayServer>
 {
+	//TODO: Client
     /** Positive for left strafe, negative for right */
     public float strafeSpeed;
-
     /** Positive for forward, negative for backward */
     public float forwardSpeed;
     public boolean jumping;
