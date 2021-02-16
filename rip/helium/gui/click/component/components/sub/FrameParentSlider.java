@@ -44,7 +44,7 @@ public class FrameParentSlider extends Component {
 			break;
 		}
 		 final int drag = (int)(this.set.getValDouble() / this.set.getMax() * this.parent.getWidth());
-		Gui.drawRect(parent.getX(), parent.getY() + 1 + offset, parent.getX() + (int) renderWidth, parent.getY() + offset + 13, hovered ? 0xFF555555 : 0xFF444444);
+		Gui.drawRect(parent.getX(), parent.getY() + 1 + offset, parent.getX() + (int) renderWidth, parent.getY() + offset + 13, hovered ? 0x88555555 : 0x88444444);
 		//Gui.drawRect(parent.getX(), parent.getY() + offset, parent.getX() + 2, parent.getY() + offset + 12, 0xFF111111);
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);

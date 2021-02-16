@@ -10,9 +10,11 @@ import rip.helium.gui.click.component.Component;
 import rip.helium.gui.click.component.Frame;
 import rip.helium.gui.click.component.components.sub.Console;
 import rip.helium.gui.click.component.components.sub.FrameParentCheckbox;
+import rip.helium.gui.click.component.components.sub.FrameParentModeButton;
 import rip.helium.gui.click.component.components.sub.FrameParentSlider;
 import rip.helium.module.Module.Category;
 import rip.helium.module.modules.combat.Targeting;
+import rip.helium.module.modules.render.ClickGUI;
 import rip.helium.module.modules.render.Colors;
 
 public class ClickGUIScreen extends GuiScreen implements ClientSupport {
@@ -62,6 +64,7 @@ public class ClickGUIScreen extends GuiScreen implements ClientSupport {
 		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR, uiFrame, targetingFrame.getBarHeight() + 37));
 		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG, uiFrame, targetingFrame.getBarHeight() + 49));
 		uiFrame.components.add(new FrameParentSlider(((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB, uiFrame, targetingFrame.getBarHeight() + 61));
+		uiFrame.components.add(new FrameParentModeButton(((ClickGUI)mc.hackedClient.getModuleManager().getModule("ClickGUI")).mode, uiFrame, ((ClickGUI)mc.hackedClient.getModuleManager().getModule("ClickGUI")), targetingFrame.getBarHeight() + 73));
 	}
 	
 	@Override

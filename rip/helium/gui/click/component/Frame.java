@@ -11,6 +11,7 @@ import rip.helium.ClientSupport;
 import rip.helium.gui.click.component.components.Button;
 import rip.helium.module.Module;
 import rip.helium.module.Module.Category;
+import rip.helium.module.modules.render.ClickGUI;
 import rip.helium.module.modules.render.Colors;
 import rip.helium.utils.render.Render2DUtils;
 import rip.helium.utils.render.font.MinecraftFontRenderer;
@@ -134,7 +135,14 @@ public class Frame implements ClientSupport {
 	public void renderFrame(MinecraftFontRenderer fontRenderer) {
 		int tx = this.x;
 		int ty = this.y;
-		Render2DUtils.drawBorderedRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, 1, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 215).getRGB(), new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 170).getRGB());
+		switch(((ClickGUI)mc.hackedClient.getModuleManager().getModule("ClickGUI")).mode.getValString()) {
+		case "Michael":
+			Render2DUtils.drawBorderedRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, 1, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 215).getRGB(), new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 170).getRGB());
+			break;
+		case "Slick":
+			Render2DUtils.drawRect(this.x, this.y, this.x + this.width, this.y + this.barHeight, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 170).getRGB());
+			break;
+		}
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);
 		fontRenderer.drawStringWithShadow(this.name, (this.x + 2), (this.y + 2.5f), 0xFFFFFFFF);

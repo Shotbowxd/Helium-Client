@@ -33,7 +33,7 @@ public class AutoPot extends Module {
             return;
         }
         if (mc.thePlayer != null) {
-            if (mc.thePlayer.getHealth() <= 8 && timer.hasPassed(MathUtils.getRandomInRange(150, 300))) {
+            if (mc.thePlayer.getHealth() <= 12 && timer.hasPassed(MathUtils.getRandomInRange(150, 300))) {
                 if (doesHotbarHavePots()) {
                     float pitch = event.getPitch();
                     event.setPitch(88);

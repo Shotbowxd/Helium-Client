@@ -19,7 +19,7 @@ public class ClickGUI extends Module {
 		modes.add("Michael");
 		modes.add("Slick");
 		
-		this.mode = new Setting("Mode", this, "Michael", modes);
+		this.mode = new Setting("Click GUI Mode", this, "Slick", modes);
 		
 		mc.hackedClient.getSettingManager().addSetting(this.mode);
 	}

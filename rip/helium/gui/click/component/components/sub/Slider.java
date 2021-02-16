@@ -43,8 +43,8 @@ public class Slider extends Component {
 			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + parent.parent.getWidth(), parent.parent.getY() + offset + 13, this.hovered ? 0x88222222 : 0x88111111);
 			break;
 		}
-		 final int drag = (int)(this.set.getValDouble() / this.set.getMax() * this.parent.parent.getWidth());
-		Gui.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (int) renderWidth, parent.parent.getY() + offset + 13, hovered ? 0xFF555555 : 0xFF444444);
+		final int drag = (int)(this.set.getValDouble() / this.set.getMax() * this.parent.parent.getWidth());
+		Gui.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (int) renderWidth, parent.parent.getY() + offset + 13, hovered ? 0x88555555 : 0x88444444);
 		//Gui.drawRect(parent.parent.getX(), parent.parent.getY() + offset, parent.parent.getX() + 2, parent.parent.getY() + offset + 12, 0xFF111111);
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);

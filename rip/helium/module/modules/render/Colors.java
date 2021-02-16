@@ -23,9 +23,9 @@ public class Colors extends Module {
 		this.hudG = new Setting("HUD G", this, 255, 0, 255, true);
 		this.hudB = new Setting("HUD B", this, 255, 0, 255, true);
 		
-		this.clickR = new Setting("Click R", this, 255, 0, 255, true);
-		this.clickG = new Setting("Click G", this, 255, 0, 255, true);
-		this.clickB = new Setting("Click B", this, 255, 0, 255, true);
+		this.clickR = new Setting("Click GUI R", this, 255, 0, 255, true);
+		this.clickG = new Setting("Click GUI G", this, 255, 0, 255, true);
+		this.clickB = new Setting("Click GUI B", this, 255, 0, 255, true);
 		
 		mc.hackedClient.getSettingManager().addSetting(this.hudR);
 		mc.hackedClient.getSettingManager().addSetting(this.hudG);
