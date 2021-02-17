@@ -663,7 +663,7 @@ public class EntityRenderer implements IResourceManagerReloadListener
                 f = f * 60.0F / 70.0F;
             }
 
-            return f;
+            return (mc.hackedClient.getModuleManager().getModule("CustomViewmodel").getState()) ? 130 : f;
         }
     }
 

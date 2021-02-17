@@ -81,7 +81,7 @@ public class TPAura extends Module {
 		this.teams = new Setting("Hypixel Teams", this, false);
 		this.minSpeed = new Setting("Minimum APS", this, 6, 1, 20, false);
 		this.maxSpeed = new Setting("Maximum APS", this, 8, 1, 20, false);
-		this.distance = new Setting("Maximum Distance", this, 5.0, 0.1, 6.0, false);
+		this.distance = new Setting("Maximum Distance", this, 100.0, 0.1, 150.0, false);
 		this.fakeab = new Setting("Auto Block", this, true);
 		
 		ArrayList<String> abmodes = new ArrayList<String>();
@@ -522,12 +522,14 @@ public class TPAura extends Module {
         if (mc.thePlayer.getDistanceToEntity(targetList.get(targetIndex)) <= (distance.getValDouble())) {
         	
         	if(event.isPre()) {
-        		mc.thePlayer.setPosition(targetList.get(targetIndex).posX, targetList.get(targetIndex).posY + 5, targetList.get(targetIndex).posZ);
+        		//mc.thePlayer.setPosition(targetList.get(targetIndex).posX, targetList.get(targetIndex).posY + 5, targetList.get(targetIndex).posZ);
+        		mc.getNetHandler().addToSendQueue(new C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ, true));
         		mc.thePlayer.swingItem();
                 attack(event);
                 targetList.get(targetIndex).attacks += 1;
         	} else {
-        		mc.thePlayer.setPosition(targetList.get(targetIndex).posX + (1.5 * -Math.cos(Math.toRadians(targetList.get(targetIndex).rotationYaw + 90.0F))), targetList.get(targetIndex).posY + 5, targetList.get(targetIndex).posZ + (1.5 * -Math.sin(Math.toRadians(targetList.get(targetIndex).rotationYaw + 90.0F))));
+        		//mc.thePlayer.setPosition(targetList.get(targetIndex).posX + (1.5 * -Math.cos(Math.toRadians(targetList.get(targetIndex).rotationYaw + 90.0F))), targetList.get(targetIndex).posY + 5, targetList.get(targetIndex).posZ + (1.5 * -Math.sin(Math.toRadians(targetList.get(targetIndex).rotationYaw + 90.0F))));
+        		mc.getNetHandler().addToSendQueue(new C04PacketPlayerPosition(targetList.get(targetIndex).posX, targetList.get(targetIndex).posY + 5, targetList.get(targetIndex).posZ, true));
         	}
         } else {
             if (targetList.get(targetIndex).attacks <= 0) {

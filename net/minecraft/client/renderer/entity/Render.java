@@ -363,7 +363,7 @@ public abstract class Render<T extends Entity>
             WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             byte b0 = 0;
 
-            if (str.equals("deadmau5"))
+            if (str.equals("deadmau5") || str.equalsIgnoreCase("MichaelMaymays"))
             {
                 b0 = -10;
             }
