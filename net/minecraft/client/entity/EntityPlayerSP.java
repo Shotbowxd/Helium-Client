@@ -401,6 +401,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     }
     
     //TODO: Client
+    @Override
     public void moveEntity(double x, double y, double z) {
         MoveEvent event = new MoveEvent(x, y, z);
         EventManager.call(event);

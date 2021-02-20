@@ -2,10 +2,13 @@ package rip.helium.module.modules.combat;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockCarpet;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLadder;
 import net.minecraft.block.BlockSkull;
 import net.minecraft.block.BlockSnow;
@@ -30,6 +33,7 @@ import net.minecraft.entity.projectile.EntitySnowball;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C02PacketUseEntity;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.network.play.client.C03PacketPlayer.C04PacketPlayerPosition;
@@ -42,6 +46,8 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import rip.helium.event.EventTarget;
 import rip.helium.event.events.impl.client.MouseClickEvent;
 import rip.helium.event.events.impl.network.PacketReceiveEvent;
@@ -144,6 +150,23 @@ public class TPAura extends Module {
     private float yaw, pitch, yawIncrease, pitchIncrease, serverSideYaw, serverSidePitch;
     public static int targetIndex;
 
+    double x;
+    double y;
+    double z;
+    double xPreEn;
+    double yPreEn;
+    double zPreEn;
+    double xPre;
+    double yPre;
+    double zPre;
+    
+    boolean attack = false;
+    int stage = 0;
+    ArrayList<Vec3> positions = new ArrayList();
+    ArrayList<Vec3> positionsBack = new ArrayList();
+    public static final double maxXZTP = 9.5;
+    public static final int maxYTP = 9;
+    
     private ArrayList<EntityLivingBase> mcf;
     private static ArrayList<EntityLivingBase> targetList;
     public static EntityLivingBase currentEntity;
@@ -169,6 +192,339 @@ public class TPAura extends Module {
 	
 	public void setDelay(int delay) {//set the delay to actually use aura
         auraDelay = delay;
+    }
+	
+	public void sendPacket(boolean goingBack, ArrayList<Vec3> positionsBack, ArrayList<Vec3> positions) {
+        C03PacketPlayer.C04PacketPlayerPosition playerPacket = new C03PacketPlayer.C04PacketPlayerPosition(this.x, this.y, this.z, true);
+        this.mc.getNetHandler().getNetworkManager().sendPacket((Packet)playerPacket);
+        if (goingBack) {
+            positionsBack.add(new Vec3(this.x, this.y, this.z));
+            return;
+        }
+        positions.add(new Vec3(this.x, this.y, this.z));
+    }
+	
+	public static double normalizeAngle(double angle) {
+        return (angle + 360.0) % 360.0;
+    }
+
+    public static float normalizeAngle(float angle) {
+        return (angle + 360.0f) % 360.0f;
+    }
+    
+    public static float[] getFacePosRemote(Vec3 src, Vec3 dest) {
+        double diffX = dest.xCoord - src.xCoord;
+        double diffY = dest.yCoord - src.yCoord;
+        double diffZ = dest.zCoord - src.zCoord;
+        double dist = MathHelper.sqrt_double((double)(diffX * diffX + diffZ * diffZ));
+        float yaw = (float)(Math.atan2(diffZ, diffX) * 180.0 / Math.PI) - 90.0f;
+        float pitch = (float)(-(Math.atan2(diffY, dist) * 180.0 / Math.PI));
+        return new float[]{MathHelper.wrapAngleTo180_float((float)yaw), MathHelper.wrapAngleTo180_float((float)pitch)};
+    }
+	
+	public MovingObjectPosition rayTracePos(Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        float[] rots = TPAura.getFacePosRemote(vec32, vec31);
+        float yaw = rots[0];
+        double angleA = Math.toRadians(TPAura.normalizeAngle(yaw));
+        double angleB = Math.toRadians(TPAura.normalizeAngle(yaw) + 180.0f);
+        double size = 2.1;
+        double size2 = 2.1;
+        Vec3 left = new Vec3(vec31.xCoord + Math.cos(angleA) * size, vec31.yCoord, vec31.zCoord + Math.sin(angleA) * size);
+        Vec3 right = new Vec3(vec31.xCoord + Math.cos(angleB) * size, vec31.yCoord, vec31.zCoord + Math.sin(angleB) * size);
+        Vec3 left2 = new Vec3(vec32.xCoord + Math.cos(angleA) * size, vec32.yCoord, vec32.zCoord + Math.sin(angleA) * size);
+        Vec3 right2 = new Vec3(vec32.xCoord + Math.cos(angleB) * size, vec32.yCoord, vec32.zCoord + Math.sin(angleB) * size);
+        Vec3 leftA = new Vec3(vec31.xCoord + Math.cos(angleA) * size2, vec31.yCoord, vec31.zCoord + Math.sin(angleA) * size2);
+        Vec3 rightA = new Vec3(vec31.xCoord + Math.cos(angleB) * size2, vec31.yCoord, vec31.zCoord + Math.sin(angleB) * size2);
+        Vec3 left2A = new Vec3(vec32.xCoord + Math.cos(angleA) * size2, vec32.yCoord, vec32.zCoord + Math.sin(angleA) * size2);
+        Vec3 right2A = new Vec3(vec32.xCoord + Math.cos(angleB) * size2, vec32.yCoord, vec32.zCoord + Math.sin(angleB) * size2);
+        MovingObjectPosition trace1 = mc.theWorld.rayTraceBlocks(left, left2, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace2 = mc.theWorld.rayTraceBlocks(vec31, vec32, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace3 = mc.theWorld.rayTraceBlocks(right, right2, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace5 = mc.theWorld.rayTraceBlocks(rightA, right2A, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        this.positionsBack.add(right);
+        this.positionsBack.add(right2);
+        this.positionsBack.add(left);
+        this.positionsBack.add(left2);
+        MovingObjectPosition trace4 = null;
+        MovingObjectPosition trace51 = null;
+        if (trace2 != null || trace1 != null || trace3 != null || trace4 != null || trace51 != null) {
+            if (returnLastUncollidableBlock) {
+                if (trace51 != null && (this.getBlock(trace51.getBlockPos()).getMaterial() != Material.air || trace51.entityHit != null)) {
+                    return trace51;
+                }
+                if (trace4 != null && (this.getBlock(trace4.getBlockPos()).getMaterial() != Material.air || trace4.entityHit != null)) {
+                    return trace4;
+                }
+                if (trace3 != null && (this.getBlock(trace3.getBlockPos()).getMaterial() != Material.air || trace3.entityHit != null)) {
+                    return trace3;
+                }
+                if (trace1 != null && (this.getBlock(trace1.getBlockPos()).getMaterial() != Material.air || trace1.entityHit != null)) {
+                    return trace1;
+                }
+                if (trace2 != null && (this.getBlock(trace2.getBlockPos()).getMaterial() != Material.air || trace2.entityHit != null)) {
+                    return trace2;
+                }
+            } else {
+                if (trace51 != null) {
+                    return trace51;
+                }
+                if (trace4 != null) {
+                    return trace4;
+                }
+                if (trace3 != null) {
+                    return trace3;
+                }
+                if (trace1 != null) {
+                    return trace1;
+                }
+                if (trace2 != null) {
+                    return trace2;
+                }
+            }
+        }
+        if (trace2 == null) {
+            if (trace3 == null) {
+                if (trace1 == null) {
+                    if (trace51 == null) {
+                        if (trace4 == null) {
+                            return null;
+                        }
+                        return trace4;
+                    }
+                    return trace51;
+                }
+                return trace1;
+            }
+            return trace3;
+        }
+        return trace2;
+    }
+	
+	public Block getBlock(BlockPos pos) {
+        return mc.theWorld.getBlockState(pos).getBlock();
+    }
+	
+	public boolean rayTraceWide(Vec3 vec31, Vec3 vec32, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+        float yaw = TPAura.getFacePosRemote(vec32, vec31)[0];
+        yaw = TPAura.normalizeAngle(yaw);
+        yaw += 180.0f;
+        yaw = MathHelper.wrapAngleTo180_float((float)yaw);
+        double angleA = Math.toRadians(yaw);
+        double angleB = Math.toRadians(yaw + 180.0f);
+        double size = 2.1;
+        double size2 = 2.1;
+        Vec3 left = new Vec3(vec31.xCoord + Math.cos(angleA) * size, vec31.yCoord, vec31.zCoord + Math.sin(angleA) * size);
+        Vec3 right = new Vec3(vec31.xCoord + Math.cos(angleB) * size, vec31.yCoord, vec31.zCoord + Math.sin(angleB) * size);
+        Vec3 left2 = new Vec3(vec32.xCoord + Math.cos(angleA) * size, vec32.yCoord, vec32.zCoord + Math.sin(angleA) * size);
+        Vec3 right2 = new Vec3(vec32.xCoord + Math.cos(angleB) * size, vec32.yCoord, vec32.zCoord + Math.sin(angleB) * size);
+        Vec3 leftA = new Vec3(vec31.xCoord + Math.cos(angleA) * size2, vec31.yCoord, vec31.zCoord + Math.sin(angleA) * size2);
+        Vec3 rightA = new Vec3(vec31.xCoord + Math.cos(angleB) * size2, vec31.yCoord, vec31.zCoord + Math.sin(angleB) * size2);
+        Vec3 left2A = new Vec3(vec32.xCoord + Math.cos(angleA) * size2, vec32.yCoord, vec32.zCoord + Math.sin(angleA) * size2);
+        Vec3 right2A = new Vec3(vec32.xCoord + Math.cos(angleB) * size2, vec32.yCoord, vec32.zCoord + Math.sin(angleB) * size2);
+        MovingObjectPosition trace1 = mc.theWorld.rayTraceBlocks(left, left2, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace2 = mc.theWorld.rayTraceBlocks(vec31, vec32, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace3 = mc.theWorld.rayTraceBlocks(right, right2, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock);
+        MovingObjectPosition trace4 = null;
+        MovingObjectPosition trace5 = null;
+        if (returnLastUncollidableBlock) {
+            return trace1 != null && this.getBlock(trace1.getBlockPos()).getMaterial() != Material.air || trace2 != null && this.getBlock(trace2.getBlockPos()).getMaterial() != Material.air || trace3 != null && this.getBlock(trace3.getBlockPos()).getMaterial() != Material.air || trace4 != null && this.getBlock(trace4.getBlockPos()).getMaterial() != Material.air || trace5 != null && this.getBlock(trace5.getBlockPos()).getMaterial() != Material.air;
+        }
+        return trace1 != null || trace2 != null || trace3 != null || trace5 != null || trace4 != null;
+    }
+	
+	public boolean infiniteReach(double range, double maxXZTP, double maxYTP, ArrayList<Vec3> positionsBack, ArrayList<Vec3> positions, EntityLivingBase en) {
+        int ind = 0;
+        this.xPreEn = en.posX;
+        this.yPreEn = en.posY;
+        this.zPreEn = en.posZ;
+        this.xPre = mc.thePlayer.posX;
+        this.yPre = mc.thePlayer.posY;
+        this.zPre = mc.thePlayer.posZ;
+        boolean attack = true;
+        boolean up = false;
+        boolean tpUpOneBlock = false;
+        boolean hit = false;
+        boolean tpStraight = false;
+        boolean sneaking = mc.thePlayer.isSneaking();
+        positions.clear();
+        positionsBack.clear();
+        double step = maxXZTP / range;
+        int steps = 0;
+        int i = 0;
+        while ((double)i < range) {
+            if (maxXZTP * (double)(++steps) > range) break;
+            ++i;
+        }
+        MovingObjectPosition rayTrace = null;
+        MovingObjectPosition rayTrace1 = null;
+        Object rayTraceCarpet = null;
+        if (this.rayTraceWide(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ), new Vec3(en.posX, en.posY, en.posZ), false, false, true) || (rayTrace1 = this.rayTracePos(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + (double)mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ), new Vec3(en.posX, en.posY + (double)mc.thePlayer.getEyeHeight(), en.posZ), false, false, true)) != null) {
+            rayTrace = this.rayTracePos(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ), new Vec3(en.posX, mc.thePlayer.posY, en.posZ), false, false, true);
+            if (rayTrace != null || (rayTrace1 = this.rayTracePos(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY + (double)mc.thePlayer.getEyeHeight(), mc.thePlayer.posZ), new Vec3(en.posX, mc.thePlayer.posY + (double)mc.thePlayer.getEyeHeight(), en.posZ), false, false, true)) != null) {
+                MovingObjectPosition trace = null;
+                if (rayTrace == null) {
+                    trace = rayTrace1;
+                }
+                if (rayTrace1 == null) {
+                    trace = rayTrace;
+                }
+                if (trace == null) {
+                    this.y = mc.thePlayer.posY;
+                    this.yPreEn = mc.thePlayer.posY;
+                } else {
+                    if (trace.getBlockPos() == null) return false;
+                    boolean fence = false;
+                    BlockPos target = trace.getBlockPos();
+                    up = true;
+                    this.y = target.up().getY();
+                    this.yPreEn = target.up().getY();
+                    Block lastBlock = null;
+                    Boolean found = false;
+                    int i2 = 0;
+                    while ((double)i2 < maxYTP) {
+                        MovingObjectPosition tr = this.rayTracePos(new Vec3(mc.thePlayer.posX, (double)(target.getY() + i2), mc.thePlayer.posZ), new Vec3(en.posX, (double)(target.getY() + i2), en.posZ), false, false, true);
+                        if (tr != null && tr.getBlockPos() != null) {
+                            BlockPos blockPos = tr.getBlockPos();
+                            Block block = mc.theWorld.getBlockState(blockPos).getBlock();
+                            if (block.getMaterial() != Material.air) {
+                                lastBlock = block;
+                            } else {
+                                fence = lastBlock instanceof BlockFence;
+                                this.y = target.getY() + i2;
+                                this.yPreEn = target.getY() + i2;
+                                if (fence) {
+                                    this.y += 1.0;
+                                    this.yPreEn += 1.0;
+                                    if ((double)(i2 + 1) > maxYTP) {
+                                        found = false;
+                                        break;
+                                    }
+                                }
+                                found = true;
+                                break;
+                            }
+                        }
+                        ++i2;
+                    }
+                    double difX = mc.thePlayer.posX - this.xPreEn;
+                    double difZ = mc.thePlayer.posZ - this.zPreEn;
+                    double divider = step * 0.0;
+                    if (!found.booleanValue()) {
+                        return false;
+                    }
+                }
+            } else {
+                MovingObjectPosition ent = this.rayTracePos(new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ), new Vec3(en.posX, en.posY, en.posZ), false, false, false);
+                if (ent != null && ent.entityHit == null) {
+                    this.y = mc.thePlayer.posY;
+                    this.yPreEn = mc.thePlayer.posY;
+                } else {
+                    this.y = mc.thePlayer.posY;
+                    this.yPreEn = en.posY;
+                }
+            }
+        }
+        if (!attack) {
+            return false;
+        }
+        if (sneaking) {
+            this.mc.getNetHandler().getNetworkManager().sendPacket((Packet)new C0BPacketEntityAction((Entity)mc.thePlayer, C0BPacketEntityAction.Action.STOP_SNEAKING));
+        }
+        int i3 = 0;
+        while (i3 < steps) {
+            double divider;
+            double difZ;
+            double difY;
+            double difX;
+            ++ind;
+            if (i3 == 1 && up) {
+                this.x = mc.thePlayer.posX;
+                this.y = this.yPreEn;
+                this.z = mc.thePlayer.posZ;
+                this.sendPacket(true, positionsBack, positions);
+            }
+            if (i3 != steps - 1) {
+                difX = mc.thePlayer.posX - this.xPreEn;
+                difY = mc.thePlayer.posY - this.yPreEn;
+                difZ = mc.thePlayer.posZ - this.zPreEn;
+                divider = step * (double)i3;
+                this.x = mc.thePlayer.posX - difX * divider;
+                this.y = mc.thePlayer.posY - difY * (up ? 1.0 : divider);
+                this.z = mc.thePlayer.posZ - difZ * divider;
+                this.sendPacket(false, positionsBack, positions);
+            } else {
+                difX = mc.thePlayer.posX - this.xPreEn;
+                difY = mc.thePlayer.posY - this.yPreEn;
+                difZ = mc.thePlayer.posZ - this.zPreEn;
+                divider = step * (double)i3;
+                this.x = mc.thePlayer.posX - difX * divider;
+                this.y = mc.thePlayer.posY - difY * (up ? 1.0 : divider);
+                this.z = mc.thePlayer.posZ - difZ * divider;
+                this.sendPacket(false, positionsBack, positions);
+                double xDist = this.x - this.xPreEn;
+                double zDist = this.z - this.zPreEn;
+                double yDist = this.y - en.posY;
+                double dist = Math.sqrt(xDist * xDist + zDist * zDist);
+                if (dist > 4.0) {
+                    this.x = this.xPreEn;
+                    this.y = this.yPreEn;
+                    this.z = this.zPreEn;
+                    this.sendPacket(false, positionsBack, positions);
+                } else if (dist > 0.05 && up) {
+                    this.x = this.xPreEn;
+                    this.y = this.yPreEn;
+                    this.z = this.zPreEn;
+                    this.sendPacket(false, positionsBack, positions);
+                }
+                if (Math.abs(yDist) < maxYTP && mc.thePlayer.getDistanceToEntity((Entity)en) >= 4.0f) {
+                    this.x = this.xPreEn;
+                    this.y = en.posY;
+                    this.z = this.zPreEn;
+                    this.sendPacket(false, positionsBack, positions);
+                    this.attackInf(en);
+                } else {
+                    attack = false;
+                }
+            }
+            ++i3;
+        }
+        i3 = positions.size() - 2;
+        while (i3 > -1) {
+            this.x = positions.get((int)i3).xCoord;
+            this.y = positions.get((int)i3).yCoord;
+            this.z = positions.get((int)i3).zCoord;
+            this.sendPacket(false, positionsBack, positions);
+            --i3;
+        }
+        this.x = mc.thePlayer.posX;
+        this.y = mc.thePlayer.posY;
+        this.z = mc.thePlayer.posZ;
+        this.sendPacket(false, positionsBack, positions);
+        if (!attack) {
+            if (sneaking) {
+                this.mc.getNetHandler().getNetworkManager().sendPacket((Packet)new C0BPacketEntityAction((Entity)mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
+            }
+            positions.clear();
+            positionsBack.clear();
+            return false;
+        }
+        if (!sneaking) return true;
+        this.mc.getNetHandler().getNetworkManager().sendPacket((Packet)new C0BPacketEntityAction((Entity)mc.thePlayer, C0BPacketEntityAction.Action.START_SNEAKING));
+        return true;
+    }
+	
+	private void attackInf(EntityLivingBase en) {
+        if (mc.thePlayer.isBlocking()) {
+            mc.thePlayer.sendQueue.addToSendQueue((Packet)new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.UP));
+        }
+        this.mc.getNetHandler().getNetworkManager().sendPacket((Packet)new C02PacketUseEntity((Entity)en, C02PacketUseEntity.Action.ATTACK));
+        if (mc.thePlayer.isBlocking()) {
+            this.mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem());
+            mc.thePlayer.setItemInUse(mc.thePlayer.getHeldItem(), mc.thePlayer.getHeldItem().getMaxItemUseDuration());
+            if (mc.thePlayer.isBlocking()) {
+                mc.thePlayer.sendQueue.addToSendQueue((Packet)new C07PacketPlayerDigging(C07PacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.UP));
+            }
+        }
     }
 	
 	public void propertyupdate() {
@@ -412,9 +768,16 @@ public class TPAura extends Module {
             attemptStartAutoblock_Watchdog();
 
 
-        if (apsStopwatch.hasPassed((aps))) {
-            // no click, just hit normally
-        	attackexecute(event);
+        double minValue = this.minSpeed.getValDouble(), maxValue=this.maxSpeed.getValDouble();
+        Random theRandom = new Random();
+        double randAps = 0.0;
+        blockDelay++;
+     // Checking for a valid range-
+        if( Double.valueOf(maxValue - minValue).isInfinite() == false) 
+        	randAps = minValue + (maxValue - minValue) * theRandom.nextDouble(); randAps = randAps;
+        if (apsStopwatch.hasPassed((randAps))) {
+        	doReach(this.distance.getValDouble(), true); 
+        	
         }
         
         yaw = event.getYaw();
@@ -430,7 +793,7 @@ public class TPAura extends Module {
                         if (entity != mc.thePlayer) {
                             if (mc.thePlayer.getDistanceToEntity((Entity) entity) < distance.getValDouble()) {
                                 if (isValidTarget((EntityLivingBase) entity)) {
-                                    attack((EntityLivingBase) entity);
+                                    //attack((EntityLivingBase) entity);
                                     currentEntity = (EntityLivingBase) entity;
                                     if (fakeab.getValBoolean() && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword) {
                                         mc.playerController.sendUseItem(mc.thePlayer, mc.theWorld, mc.thePlayer.getCurrentEquippedItem());
@@ -443,6 +806,14 @@ public class TPAura extends Module {
             }
         }
 	}
+	
+	public void doReach(double range, boolean up) {
+        if (mc.thePlayer.getDistanceToEntity((Entity)this.targetList.get(targetIndex)) <= 4.0f) {
+            this.attack(this.targetList.get(targetIndex));
+            return;
+        }
+        this.attack = this.infiniteReach(range, 9.5, 9.0, this.positionsBack, this.positions, this.targetList.get(targetIndex));
+    }
 	
 	public void attemptStopAutoblock_Watchdog() {
         if (holdingSword() || fakeab.getValBoolean()) {

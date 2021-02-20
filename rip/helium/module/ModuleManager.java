@@ -50,6 +50,7 @@ import rip.helium.module.modules.movement.ScreenWalk;
 import rip.helium.module.modules.movement.Speed;
 import rip.helium.module.modules.movement.Sprint;
 import rip.helium.module.modules.movement.Step;
+import rip.helium.module.modules.movement.TargetStrafe;
 import rip.helium.module.modules.movement.Teleport;
 import rip.helium.module.modules.player.AutoEat;
 import rip.helium.module.modules.player.FastUse;
@@ -155,6 +156,7 @@ public class ModuleManager implements ClientSupport {
 		addModule(new LongJump(Keyboard.KEY_G, "LongJump", "Long Jump", Category.Movement));
 		addModule(new Teleport(0, "Teleport", Category.Movement));
 		addModule(new Step(0, "Step", Category.Movement));
+		addModule(new TargetStrafe(0, "TargetStrafe", "Target Strafe", Category.Movement));
 		addModule(new NoFall(0, "NoFall", "No Fall", Category.Player));
 		addModule(new Regen(0, "Regen", Category.Player));
 		addModule(new Reach(0, "Reach", Category.Player));

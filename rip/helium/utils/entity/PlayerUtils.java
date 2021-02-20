@@ -1,7 +1,7 @@
 package rip.helium.utils.entity;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.MathHelper;
@@ -13,6 +13,17 @@ public class PlayerUtils implements ClientSupport {
 	public static boolean isMoving() {
         return mc.thePlayer.moveForward != 0.0f || mc.thePlayer.moveStrafing != 0.0f;
     }
+	
+	public static float[] getNeededRotations(EntityLivingBase entityIn) {
+		double d0 = entityIn.posX - mc.thePlayer.posX;
+		double d1 = entityIn.posZ - mc.thePlayer.posZ;
+		double d2 = entityIn.posY + entityIn.getEyeHeight() - (mc.thePlayer.getEntityBoundingBox().minY
+				+ (mc.thePlayer.getEntityBoundingBox().maxY - mc.thePlayer.getEntityBoundingBox().minY));
+		double d3 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
+		float f = (float) (MathHelper.func_181159_b(d1, d0) * 180.0D / Math.PI) - 90.0F;
+		float f1 = (float) (-(MathHelper.func_181159_b(d2, d3) * 180.0D / Math.PI));
+		return new float[] { f, f1 };
+	}
 	
     public static int airSlot() {
         for (int j = 0; j < 8; ++j) {
@@ -72,7 +83,7 @@ public class PlayerUtils implements ClientSupport {
 			}
 		}
 		mc.thePlayer.motionX = forward * speed * Math.cos(Math.toRadians((yaw + 90.0F))) + strafe * speed * Math.sin(Math.toRadians((yaw + 90.0F)));
-		mc.thePlayer.motionX = forward * speed * Math.sin(Math.toRadians((yaw + 90.0F))) - strafe * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
+		mc.thePlayer.motionZ = forward * speed * Math.sin(Math.toRadians((yaw + 90.0F))) - strafe * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 	}
 	
 	public static void setMoveSpeedRidingEntity(double speed) {
@@ -115,6 +126,41 @@ public class PlayerUtils implements ClientSupport {
         } else {
             mc.thePlayer.motionX = 0.0f;
             mc.thePlayer.motionZ = 0.0f;
+        }
+    }
+	
+	public static void setSpeed(double speed) {
+	    mc.thePlayer.motionX = -MathHelper.sin(getDirection()) * speed;
+	    mc.thePlayer.motionZ = MathHelper.cos(getDirection()) * speed;
+	}
+	
+	public static void setCockSpeed(final MoveEvent moveEvent, final double moveSpeed, final float pseudoYaw, final double pseudoStrafe, final double pseudoForward) {
+        double forward = pseudoForward;
+        double strafe = pseudoStrafe;
+        float yaw = pseudoYaw;
+
+        if (forward == 0.0 && strafe == 0.0) {
+            moveEvent.setX(mc.thePlayer.motionX = 0);
+            moveEvent.setZ(mc.thePlayer.motionZ = 0);
+        } else {
+            if (forward != 0.0) {
+                if (strafe > 0.0) {
+                    yaw += ((forward > 0.0) ? -45 : 45);
+                } else if (strafe < 0.0) {
+                    yaw += ((forward > 0.0) ? 45 : -45);
+                }
+                strafe = 0.0;
+                if (forward > 0.0) {
+                    forward = 1.0;
+                } else if (forward < 0.0) {
+                    forward = -1.0;
+                }
+            }
+            final double cos = Math.cos(Math.toRadians(yaw + 90.0f));
+            final double sin = Math.sin(Math.toRadians(yaw + 90.0f));
+
+            moveEvent.setX(mc.thePlayer.motionX = (forward * moveSpeed * cos + strafe * moveSpeed * sin));
+            moveEvent.setZ(mc.thePlayer.motionZ = (forward * moveSpeed * sin - strafe * moveSpeed * cos));
         }
     }
 	

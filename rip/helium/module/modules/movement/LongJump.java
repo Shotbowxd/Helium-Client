@@ -36,6 +36,7 @@ public class LongJump extends Module {
 		modes.add("Mineplex");
 		modes.add("Fierce");
 		modes.add("SunPvP");
+		modes.add("Emeraldcraft");
 		
 		this.mode = new Setting("Mode", this, "Vanilla", modes);
 		
@@ -54,6 +55,7 @@ public class LongJump extends Module {
 	public void onDisable() {
 		super.onDisable();
 		mc.timer.timerSpeed = 1f;
+		PlayerUtils.setSpeed(0);
         PlayerUtils.setMoveSpeed(0);
 	}
 	@EventTarget
@@ -143,15 +145,26 @@ public class LongJump extends Module {
 	}
 	
 	@EventTarget
-	public void onUpdatePre(UpdateEvent event) {
+	public void onUpdate(UpdateEvent event) {
 		switch (this.mode.getValString()) {
-        	case "Faithful": {
+        	case "Faithful":
         		if (mc.thePlayer.onGround) {
         			event.setPosY(mc.thePlayer.motionY = 0.7);
         		}
         		PlayerUtils.setMoveSpeed2(2.5);
         		break;
-        	}
+        	case "Emeraldcraft":
+    			mc.timer.timerSpeed = 0.75F;
+    		      if (PlayerUtils.isMoving())
+    		    	  if(mc.thePlayer.onGround) {
+    		    		  mc.thePlayer.motionY = 0.4255;
+    		    	  }
+    		    	  if(mc.thePlayer.ticksExisted%3==0) {
+    		    		  PlayerUtils.setMoveSpeed(5d);
+    		    	  } else {
+    		    		  PlayerUtils.setMoveSpeed(4.75d);
+    		    	  }
+    			break;
 		}
 	}
 	

@@ -29,8 +29,8 @@ public class Flight extends Module {
 		ArrayList<String> modes = new ArrayList<String>();
 		modes.add("Motion");
 		modes.add("Notch");
-		modes.add("AAC");
-		
+		modes.add("Shotbow");
+		modes.add("Emeraldcraft");	
 		this.mode = new Setting("Mode", this, "Motion", modes);
 		this.speed = new Setting("Speed", this, 1.0d, 0.1d, 10.0d, false);
 		this.antiKick = new Setting("AntiKick", this, false);
@@ -58,13 +58,43 @@ public class Flight extends Module {
 			case "Notch":
 				mc.thePlayer.capabilities.isFlying = true;
 				break;
+			case "Emeraldcraft":
+				mc.timer.timerSpeed = 0.4F;
+				//mc.thePlayer.capabilities.setFlySpeed(1.5F);
+			    //mc.thePlayer.capabilities.isFlying = true;
+				if(mc.thePlayer.movementInput.jump) {
+					if(mc.thePlayer.ticksExisted%3==0) {
+						mc.thePlayer.motionY = 1.5d;
+					} else {
+						mc.thePlayer.motionY = 1d;
+					}
+				} else if(mc.thePlayer.movementInput.sneak) {
+					if(mc.thePlayer.ticksExisted%3==0) {
+						mc.thePlayer.motionY = -1.5d;
+					} else {
+						mc.thePlayer.motionY = -1d;
+					}
+				} else {
+					mc.thePlayer.motionY = 0.0d;
+				}
+			    if(PlayerUtils.isMoving()) {
+			    	if(mc.thePlayer.ticksExisted%3==0) {
+			    		PlayerUtils.setMoveSpeed(5d);
+			    	} else {
+			    		PlayerUtils.setMoveSpeed(4.5d);
+			    	}
+			    }
+			    break;
 		}
-		if(this.antiKick.getValBoolean() && this.flyTimer.hasPassed(75.0f)) {
+		if(this.antiKick.getValBoolean()) {
             if(!mc.thePlayer.onGround) {
-            	this.fall();
-                this.ascend();
+            	if(flyTimer.hasPassed(75)) {
+            		this.fall();
+            		this.flyTimer.updateLastTime();
+            	} else {
+            		this.ascend();
+            	}
             }
-            this.flyTimer.updateLastTime();
 		}
 	}
 	
@@ -79,27 +109,32 @@ public class Flight extends Module {
 				} else {
 					event.setY(mc.thePlayer.motionY = 0.0d);
 				}
+				PlayerUtils.setMoveSpeed(event, speed.getValDouble());
 				break;
-			case "AAC":
+			case "Notch":
+				PlayerUtils.setMoveSpeed(event, speed.getValDouble());
+				break;
+			case "Shotbow":
 				mc.timer.timerSpeed = 0.75f;
                 float speed = 10 / 2.25f;
                 PlayerUtils.setMoveSpeed(event, speed);
                 event.setY(mc.thePlayer.movementInput.jump ? speed / 3 : mc.thePlayer.movementInput.sneak ? -speed / 3 : 0.42F);
                 if (mc.thePlayer.ticksExisted % 2 == 0) {
-                mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX + mc.thePlayer.motionX, mc.thePlayer.posY + mc.thePlayer.motionY + 0.0001, mc.thePlayer.posZ + mc.thePlayer.motionY, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
-                mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
-            }
-            mc.thePlayer.motionY = 0.0f;
+                	mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX + mc.thePlayer.motionX, mc.thePlayer.posY + mc.thePlayer.motionY + 0.0001, mc.thePlayer.posZ + mc.thePlayer.motionY, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                	mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                }
+                mc.thePlayer.motionY = 0.0f;
 				break;
 		}
-		PlayerUtils.setMoveSpeed(event, speed.getValDouble());
 	}
 	
 	@Override
 	public void onDisable() {
-		mc.thePlayer.capabilities.isFlying = false;
-		mc.timer.timerSpeed = 1;
 		super.onDisable();
+		mc.timer.timerSpeed = 1f;
+	    mc.thePlayer.capabilities.setFlySpeed(0.1F);
+	    mc.thePlayer.capabilities.isFlying = false;
+	    PlayerUtils.setSpeed(0d);
 	}
 	
     private boolean isColliding(final AxisAlignedBB box) {

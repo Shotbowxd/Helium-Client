@@ -19,8 +19,8 @@ public class NoRotate extends Module {
 	public void onPacketReceive(PacketReceiveEvent event) {
 		if (event.getPacket() instanceof S08PacketPlayerPosLook) {
 			S08PacketPlayerPosLook packet = (S08PacketPlayerPosLook)event.getPacket();
-		    packet.setYaw(mc.thePlayer.rotationYaw);
-		    packet.setPitch(mc.thePlayer.rotationPitch);
+			packet.setYaw(mc.thePlayer.rotationYaw);
+            packet.setPitch(mc.thePlayer.rotationPitch);
 		} 
 	}
 

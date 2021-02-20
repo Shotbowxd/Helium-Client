@@ -56,7 +56,7 @@ public class Step extends Module {
 	                    //sigmaSkiddedStepYesIkItsSkiddedNowStfu(2.5f);
 	                }
 
-	                if ((mc.hackedClient.getModuleManager().getModule("Flight").getState() || mc.hackedClient.getModuleManager().getModule("Speed").getState() || mc.hackedClient.getModuleManager().getModule("LongJump").getState()))
+	                if ((mc.hackedClient.getModuleManager().getModule("Flight").getState()))
 	                    event.setStepHeight(0F);
 
 	            } else {

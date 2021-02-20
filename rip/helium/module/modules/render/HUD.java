@@ -64,6 +64,7 @@ public class HUD extends Module {
 		mc.hackedClient.getSettingManager().addSetting(radar);
 		mc.hackedClient.getSettingManager().addSetting(coords);
 		mc.hackedClient.getSettingManager().addSetting(direction);
+		mc.hackedClient.getSettingManager().addSetting(speed);
 		mc.hackedClient.getSettingManager().addSetting(potions);
 		mc.hackedClient.getSettingManager().addSetting(rainbow);
 		mc.hackedClient.getSettingManager().addSetting(animations);

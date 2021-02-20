@@ -21,13 +21,13 @@ public class AntiBot extends Module {
 	@EventTarget
 	public void onUpdatePost(UpdateEvent event) {
 		if(event.isPre()) {
-			if (mc.getCurrentServerData() != null && mc.theWorld != null && mc.getCurrentServerData().serverIP.contains("hypixel")) {
+			if (mc.getCurrentServerData() != null && mc.theWorld != null && (mc.getCurrentServerData().serverIP.contains("hypixel") || mc.getCurrentServerData().serverIP.contains("emeraldcraft"))) {
 				if (mc.thePlayer.ticksExisted % 600 == 0) {
 		            bots.clear();
 		        }
 			}
 		} else {
-			if (mc.getCurrentServerData() != null && mc.theWorld != null && mc.getCurrentServerData().serverIP.contains("hypixel")) {
+			if (mc.getCurrentServerData() != null && mc.theWorld != null && (mc.getCurrentServerData().serverIP.contains("hypixel") || mc.getCurrentServerData().serverIP.contains("emeraldcraft"))) {
 	            for (Entity entity : mc.theWorld.loadedEntityList) {
 	                if (entity instanceof EntityPlayer) {
 	                    if (entity != mc.thePlayer) {

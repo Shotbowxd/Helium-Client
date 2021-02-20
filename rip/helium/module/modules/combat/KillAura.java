@@ -85,10 +85,10 @@ public class KillAura extends Module {
     private ScaledResolution sr;
     private static int auraDelay;
     private float yaw, pitch, yawIncrease, pitchIncrease, serverSideYaw, serverSidePitch;
-    public static int targetIndex;
+    public int targetIndex;
 
     private ArrayList<EntityLivingBase> mcf;
-    private static ArrayList<EntityLivingBase> targetList;
+    public ArrayList<EntityLivingBase> targetList;
     public static EntityLivingBase currentEntity;
     public ArrayList<EntityLivingBase> ignoredEntities;
     private ArrayList<EntityLivingBase> whitelistedEntity;
@@ -808,7 +808,11 @@ public class KillAura extends Module {
                 } else if (abMode.getValString().equalsIgnoreCase("Fake")) {
 
                 }
-                isBlocking = true;
+                if(mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemSword) {
+                	isBlocking = true;
+                } else {
+                	isBlocking = false;
+                }
             }
         }
     }

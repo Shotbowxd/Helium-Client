@@ -72,7 +72,7 @@ public class GuiCustomChat extends GuiNewChat implements ClientSupport {
 	        		height = -var4 * 9; 
 	        	height = -var2 * 9;
 	        	if (height != -1)
-	        		Render2DUtils.drawRect(0 + this.x, height + 2 + this.y, getChatWidth() + 3 + this.x, 4 + this.y, -2147483648); 
+	        		//Render2DUtils.drawRect(0 + this.x, height + 2 + this.y, getChatWidth() + 3 + this.x, 4 + this.y, -2147483648); 
 	        	GlStateManager.translate(1.0F, 8.0F, 0.0F);
 	        	for (var9 = 0; var9 + this.scrollPos < this.field_146253_i.size() && var9 < var2; var9++) {
 	        		ChatLine var10 = this.field_146253_i.get(var9 + this.scrollPos);
@@ -109,8 +109,8 @@ public class GuiCustomChat extends GuiNewChat implements ClientSupport {
 	        		if (var18 != var11) {
 	        			int var14 = (var19 > 0) ? 170 : 96;
 	        			int var20 = this.isScrolled ? 13382451 : 3355562;
-	        			drawRect(0, -var19, 2, -var19 - var13, var20 + (var14 << 24));
-	        			drawRect(2, -var19, 1, -var19 - var13, 13421772 + (var14 << 24));
+	        			//drawRect(0, -var19, 2, -var19 - var13, var20 + (var14 << 24));
+	        			//drawRect(2, -var19, 1, -var19 - var13, 13421772 + (var14 << 24));
 	        		} 
 	        	} 
 	        	GlStateManager.popMatrix();

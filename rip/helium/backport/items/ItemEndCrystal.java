@@ -17,6 +17,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProviderEnd;
 
+/* 
+ * 
+ * Author: MichaelMaymays 
+ * 
+ * Currently not working, as I first need to figure out how to
+ * make it compatible with ViaVersion.
+ * 
+ */
+
 public class ItemEndCrystal extends Item
 {
     public ItemEndCrystal()
