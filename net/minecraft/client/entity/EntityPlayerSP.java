@@ -366,6 +366,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
         super.swingItem();
         this.sendQueue.addToSendQueue(new C0APacketAnimation());
     }
+    
+    public static boolean isMoving() {
+        return mc.thePlayer != null && (mc.thePlayer.movementInput.moveForward != 0F || mc.thePlayer.movementInput.moveStrafe != 0F);
+    }
 
     public void respawnPlayer()
     {
