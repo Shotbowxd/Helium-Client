@@ -186,7 +186,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     {
     }
 
-    public static boolean isMoving() {
+    public boolean isMoving() {
         return mc.thePlayer != null && (mc.thePlayer.movementInput.moveForward != 0F || mc.thePlayer.movementInput.moveStrafe != 0F);
     }
 
