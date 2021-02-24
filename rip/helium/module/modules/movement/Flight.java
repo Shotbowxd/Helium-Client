@@ -118,14 +118,14 @@ public class Flight extends Module {
 				break;
 			case "Shotbow":
 				mc.timer.timerSpeed = 0.75f;
-                float speed = 10 / 2.25f;
-                PlayerUtils.setMoveSpeed(event, speed);
-                event.setY(mc.thePlayer.movementInput.jump ? speed / 3 : mc.thePlayer.movementInput.sneak ? -speed / 3 : 0.42F);
-                if (mc.thePlayer.ticksExisted % 2 == 0) {
-                	mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX + mc.thePlayer.motionX, mc.thePlayer.posY + mc.thePlayer.motionY + 0.0001, mc.thePlayer.posZ + mc.thePlayer.motionY, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
-                	mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
-                }
-                mc.thePlayer.motionY = 0.0f;
+                		float speed = 10 / 2.25f;
+                		PlayerUtils.setMoveSpeed(event, speed);
+                		event.setY(mc.thePlayer.movementInput.jump ? speed / 3 : mc.thePlayer.movementInput.sneak ? -speed / 3 : 0.42F);
+                		if (mc.thePlayer.ticksExisted % 2 == 0) {
+                			mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX + mc.thePlayer.motionX, mc.thePlayer.posY + mc.thePlayer.motionY + 0.0001, mc.thePlayer.posZ + mc.thePlayer.motionY, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                			mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+                		}
+                		mc.thePlayer.motionY = 0.0f;
 				break;
 			case "Dynamic":
 				double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
@@ -153,8 +153,8 @@ public class Flight extends Module {
 	
 	@Override
 	public void onDisable() {
-		super.onDisable();
-		mc.timer.timerSpeed = 1f;
+	    super.onDisable();
+	    mc.timer.timerSpeed = 1f;
 	    mc.thePlayer.capabilities.setFlySpeed(0.1F);
 	    mc.thePlayer.capabilities.isFlying = false;
 	    PlayerUtils.setSpeed(0d);
