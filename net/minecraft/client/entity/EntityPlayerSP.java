@@ -110,7 +110,7 @@ public class EntityPlayerSP extends AbstractClientPlayer
     private boolean hasValidHealth;
     private String clientBrand;
     public MovementInput movementInput;
-    protected Minecraft mc;
+    protected static Minecraft mc;
 
     /**
      * Used to tell if the player pressed forward twice. If this is at 0 and it's pressed (And they are allowed to
@@ -184,6 +184,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
      */
     public void heal(float healAmount)
     {
+    }
+
+    public static boolean isMoving() {
+        return mc.thePlayer != null && (mc.thePlayer.movementInput.moveForward != 0F || mc.thePlayer.movementInput.moveStrafe != 0F);
     }
 
     /**
@@ -365,10 +369,6 @@ public class EntityPlayerSP extends AbstractClientPlayer
     {
         super.swingItem();
         this.sendQueue.addToSendQueue(new C0APacketAnimation());
-    }
-    
-    public static boolean isMoving() {
-        return mc.thePlayer != null && (mc.thePlayer.movementInput.moveForward != 0F || mc.thePlayer.movementInput.moveStrafe != 0F);
     }
 
     public void respawnPlayer()
