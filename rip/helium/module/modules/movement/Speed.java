@@ -40,6 +40,7 @@ public class Speed extends Module {
 		modes.add("Fierce");
 		modes.add("SunPvP");
 		modes.add("Emeraldcraft");
+		modes.add("Timer");
 		
 		this.mode = new Setting("Mode", this, "Ground", modes);
 		
@@ -130,6 +131,10 @@ public class Speed extends Module {
                     PlayerUtils.setMoveSpeed2(0f);
                 }
                 break;
+			case "Timer":
+				
+				net.minecraft.util.Timer.timerSpeed = 1.45f;
+				break;
 		}
 	}
 	

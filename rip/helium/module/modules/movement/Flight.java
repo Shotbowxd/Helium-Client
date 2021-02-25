@@ -30,7 +30,9 @@ public class Flight extends Module {
 		modes.add("Motion");
 		modes.add("Notch");
 		modes.add("Shotbow");
-		modes.add("Emeraldcraft");	
+		modes.add("Emeraldcraft");
+		modes.add("Dynamic");
+
 		this.mode = new Setting("Mode", this, "Motion", modes);
 		this.speed = new Setting("Speed", this, 1.0d, 0.1d, 10.0d, false);
 		this.antiKick = new Setting("AntiKick", this, false);
@@ -124,6 +126,27 @@ public class Flight extends Module {
                 	mc.getNetHandler().getNetworkManager().sendPacket(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ + 20.0D, mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
                 }
                 mc.thePlayer.motionY = 0.0f;
+				break;
+			case "Dynamic":
+				double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
+				double x = -Math.sin(yaw) * 3.8;
+				double z = Math.cos(yaw) * 3.8;
+				if (mc.thePlayer.isMoving()) {
+					if (mc.thePlayer.ticksExisted % 5 == 0) {
+						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY, mc.thePlayer.posZ + z);
+					}
+				}
+				if (mc.gameSettings.keyBindJump.pressed) {
+					if (mc.thePlayer.ticksExisted % 5 == 0) {
+						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY + 5, mc.thePlayer.posZ + z);
+					}
+					PlayerUtils.setMoveSpeed(event, 0.0);
+				}
+				if (mc.gameSettings.keyBindSneak.pressed) {
+					event.setY(mc.thePlayer.motionY = -1.5d);
+					PlayerUtils.setMoveSpeed(event, 0.0);
+				}
+				mc.thePlayer.motionY = 0.0f;
 				break;
 		}
 	}

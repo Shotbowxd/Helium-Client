@@ -104,7 +104,7 @@ public class HeliumClient implements ClientSupport {
 		
 		this.gui = new ClickGUIScreen();
 		
-		IPCClient client = new IPCClient(808312902766428190L);
+		/*/IPCClient client = new IPCClient(808312902766428190L);
 		client.setListener(new IPCListener() {
 			@Override
 			public void onReady(IPCClient client) {
@@ -117,9 +117,9 @@ public class HeliumClient implements ClientSupport {
 			client.connect();
 		} catch (NoDiscordClientException e) {
 			e.printStackTrace();
-		}
+		}/*/
 		
-		Runtime.getRuntime().addShutdownHook(new Thread("Toybox Client shutdown thread") {
+		Runtime.getRuntime().addShutdownHook(new Thread("Client shutdown thread") {
 			public void run() {
 				mc.hackedClient.friendManager.saveConfig(mc.hackedClient.getGson());
 				mc.hackedClient.moduleManager.saveConfig(mc.hackedClient.getGson());
