@@ -17,11 +17,11 @@ import rip.helium.utils.render.ColorUtils;
 
 public class TargetStrafe extends Module {
 
-	private Setting holdSpace;
-	private Setting distance;
-	private Setting speed;
+	private static Setting holdSpace;
+	private static Setting distance;
+	//private Setting speed;
 	
-	private int direction = -1;
+	private static int direction = -1;
 	
 	public TargetStrafe(int bind, String name, String displayName, Category category) {
 		super(bind, name, displayName, category);
@@ -29,11 +29,11 @@ public class TargetStrafe extends Module {
 		
 		this.holdSpace = new Setting("Hold Space", this, true);
 		this.distance = new Setting("Distance", this, 2.5, 0.1, 6.0, false);
-		this.speed = new Setting("Speed", this, 0.2875, 0.1, 5, false);
+		//this.speed = new Setting("Speed", this, 0.2875, 0.1, 5, false);
 		
 		mc.hackedClient.getSettingManager().addSetting(this.holdSpace);
 		mc.hackedClient.getSettingManager().addSetting(this.distance);
-		mc.hackedClient.getSettingManager().addSetting(this.speed);
+		//mc.hackedClient.getSettingManager().addSetting(this.speed);
 	}
 	
 	@EventTarget
@@ -45,11 +45,6 @@ public class TargetStrafe extends Module {
 		}
 	}
 	
-	@EventTarget
-	public void onMove(MoveEvent event) {
-		this.doStrafeAtSpeed(event, this.speed.getValDouble());
-	}
-	
 	private void switchDirection() {
         if (direction == 1) {
             direction = -1;
@@ -58,7 +53,7 @@ public class TargetStrafe extends Module {
         }
     }
 	
-	public final boolean doStrafeAtSpeed(MoveEvent event, final double moveSpeed) {
+	public static final boolean doStrafeAtSpeed(MoveEvent event, final double moveSpeed) {
         final boolean strafe = canStrafe();
         if (strafe) {
             float[] rotations = PlayerUtils.getNeededRotations((((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetList.get(((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetIndex)));
@@ -121,10 +116,10 @@ public class TargetStrafe extends Module {
         GL11.glPopMatrix();
     }
 
-    public boolean canStrafe() {
+    public static boolean canStrafe() {
         if (holdSpace.getValBoolean() && !mc.gameSettings.keyBindJump.isKeyDown())
         	return false;
-        if ((((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).getState()) && (((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetList.get(((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetIndex) != null)) {
+        if ((mc.hackedClient.getModuleManager().getModule("KillAura").getState()) && (((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetList.get(((KillAura)mc.hackedClient.getModuleManager().getModule("KillAura")).targetIndex) != null)) {
             return true;
         } else {
             return false;

@@ -62,24 +62,6 @@ public class Speed extends Module {
 	}
 	
 	@EventTarget
-	public void onPacketSend(PacketSendEvent event) {
-		switch(this.mode.getValString()) {
-			case "Viper":
-				this.viper.onPacketSend(event);
-				break;
-		}
-	}
-	
-	@EventTarget
-	public void onPacketReceive(PacketReceiveEvent event) {
-		switch(this.mode.getValString()) {
-			case "Viper":
-				this.viper.onPacketReceive(event);
-				break;
-		}
-	}
-	
-	@EventTarget
 	public void onMove(MoveEvent event) {
 		switch(this.mode.getValString()) {
 			case "Bhop":

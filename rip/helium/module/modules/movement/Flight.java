@@ -128,38 +128,17 @@ public class Flight extends Module {
                 		mc.thePlayer.motionY = 0.0f;
 				break;
 			case "Dynamic":
-				double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
-				double x = -Math.sin(yaw) * 3.8;
-				double z = Math.cos(yaw) * 3.8;
+				double yaw1 = Math.toRadians(mc.thePlayer.rotationYaw);
+				double x1 = -Math.sin(yaw1) * 3.8;
+				double z1 = Math.cos(yaw1) * 3.8;
 				if (mc.thePlayer.isMoving()) {
 					if (mc.thePlayer.ticksExisted % 5 == 0) {
-						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY, mc.thePlayer.posZ + z);
+						mc.thePlayer.setPosition(mc.thePlayer.posX + x1 , mc.thePlayer.posY, mc.thePlayer.posZ + z1);
 					}
 				}
 				if (mc.gameSettings.keyBindJump.pressed) {
 					if (mc.thePlayer.ticksExisted % 5 == 0) {
-						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY + 5, mc.thePlayer.posZ + z);
-					}
-					PlayerUtils.setMoveSpeed(event, 0.0);
-				}
-				if (mc.gameSettings.keyBindSneak.pressed) {
-					event.setY(mc.thePlayer.motionY = -1.5d);
-					PlayerUtils.setMoveSpeed(event, 0.0);
-				}
-				mc.thePlayer.motionY = 0.0f;
-				break;
-			case "Dynamic":
-				double yaw = Math.toRadians(mc.thePlayer.rotationYaw);
-				double x = -Math.sin(yaw) * 3.8;
-				double z = Math.cos(yaw) * 3.8;
-				if (mc.thePlayer.isMoving()) {
-					if (mc.thePlayer.ticksExisted % 5 == 0) {
-						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY, mc.thePlayer.posZ + z);
-					}
-				}
-				if (mc.gameSettings.keyBindJump.pressed) {
-					if (mc.thePlayer.ticksExisted % 5 == 0) {
-						mc.thePlayer.setPosition(mc.thePlayer.posX + x , mc.thePlayer.posY + 5, mc.thePlayer.posZ + z);
+						mc.thePlayer.setPosition(mc.thePlayer.posX + x1 , mc.thePlayer.posY + 5, mc.thePlayer.posZ + z1);
 					}
 					PlayerUtils.setMoveSpeed(event, 0.0);
 				}
