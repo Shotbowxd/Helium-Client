@@ -90,8 +90,8 @@ public class ModuleManager implements ClientSupport {
 		ArrayList<Module> renderList = this.modules;
 	    renderList.sort(new Comparator<Module>() {
 	    	public int compare(Module m1, Module m2) {
-	            String s1 = String.format("%s" + ((m1.getSuffix().length() > 0) ? " %s" : ""), new Object[] { m1.getDisplayName(), m1.getSuffix() });
-	            String s2 = String.format("%s" + ((m2.getSuffix().length() > 0) ? " %s" : ""), new Object[] { m2.getDisplayName(), m2.getSuffix() });
+	            String s1 = String.format("%s" + ((m1.getSuffix().length() > 0) ? " [%s]" : ""), m1.getDisplayName(), m1.getSuffix());
+	            String s2 = String.format("%s" + ((m2.getSuffix().length() > 0) ? " [%s]" : ""), m2.getDisplayName(), m2.getSuffix());
 	            return mc.fontRendererObj.getStringWidth(s2) - mc.fontRendererObj.getStringWidth(s1);
 	        }
 	    });

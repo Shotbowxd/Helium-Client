@@ -8,12 +8,17 @@ import rip.helium.utils.render.font.MinecraftFontRenderer;
 
 public interface ClientSupport {
 	
-	public Minecraft mc = Minecraft.getMinecraft();
+	Minecraft mc = Minecraft.getMinecraft();
 	
-	public MinecraftFontRenderer clientFont = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/notosansregular.ttf"), 18, Font.PLAIN), true, false);
-	public MinecraftFontRenderer clientFontBig = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/notosansregular.ttf"), 28, Font.PLAIN), true, false);
+	MinecraftFontRenderer clientFont = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/notosansregular.ttf"), 18, Font.PLAIN), true, false);
+	MinecraftFontRenderer clientFontBig = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/notosansregular.ttf"), 28, Font.PLAIN), true, false);
 
-    public static Font fontFromTTF(ResourceLocation fontLocation, float fontSize, int fontType) {
+	MinecraftFontRenderer verdana = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/Verdana.ttf"), 16, Font.PLAIN), true, false);
+    MinecraftFontRenderer tahoma = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/Tahoma.ttf"), 16, Font.PLAIN), true, false);
+
+    MinecraftFontRenderer sexFont = new MinecraftFontRenderer(fontFromTTF(new ResourceLocation("dotexe/font.ttf"), 16, Font.PLAIN), true, false);
+
+    static Font fontFromTTF(ResourceLocation fontLocation, float fontSize, int fontType) {
         Font output = null;
         try {
             output = Font.createFont(fontType, Minecraft.getMinecraft().getResourceManager().getResource(fontLocation).getInputStream());

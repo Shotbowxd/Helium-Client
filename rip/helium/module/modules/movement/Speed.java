@@ -2,6 +2,7 @@ package rip.helium.module.modules.movement;
 
 import java.util.ArrayList;
 
+import net.minecraft.potion.Potion;
 import rip.helium.event.EventTarget;
 import rip.helium.event.events.impl.network.PacketReceiveEvent;
 import rip.helium.event.events.impl.network.PacketSendEvent;
@@ -15,6 +16,7 @@ import rip.helium.module.modules.movement.speed.ViperMode;
 import rip.helium.setting.Setting;
 import rip.helium.utils.client.Timer;
 import rip.helium.utils.entity.PlayerUtils;
+import rip.helium.utils.misc.MathUtils;
 import rip.helium.utils.render.ColorUtils;
 
 public class Speed extends Module {
@@ -22,7 +24,13 @@ public class Speed extends Module {
 	private Setting mode;
 	
 	Timer ncpTimer;
-	
+
+	private double moveSpeed;
+	private double lastDist;
+	private int stage;
+
+	private boolean doSlow;
+
 	private BhopMode bhop;
 	private FasthopMode fasthop;
 	private GroundMode ground;
@@ -41,6 +49,8 @@ public class Speed extends Module {
 		modes.add("SunPvP");
 		modes.add("Emeraldcraft");
 		modes.add("Timer");
+		modes.add("Dynamic");
+		modes.add("Hypixel");
 		
 		this.mode = new Setting("Mode", this, "Ground", modes);
 		
@@ -114,8 +124,51 @@ public class Speed extends Module {
                 }
                 break;
 			case "Timer":
-				
 				net.minecraft.util.Timer.timerSpeed = 1.45f;
+				break;
+			case "Hypixel": {
+				if (MathUtils.round(mc.thePlayer.motionY, 3) == MathUtils.round(-.245D, 3)) {
+					event.setY(mc.thePlayer.motionY -= 0.138F);
+				}
+				if (mc.thePlayer.isMoving() && !mc.thePlayer.isInWater()) {
+					double baseSpeed = getBaseMoveSpeed();
+					if (mc.thePlayer.onGround) {
+						event.setY(mc.thePlayer.motionY = getJumpBoostModifier(0.3999998F)); // 3999998
+						moveSpeed = baseSpeed * 2.15 - 1.0E-4;
+						doSlow = true;
+					} else if (doSlow || mc.thePlayer.isCollidedHorizontally) {
+						moveSpeed -= 0.6336 * (moveSpeed - baseSpeed);
+						doSlow = false;
+					} else {
+						moveSpeed -= moveSpeed / 159;
+					}
+
+					if (mc.thePlayer.isCollidedHorizontally || !mc.thePlayer.isMoving())
+						moveSpeed = getBaseMoveSpeed();
+
+					PlayerUtils.setMoveSpeed(event, Math.max(moveSpeed, baseSpeed));
+					if (!TargetStrafe.doStrafeAtSpeed(event, Math.max(moveSpeed, baseSpeed))) {
+						PlayerUtils.setMoveSpeed(event, Math.max(moveSpeed, baseSpeed));
+					}
+				}
+				break;
+			}
+			case "Dynamic":
+				if (mc.thePlayer.moveForward != 0.0f || mc.thePlayer.moveStrafing != 0.0f) {
+					switch (this.stage) {
+						case 1:
+							this.moveSpeed = 1.6;
+							break;
+						case 2:
+							this.moveSpeed = 0.06;
+							break;
+						default:
+							this.moveSpeed = getBaseMoveSpeed();
+							break;
+					}
+					PlayerUtils.setMoveSpeed(event, this.moveSpeed = Math.max(this.moveSpeed, getBaseMoveSpeed()));
+					++this.stage;
+				}
 				break;
 		}
 	}
@@ -134,6 +187,24 @@ public class Speed extends Module {
 		    	  }
 			break;
 		}
+	}
+
+	public static double getBaseMoveSpeed() {
+		double baseSpeed = 0.2873;
+		if (mc.thePlayer.isPotionActive(Potion.moveSpeed)) {
+			final int amplifier = mc.thePlayer.getActivePotionEffect(Potion.moveSpeed).getAmplifier();
+			baseSpeed *= 1.0 + 0.2 * (amplifier + 1);
+		}
+		return baseSpeed;
+	}
+
+	public static double getJumpBoostModifier(double baseJumpHeight) {
+		if (mc.thePlayer.isPotionActive(Potion.jump)) {
+			int amplifier = mc.thePlayer.getActivePotionEffect(Potion.jump).getAmplifier();
+			baseJumpHeight += (float) (amplifier + 1) * 0.1F;
+		}
+
+		return baseJumpHeight;
 	}
 	
 }

@@ -349,9 +349,13 @@ public abstract class EntityLivingBase extends Entity
             --this.hurtResistantTime;
         }
 
-        if (this.getHealth() <= 0.0F && !((Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) && this == Minecraft.getMinecraft().thePlayer))
-        {
-            this.onDeathUpdate();
+        //client:
+        try {
+            if (this.getHealth() <= 0.0F && !((Minecraft.getMinecraft().hackedClient.getModuleManager().getModule("Ghost").getState()) && this == Minecraft.getMinecraft().thePlayer)) {
+                this.onDeathUpdate();
+            }
+        } catch (Exception e) {
+
         }
 
         if (this.recentlyHit > 0)
