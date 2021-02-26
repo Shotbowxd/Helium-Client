@@ -74,6 +74,10 @@ public class KillAura extends Module {
 	private Setting distance;
 	private Setting fakeab;
 	private Setting spinbot;
+
+	private Setting players;
+	private Setting mobs;
+	private Setting villagers;
 	
 	private boolean isBlocking, apsDecrease, yawDecrease, pitchDecrease;
     private Timer apsStopwatch, botClearStopwatch;
@@ -122,6 +126,10 @@ public class KillAura extends Module {
 		this.distance = new Setting("Maximum Distance", this, 4.0, 0.1, 6.0, false);
 		this.spinbot = new Setting("Spinbot", this, false);
 		this.fakeab = new Setting("Auto Block", this, true);
+
+		players = new Setting("Attack Players", this, true);
+		mobs = new Setting("Attack Mobs", this, false);
+		villagers = new Setting("Attack Villagers", this, true);
 		
 		ArrayList<String> abmodes = new ArrayList<String>();
 		abmodes.add("Real");
@@ -146,6 +154,9 @@ public class KillAura extends Module {
 		mc.hackedClient.getSettingManager().addSetting(this.distance);
 		mc.hackedClient.getSettingManager().addSetting(this.spinbot);
 		mc.hackedClient.getSettingManager().addSetting(this.fakeab);
+		mc.hackedClient.getSettingManager().addSetting(players);
+        mc.hackedClient.getSettingManager().addSetting(mobs);
+        mc.hackedClient.getSettingManager().addSetting(villagers);
 		
 		isBlocking = false;
         targetIndex = 0;
@@ -740,13 +751,13 @@ public class KillAura extends Module {
         } catch (Exception e ) {
         }
 
-        if (entity != mc.thePlayer && (entity instanceof EntityPlayer && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).players.getValBoolean())
-                || (entity instanceof EntityMob && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).monsters.getValBoolean())
-                || (entity instanceof EntitySlime && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).monsters.getValBoolean())
-                || (entity instanceof EntityAnimal && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).animals.getValBoolean())
-                || (entity instanceof EntityPig && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).animals.getValBoolean())
-                || (entity instanceof EntityVillager && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).villagers.getValBoolean())
-                || (entity instanceof EntityGolem && ((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).golems.getValBoolean())) {
+        if (entity != mc.thePlayer && (entity instanceof EntityPlayer && players.getValBoolean())
+                || (entity instanceof EntityMob && mobs.getValBoolean())
+                || (entity instanceof EntitySlime && mobs.getValBoolean())
+                || (entity instanceof EntityAnimal && mobs.getValBoolean())
+                || (entity instanceof EntityPig && mobs.getValBoolean())
+                || (entity instanceof EntityVillager && villagers.getValBoolean())
+                || (entity instanceof EntityGolem && mobs.getValBoolean())) {
             if (((mc.thePlayer.getDistanceToEntity(entity) <= (distance.getValDouble())))) {
             	return true;
             }

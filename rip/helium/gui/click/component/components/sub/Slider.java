@@ -1,5 +1,6 @@
 package rip.helium.gui.click.component.components.sub;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.Gui;
 import rip.helium.gui.click.component.Component;
 import rip.helium.gui.click.component.components.Button;
 import rip.helium.module.modules.render.ClickGUI;
+import rip.helium.module.modules.render.Colors;
 import rip.helium.setting.Setting;
 import rip.helium.utils.render.Render2DUtils;
 
@@ -40,11 +42,12 @@ public class Slider extends Component {
 			Render2DUtils.drawBorderedRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + parent.parent.getWidth(), parent.parent.getY() + offset + 13, 1, 0x88333333, this.hovered ? 0x88222222 : 0x88111111);			
 			break;
 		case "Slick":
-			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + parent.parent.getWidth(), parent.parent.getY() + offset + 13, this.hovered ? 0x88222222 : 0x88111111);
+			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + parent.parent.getWidth(), parent.parent.getY() + offset + 13, new Color(32,32,32).getRGB());
 			break;
 		}
 		final int drag = (int)(this.set.getValDouble() / this.set.getMax() * this.parent.parent.getWidth());
-		Gui.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (int) renderWidth, parent.parent.getY() + offset + 13, hovered ? 0x88555555 : 0x88444444);
+		//this.hovered ? new Color(53,53,53).getRGB() : new Color(32, 32, 32).getRGB()
+		Gui.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (int) renderWidth, parent.parent.getY() + offset + 13, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 170).getRGB());
 		//Gui.drawRect(parent.parent.getX(), parent.parent.getY() + offset, parent.parent.getX() + 2, parent.parent.getY() + offset + 12, 0xFF111111);
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);

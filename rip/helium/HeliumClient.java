@@ -23,8 +23,8 @@ import rip.helium.setting.SettingManager;
 public class HeliumClient implements ClientSupport {
 	
 	private String name = "Helium";
-	private String version = "0.0.5";
-	private String author = "MichaelMaymays";
+	private String version = "22621"; //2.26.2021
+	private String author = "Kansio & MichaelMaymays";
 	
 	public String getName() {
 		return name;

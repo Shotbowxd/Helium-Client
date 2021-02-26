@@ -1,5 +1,6 @@
 package rip.helium.gui.click.component.components;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 import org.lwjgl.opengl.GL11;
@@ -13,6 +14,7 @@ import rip.helium.gui.click.component.components.sub.Slider;
 import rip.helium.gui.click.component.components.sub.VisibleButton;
 import rip.helium.module.Module;
 import rip.helium.module.modules.render.ClickGUI;
+import rip.helium.module.modules.render.Colors;
 import rip.helium.setting.Setting;
 import rip.helium.utils.render.Render2DUtils;
 
@@ -71,13 +73,13 @@ public class Button extends Component {
 			Render2DUtils.drawBorderedRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, 1, 0x88333333, this.isHovered ? 0x88222222 : 0x88111111);
 			break;
 		case "Slick":
-			Render2DUtils.drawRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, this.isHovered ? 0x88222222 : 0x88111111);
+			Render2DUtils.drawRect(parent.getX(), this.parent.getY() + this.offset + 1, parent.getX() + parent.getWidth(), this.parent.getY() + 13 + this.offset, this.isHovered ? new Color(53,53,53).getRGB() : new Color(32, 32, 32).getRGB());
 		}
 		GL11.glPushMatrix();
 		//GL11.glScalef(0.5f,0.5f, 0.5f);
-		clientFont.drawStringWithShadow(this.mod.getDisplayName(), (parent.getX() + 2), (parent.getY() + offset + 3), this.mod.getState() ? -1 : 0x999999);
+		clientFont.drawStringWithShadow(this.mod.getDisplayName(), (parent.getX() + 2), (parent.getY() + offset + 3), this.mod.getState() ? new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).clickB.getValDouble(), 255).getRGB() : -1);
 		if(this.subcomponents.size() > 1)
-			clientFont.drawStringWithShadow(this.open ? "-" : "+", (parent.getX() + parent.getWidth() - 8), (parent.getY() + offset + 3), -1);
+			//clientFont.drawStringWithShadow(this.open ? "-" : "+", (parent.getX() + parent.getWidth() - 8), (parent.getY() + offset + 3), -1);
 		GL11.glPopMatrix();
 		if(this.open) {
 			if(!this.subcomponents.isEmpty()) {

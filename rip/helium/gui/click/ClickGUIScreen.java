@@ -36,18 +36,18 @@ public class ClickGUIScreen extends GuiScreen implements ClientSupport {
 			frames.add(frame);
 			frameY += frame.getBarHeight() + 4; 
 		}
-		
-		Frame consoleFrame = new Frame("Console");
+
+		/*/Frame consoleFrame = new Frame("Console");
 		consoleFrame.setX(136);
 		consoleFrame.setY(4);
 		consoleFrame.setWidth(450);
 		frames.add(consoleFrame);
-		consoleFrame.components.add(new Console(consoleFrame));
+		consoleFrame.components.add(new Console(consoleFrame));/*/
 		
 		Frame targetingFrame = new Frame("Targeting");
 		targetingFrame.setX(136);
 		targetingFrame.setY(20);
-		frames.add(targetingFrame);
+		//frames.add(targetingFrame);
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).players, targetingFrame, targetingFrame.getBarHeight() + 1));
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).monsters, targetingFrame, targetingFrame.getBarHeight() + 13));
 		targetingFrame.components.add(new FrameParentCheckbox(((Targeting)mc.hackedClient.getModuleManager().getModule("Targeting")).animals, targetingFrame, targetingFrame.getBarHeight() + 25));

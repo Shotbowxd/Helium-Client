@@ -61,7 +61,7 @@ public class HUD extends Module implements ClientSupport {
 		rect = new Setting("ArrayList Rectangle", this, false);
 		
 		mc.hackedClient.getSettingManager().addSetting(watermark);
-		mc.hackedClient.getSettingManager().addSetting(speed);
+	//	mc.hackedClient.getSettingManager().addSetting(speed);
 		mc.hackedClient.getSettingManager().addSetting(potions);
 		mc.hackedClient.getSettingManager().addSetting(rainbow);
 	}
@@ -75,22 +75,22 @@ public class HUD extends Module implements ClientSupport {
 		int bottomLeftY = event.getHeight() - 10;
 		int bottomRightY = event.getHeight() - 10;
 		if(this.watermark.getValBoolean()) {
-			mc.fontRendererObj.drawStringWithShadow(mc.hackedClient.getName() + " v" + mc.hackedClient.getVersion() + " \2477(rel-1.8.8, p: " + ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion) + ")", 2, topLeftY, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudB.getValDouble()).getRGB());
-			topLeftY += 10;
-		}
-		if(this.speed.getValBoolean()) {
-			
+			//mc.fontRendererObj.drawStringWithShadow(mc.hackedClient.getName() + " v" + mc.hackedClient.getVersion() + " \2477(rel-1.8.8, p: " + ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion) + ")", 2, topLeftY, new Color((int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudR.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudG.getValDouble(), (int)((Colors)mc.hackedClient.getModuleManager().getModule("Colors")).hudB.getValDouble()).getRGB());
 			Vec3 lastPosVec = new Vec3(mc.thePlayer.prevPosX, mc.thePlayer.prevPosY, mc.thePlayer.prevPosZ);
 			Vec3 currentPosVec = new Vec3(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
 
-			// Euclidean distance between your last and current position. 
+			// Euclidean distance between your last and current position.
 			double distanceTraveled = lastPosVec.distanceTo(currentPosVec);
 
 			//calculate speed
 			// speed = distance * 60 *60 /1000
 			double speed_in_m_s = distanceTraveled*10;
 			DecimalFormat df = new DecimalFormat("###.#");
-			mc.fontRendererObj.drawStringWithShadow("Speed: §7" + df.format(speed_in_m_s) + " m/S", 2, topLeftY, 0xffffffff);
+
+			Render2DUtils.drawRect(8, 8, mc.fontRendererObj.getStringWidth("H§felium §7- §f" + mc.hackedClient.getVersion() + " §7- §fBPS: " + df.format(speed_in_m_s)) + 24, 30, new Color(32, 32, 32).getRGB());
+			Render2DUtils.drawRect(8, 8, mc.fontRendererObj.getStringWidth("H§felium §7- §f" + mc.hackedClient.getVersion() + " §7- §fBPS: " + df.format(speed_in_m_s)) + 24, 10, ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB());
+			mc.fontRendererObj.drawStringWithShadow("§bH§felium §7- §f" + mc.hackedClient.getVersion() + " §7- §fBPS: " + df.format(speed_in_m_s), 16, 18, ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB());
+
 			topLeftY += 10;
 		}
 

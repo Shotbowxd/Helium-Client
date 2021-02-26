@@ -10,6 +10,8 @@ import rip.helium.module.modules.render.ClickGUI;
 import rip.helium.setting.Setting;
 import rip.helium.utils.render.Render2DUtils;
 
+import java.awt.*;
+
 public class Checkbox extends Component {
 
 	private boolean hovered;
@@ -34,7 +36,7 @@ public class Checkbox extends Component {
 			Render2DUtils.drawBorderedRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, 1, 0x88333333, this.hovered ? 0x88222222 : 0x88111111);
 			break;
 		case "Slick":
-			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, this.hovered ? 0x88222222 : 0x88111111);
+			Render2DUtils.drawRect(parent.parent.getX(), parent.parent.getY() + 1 + offset, parent.parent.getX() + (parent.parent.getWidth() * 1), parent.parent.getY() + offset + 13, this.hovered ? new Color(53,53,53).getRGB() : new Color(32, 32, 32).getRGB());
 			break;
 		}
 		//Gui.drawRect(parent.parent.getX(), parent.parent.getY() + offset, parent.parent.getX() + 2, parent.parent.getY() + offset + 12, 0xFF111111);

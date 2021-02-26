@@ -13,6 +13,8 @@ public class Colors extends Module {
 	public Setting clickR;
 	public Setting clickG;
 	public Setting clickB;
+
+	public static Setting enableConsole;
 	
 	public Colors(int bind, String name, Category category) {
 		super(bind, name, category);
@@ -26,6 +28,10 @@ public class Colors extends Module {
 		this.clickR = new Setting("Click GUI R", this, 255, 0, 255, true);
 		this.clickG = new Setting("Click GUI G", this, 255, 0, 255, true);
 		this.clickB = new Setting("Click GUI B", this, 255, 0, 255, true);
+
+		enableConsole = new Setting("Enable Console", this, false);
+
+
 		
 		mc.hackedClient.getSettingManager().addSetting(this.hudR);
 		mc.hackedClient.getSettingManager().addSetting(this.hudG);
@@ -34,6 +40,8 @@ public class Colors extends Module {
 		mc.hackedClient.getSettingManager().addSetting(this.clickR);
 		mc.hackedClient.getSettingManager().addSetting(this.clickG);
 		mc.hackedClient.getSettingManager().addSetting(this.clickB);
+
+		mc.hackedClient.getSettingManager().addSetting(enableConsole);
 	}
 	
 	@Override
