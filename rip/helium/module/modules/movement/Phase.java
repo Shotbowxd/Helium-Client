@@ -39,7 +39,7 @@ public class Phase extends Module {
 		ArrayList<String> modes = new ArrayList<String>();
 		modes.add("Vanilla");
 		modes.add("Aris");
-		modes.add("Faithful");
+		modes.add("Skip");
 		
 		this.mode = new Setting("Mode", this, "Vanilla", modes);
 		
@@ -106,7 +106,7 @@ public class Phase extends Module {
 	            event.setBoundingBox(null);
 			}
 			break;
-		case "Faithful":
+		case "Skip":
 			if ((event.getBoundingBox() != null) && (event.getBoundingBox().maxY > mc.thePlayer.boundingBox.minY) && (mc.thePlayer.isSneaking())) {
 				event.setBoundingBox(null);
             }
@@ -154,7 +154,7 @@ public class Phase extends Module {
                 PlayerUtils.setMoveSpeed(event, 0.75f);
             }
 			break;
-		case "Faithful":
+		case "Skip":
 			if ((isInsideBlock()) && (mc.thePlayer.isSneaking())) {
                 float yaw = mc.thePlayer.rotationYaw;
                 mc.thePlayer.boundingBox.offsetAndUpdate(1.5 * Math.cos(Math.toRadians(yaw + 90.0F)), 0.0D, 1.5 * Math.sin(Math.toRadians(yaw + 90.0F)));
@@ -170,7 +170,7 @@ public class Phase extends Module {
 		if (this.mode.getValString().equalsIgnoreCase("Vanilla") && mc.gameSettings.keyBindSneak.isPressed() && !isInsideBlock()) {
             mc.thePlayer.sendQueue.getNetworkManager().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 2.0, mc.thePlayer.posZ, true));
             moveUnder = 2;
-		} else if (mode.getValString().equalsIgnoreCase("Faithful")) {
+		} else if (mode.getValString().equalsIgnoreCase("Skip")) {
             if (mc.thePlayer.isSneaking())
                 if (mc.thePlayer.isCollidedHorizontally && !event.isPre()) {
                     double x = -MathHelper.sin(PlayerUtils.getDirection()) * 1.5,
