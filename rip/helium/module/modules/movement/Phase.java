@@ -170,7 +170,7 @@ public class Phase extends Module {
 		if (this.mode.getValString().equalsIgnoreCase("Vanilla") && mc.gameSettings.keyBindSneak.isPressed() && !isInsideBlock()) {
             mc.thePlayer.sendQueue.getNetworkManager().sendPacket(new C03PacketPlayer.C04PacketPlayerPosition(mc.thePlayer.posX, mc.thePlayer.posY - 2.0, mc.thePlayer.posZ, true));
             moveUnder = 2;
-		} else if (mode.getValString().equalsIgnoreCase("Faithful")) {
+		} else if (mode.getValString().equalsIgnoreCase("Skip")) {
             if (mc.thePlayer.isSneaking())
                 if (mc.thePlayer.isCollidedHorizontally && !event.isPre()) {
                     double x = -MathHelper.sin(PlayerUtils.getDirection()) * 1.5,
