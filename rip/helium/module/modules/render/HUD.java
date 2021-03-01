@@ -103,10 +103,10 @@ public class HUD extends Module implements ClientSupport {
 					}
 					Render2DUtils.drawRect(event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 10, topRightY + 12, event.getWidth() - mc.fontRendererObj.getStringWidth(name) + 999, topRightY + 15.5, rainbow.getValBoolean() ? ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB() : m.getColor());
 
-					Render2DUtils.drawRect(event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 10, 4 + topRightY - 1, event.getWidth(), topRightY + 14, new Color(32, 32, 32).getRGB());
-					Render2DUtils.drawRect(event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 10, 3 + topRightY, event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 8, topRightY + 14, rainbow.getValBoolean() ? ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB() : m.getColor());
+					Render2DUtils.drawRect(event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 10, 1 + topRightY - 1, event.getWidth(), topRightY + 14, new Color(32, 32, 32).getRGB());
+					Render2DUtils.drawRect(event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 10, 1 + topRightY + 2, event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 8, topRightY + 14, rainbow.getValBoolean() ? ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB() : m.getColor());
 
-					mc.fontRendererObj.drawStringWithShadow(name, event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 2, 4 + topRightY, rainbow.getValBoolean() ? ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB() : m.getColor());
+					mc.fontRendererObj.drawStringWithShadow(name, event.getWidth() - mc.fontRendererObj.getStringWidth(name) - 2, 1 + topRightY + 2, rainbow.getValBoolean() ? ColorUtils.setRainbow(35000000L * topRightY, 1f).getRGB() : m.getColor());
 					topRightY += 11;
 				}
 			}

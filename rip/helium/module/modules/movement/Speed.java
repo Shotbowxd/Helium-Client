@@ -2,6 +2,7 @@ package rip.helium.module.modules.movement;
 
 import java.util.ArrayList;
 
+import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.potion.Potion;
 import rip.helium.event.EventTarget;
 import rip.helium.event.events.impl.network.PacketReceiveEvent;
@@ -51,6 +52,7 @@ public class Speed extends Module {
 		modes.add("Timer");
 		modes.add("Dynamic");
 		modes.add("Hypixel");
+		modes.add("VerusTest");
 		
 		this.mode = new Setting("Mode", this, "Ground", modes);
 		
@@ -89,6 +91,18 @@ public class Speed extends Module {
 				}
 				PlayerUtils.setMoveSpeed(0.8);
 				break;
+			case "VerusTest": {
+				if (ncpTimer.hasPassed(35)) {
+					int randomPos = MathUtils.getRandomInRange(3, 34);
+					mc.thePlayer.sendQueue.addToSendQueue(new C03PacketPlayer.C06PacketPlayerPosLook(mc.thePlayer.posX, mc.thePlayer.posY - randomPos, mc.thePlayer.posZ,
+							mc.thePlayer.rotationYaw, mc.thePlayer.rotationPitch, true));
+					ncpTimer.updateLastTime();
+				}
+				if (mc.thePlayer.isMoving()) {
+					PlayerUtils.setMoveSpeed(event, 7.4);
+				}
+				break;
+			}
 			case "SunPvP":
 	            double sunspeed = PlayerUtils.getBaseMoveSpeed();
 	            if (mc.thePlayer.moveForward != 0.0f || mc.thePlayer.moveStrafing != 0.0f) {
@@ -126,7 +140,7 @@ public class Speed extends Module {
 			case "Timer":
 				net.minecraft.util.Timer.timerSpeed = 1.45f;
 				break;
-			case "Hypixel": {
+			case "Hypixel":
 				if (MathUtils.round(mc.thePlayer.motionY, 3) == MathUtils.round(-.245D, 3)) {
 					event.setY(mc.thePlayer.motionY -= 0.138F);
 				}
@@ -152,23 +166,7 @@ public class Speed extends Module {
 					}
 				}
 				break;
-			}
 			case "Dynamic":
-				if (mc.thePlayer.moveForward != 0.0f || mc.thePlayer.moveStrafing != 0.0f) {
-					switch (this.stage) {
-						case 1:
-							this.moveSpeed = 1.6;
-							break;
-						case 2:
-							this.moveSpeed = 0.06;
-							break;
-						default:
-							this.moveSpeed = getBaseMoveSpeed();
-							break;
-					}
-					PlayerUtils.setMoveSpeed(event, this.moveSpeed = Math.max(this.moveSpeed, getBaseMoveSpeed()));
-					++this.stage;
-				}
 				break;
 		}
 	}

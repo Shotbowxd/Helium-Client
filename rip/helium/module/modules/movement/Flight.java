@@ -2,8 +2,10 @@ package rip.helium.module.modules.movement;
 
 import java.util.ArrayList;
 
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.C03PacketPlayer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import rip.helium.event.EventTarget;
 import rip.helium.event.events.impl.network.PacketSendEvent;
 import rip.helium.event.events.impl.player.MoveEvent;
@@ -19,6 +21,11 @@ public class Flight extends Module {
 	private Setting mode;
 	private Setting speed;
 	private Setting antiKick;
+
+	//rinaorc fly
+	boolean allowSendPacket = false;
+
+	ArrayList<Packet> packets = new ArrayList<>();
 	
 	private Timer flyTimer;
 	
@@ -32,6 +39,7 @@ public class Flight extends Module {
 		modes.add("Shotbow");
 		modes.add("Emeraldcraft");
 		modes.add("Dynamic");
+		modes.add("RinaOrc");
 
 		this.mode = new Setting("Mode", this, "Motion", modes);
 		this.speed = new Setting("Speed", this, 1.0d, 0.1d, 10.0d, false);
@@ -43,14 +51,18 @@ public class Flight extends Module {
 		
 		this.flyTimer = new Timer();
 	}
-	
+
+	@EventTarget
 	public void onPacket(PacketSendEvent event) {
         switch(this.mode.getValString()) {
-        case "Shotbow":
-            if (event.getPacket() instanceof C03PacketPlayer) {
-                event.setCancelled(true);
-            }
-        }
+			case "RinaOrc":
+				/*/if (event.getPacket() instanceof C03PacketPlayer) {
+					event.setCancelled(true);
+					packets.add(event.getPacket());
+					mc.thePlayer.addChatMessage(new ChatComponentText("lol canceled"));
+				}/*/
+				break;
+		}
     }
 	
 	@EventTarget
@@ -59,6 +71,8 @@ public class Flight extends Module {
 		switch(this.mode.getValString()) {
 			case "Notch":
 				mc.thePlayer.capabilities.isFlying = true;
+				break;
+			case "RinaOrc":
 				break;
 			case "Emeraldcraft":
 				mc.timer.timerSpeed = 0.4F;
@@ -103,6 +117,20 @@ public class Flight extends Module {
 	@EventTarget
 	public void onMove(MoveEvent event) {
 		switch(this.mode.getValString()) {
+			case "RinaOrc":
+				if (mc.thePlayer.ticksExisted % 10 == 0) {
+					if (mc.thePlayer.isMoving()) {
+						if (mc.thePlayer.movementInput.jump) {
+							event.setY(mc.thePlayer.motionY = 1.5d);
+						} else if (mc.thePlayer.movementInput.sneak) {
+							event.setY(mc.thePlayer.motionY = -1.5d);
+						} else {
+							event.setY(mc.thePlayer.motionY = 0.0d);
+						}
+						PlayerUtils.setMoveSpeed(event, speed.getValDouble());
+					}
+				}
+				break;
 			case "Motion":
 				if(mc.thePlayer.movementInput.jump) {
 					event.setY(mc.thePlayer.motionY = 1.5d);
@@ -158,6 +186,7 @@ public class Flight extends Module {
 	    mc.thePlayer.capabilities.setFlySpeed(0.1F);
 	    mc.thePlayer.capabilities.isFlying = false;
 	    PlayerUtils.setSpeed(0d);
+
 	}
 	
     private boolean isColliding(final AxisAlignedBB box) {
