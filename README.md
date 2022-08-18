@@ -4,3 +4,6 @@ Heres Helium source due to the fact me, kansio, and every other dev are just tir
 
 hi - auth
 why do i still have repo access XD
+
+hi - shotbowxd
+idk why auth still has repo access and i dont care that he does!
